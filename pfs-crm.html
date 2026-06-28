@@ -2,920 +2,1185 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>PFS CRM</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --dark:#1B3A4B;--green:#2E7D52;--amber:#E8A020;--red:#C0392B;
-  --bg:#F5F0E8;--surface:#fff;--border:#e0dbd0;--text:#1a1a1a;
-  --text2:#666;--text3:#999;--radius:12px;
-}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
-/* HEADER */
-.hdr{background:var(--dark);color:#fff;padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:sticky;top:0;z-index:30}
-.hdr-left{display:flex;align-items:center;gap:8px}
-.hdr-title{font-size:17px;font-weight:600}
-.hdr-sub{font-size:11px;opacity:.7;margin-top:1px}
-.back-btn{background:none;border:none;color:#fff;font-size:24px;cursor:pointer;padding:0;line-height:1}
-.hdr-novo{background:rgba(255,255,255,.18);border:none;color:#fff;border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer;display:none;align-items:center;gap:4px}
-/* NAV */
-.nav{background:var(--surface);border-top:1px solid var(--border);display:flex;flex-shrink:0;position:sticky;bottom:0;z-index:30}
-.nav-btn{flex:1;border:none;background:none;padding:10px 4px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--text3);font-family:inherit}
-.nav-btn.active{color:var(--dark)}
-.nav-icon{font-size:22px;line-height:1}
-/* SCREENS */
-.screen{display:none;flex:1;overflow-y:auto;flex-direction:column}
-.screen.active{display:flex}
-/* DASHBOARD */
-.dash-banner{background:var(--dark);color:#fff;padding:16px 16px 22px}
-.dash-banner p{font-size:13px;opacity:.7;margin-bottom:3px}
-.dash-banner h2{font-size:20px;font-weight:600}
-.metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:14px 16px 6px}
-.metric{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;border-left:4px solid transparent}
-.metric.blue{border-left-color:var(--dark)}.metric.green{border-left-color:var(--green)}
-.metric.red{border-left-color:var(--red)}.metric.amber{border-left-color:var(--amber)}
-.metric-val{font-size:26px;font-weight:600;line-height:1;margin-bottom:4px}
-.metric-lbl{font-size:11px;color:var(--text3)}
-.sec-title{font-size:11px;font-weight:600;color:var(--text3);padding:10px 16px 6px;text-transform:uppercase;letter-spacing:.05em}
-.alert-card{background:var(--surface);border:1px solid #fca5a5;border-radius:var(--radius);margin:0 16px 8px;padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer}
-.alert-dot{width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0}
-.alert-info{flex:1;min-width:0}
-.alert-name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.alert-days{font-size:12px;color:var(--red)}
-.recent-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin:0 16px 8px;padding:12px 14px;cursor:pointer}
-.recent-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px}
-.recent-name{font-size:14px;font-weight:600}
-.recent-date{font-size:11px;color:var(--text3)}
-.recent-sub{font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+:root{--dk:#1B3A4B;--gr:#2E7D52;--am:#E8A020;--rd:#C0392B;--bg:#F5F0E8;--sf:#fff;--bd:#e0dbd0;--tx:#1a1a1a;--t2:#555;--t3:#999}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+.hdr{background:var(--dk);color:#fff;padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:sticky;top:0;z-index:30}
+.hdr-l{display:flex;align-items:center;gap:8px}
+.hdr-t{font-size:17px;font-weight:600}
+.hdr-s{font-size:11px;opacity:.7;margin-top:1px}
+.bk{background:none;border:none;color:#fff;font-size:24px;cursor:pointer;padding:0;line-height:1;display:none}
+.hn{background:rgba(255,255,255,.18);border:none;color:#fff;border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer;display:none;align-items:center;gap:4px}
+.nav{background:var(--sf);border-top:1px solid var(--bd);display:flex;flex-shrink:0;position:sticky;bottom:0;z-index:30}
+.nb{flex:1;border:none;background:none;padding:10px 4px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--t3);font-family:inherit}
+.nb.on{color:var(--dk)}
+.ni{font-size:20px;line-height:1}
+.sc{display:none;flex:1;overflow-y:auto;flex-direction:column}
+.sc.on{display:flex}
+/* DASH */
+.dbanner{background:var(--dk);color:#fff;padding:16px 16px 22px}
+.dbanner p{font-size:13px;opacity:.7;margin-bottom:3px}
+.dbanner h2{font-size:20px;font-weight:600}
+.mets{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:14px 16px 6px}
+.met{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:14px;border-left:4px solid transparent}
+.met.b{border-left-color:var(--dk)}.met.g{border-left-color:var(--gr)}.met.r{border-left-color:var(--rd)}.met.a{border-left-color:var(--am)}
+.mv{font-size:26px;font-weight:600;line-height:1;margin-bottom:4px}
+.ml{font-size:11px;color:var(--t3)}
+.st{font-size:11px;font-weight:600;color:var(--t3);padding:10px 16px 6px;text-transform:uppercase;letter-spacing:.05em}
+.ac{background:var(--sf);border:1px solid #fca5a5;border-radius:12px;margin:0 16px 8px;padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer}
+.ad{width:8px;height:8px;border-radius:50%;background:var(--rd);flex-shrink:0}
+.ai{flex:1;min-width:0}
+.an{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ay{font-size:12px;color:var(--rd)}
+.rc{background:var(--sf);border:1px solid var(--bd);border-radius:12px;margin:0 16px 8px;padding:12px 14px;cursor:pointer}
+.rt{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px}
+.rn{font-size:14px;font-weight:600}
+.rd2{font-size:11px;color:var(--t3)}
+.rs{font-size:12px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* FATURAMENTO */
+.fat-hdr{background:var(--dk);color:#fff;padding:16px}
+.fat-titulo{font-size:18px;font-weight:600;margin-bottom:4px}
+.fat-sub{font-size:12px;opacity:.7}
+.fat-mets{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:14px 16px 6px}
+.fat-met{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:14px;border-left:4px solid transparent}
+.fat-met.g{border-left-color:var(--gr)}.fat-met.b{border-left-color:var(--dk)}.fat-met.a{border-left-color:var(--am)}
+.fat-val{font-size:20px;font-weight:600;margin-bottom:4px;line-height:1.2}
+.fat-lbl{font-size:11px;color:var(--t3)}
+.meta-bar-wrap{margin:0 16px 14px;background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:14px}
+.meta-bar-lbl{font-size:12px;color:var(--t2);margin-bottom:8px;display:flex;justify-content:space-between}
+.meta-bar{height:10px;background:#e0e0e0;border-radius:5px;overflow:hidden}
+.meta-bar-fill{height:100%;background:var(--gr);border-radius:5px;transition:width .5s}
+.meta-input-wrap{margin:0 16px 12px;display:flex;gap:8px;align-items:center}
+.meta-input{flex:1;border:1px solid var(--bd);border-radius:8px;padding:9px 12px;font-size:14px;background:var(--sf);color:var(--tx);outline:none;font-family:inherit}
+.meta-input:focus{border-color:var(--dk)}
+.meta-btn{padding:9px 14px;border:none;border-radius:8px;background:var(--dk);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap}
+.rank-card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;margin:0 16px 8px;padding:12px 14px;cursor:pointer}
+.rank-top{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.rank-pos{width:26px;height:26px;border-radius:50%;background:var(--dk);color:#fff;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rank-pos.p1{background:#F5A623}.rank-pos.p2{background:#9B9B9B}.rank-pos.p3{background:#7B5E3A}
+.rank-nome{font-size:14px;font-weight:600;flex:1}
+.rank-val{font-size:13px;color:var(--gr);font-weight:600}
+.rank-bar{height:4px;background:#e0e0e0;border-radius:2px;overflow:hidden}
+.rank-bar-fill{height:100%;background:var(--gr);border-radius:2px}
+.msel{display:flex;gap:6px;padding:10px 16px 4px;overflow-x:auto;scrollbar-width:none}
+.msel::-webkit-scrollbar{display:none}
+.mchip{border:1px solid var(--bd);border-radius:20px;padding:5px 12px;font-size:12px;white-space:nowrap;cursor:pointer;background:var(--sf);color:var(--t2);flex-shrink:0;font-family:inherit}
+.mchip.on{background:var(--dk);color:#fff;border-color:var(--dk)}
 /* CLIENTES */
-.search-wrap{padding:10px 16px 8px;position:sticky;top:56px;background:var(--bg);z-index:10;border-bottom:1px solid var(--border)}
-.si{display:flex;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 12px;gap:8px}
-.si-icon{color:var(--text3);font-size:16px}
-.si input{border:none;background:none;width:100%;font-size:14px;color:var(--text);outline:none;font-family:inherit}
-.filters{display:flex;gap:6px;padding:8px 16px;overflow-x:auto;scrollbar-width:none}
-.filters::-webkit-scrollbar{display:none}
-.fchip{border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:12px;white-space:nowrap;cursor:pointer;background:var(--surface);color:var(--text2);flex-shrink:0;font-family:inherit}
-.fchip.active{background:var(--dark);color:#fff;border-color:var(--dark)}
-.clist{padding:0 16px;display:flex;flex-direction:column;gap:8px;padding-bottom:16px}
-.ccard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;display:flex}
-.sbar{width:5px;flex-shrink:0}
-.sbar.verde{background:var(--green)}.sbar.amber{background:var(--amber)}.sbar.vermelho{background:var(--red)}.sbar.cinza{background:var(--border)}
-.cbody{padding:12px 14px;flex:1;min-width:0}
-.ctop{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:3px}
-.cname{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;margin-right:8px}
-.cbadge{font-size:10px;padding:2px 8px;border-radius:10px;white-space:nowrap;flex-shrink:0}
+.sw{padding:10px 16px 8px;position:sticky;top:56px;background:var(--bg);z-index:10;border-bottom:1px solid var(--bd)}
+.si{display:flex;align-items:center;background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:8px 12px;gap:8px}
+.si input{border:none;background:none;width:100%;font-size:14px;color:var(--tx);outline:none;font-family:inherit}
+.flt{display:flex;gap:6px;padding:8px 16px;overflow-x:auto;scrollbar-width:none}
+.flt::-webkit-scrollbar{display:none}
+.fch{border:1px solid var(--bd);border-radius:20px;padding:5px 12px;font-size:12px;white-space:nowrap;cursor:pointer;background:var(--sf);color:var(--t2);flex-shrink:0;font-family:inherit}
+.fch.on{background:var(--dk);color:#fff;border-color:var(--dk)}
+.cl{padding:0 16px;display:flex;flex-direction:column;gap:8px;padding-bottom:16px}
+.cc{background:var(--sf);border:1px solid var(--bd);border-radius:12px;overflow:hidden;cursor:pointer;display:flex}
+.sb{width:5px;flex-shrink:0}
+.sb.v{background:var(--gr)}.sb.a{background:var(--am)}.sb.r{background:var(--rd)}.sb.c{background:var(--bd)}
+.cb{padding:12px 14px;flex:1;min-width:0}
+.ct{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:3px}
+.cn{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;margin-right:8px}
+.cbg{font-size:10px;padding:2px 8px;border-radius:10px;white-space:nowrap;flex-shrink:0}
 .ba{background:#dcfce7;color:#166534}.bp{background:#dbeafe;color:#1e40af}.bi{background:#fee2e2;color:#991b1b}
-.ctipo{font-size:12px;color:var(--text3);margin-bottom:5px}
-.cbot{display:flex;justify-content:space-between;align-items:center}
-.clast{font-size:12px;color:var(--text2)}
-.cdays{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600}
+.ctp{font-size:12px;color:var(--t3);margin-bottom:5px}
+.cbt{display:flex;justify-content:space-between;align-items:center}
+.cla{font-size:12px;color:var(--t2)}
+.cdy{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600}
 .dok{background:#dcfce7;color:#166534}.dw{background:#fef9c3;color:#854d0e}.dl{background:#fee2e2;color:#991b1b}.dn{background:#dbeafe;color:#1e40af}
-.empty{text-align:center;padding:40px 20px;color:var(--text3);font-size:14px}
-.fab{position:fixed;bottom:72px;right:16px;width:54px;height:54px;border-radius:50%;background:var(--green);border:none;color:#fff;font-size:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.2);z-index:25;line-height:1}
-/* FICHA */
-.fhdr{background:var(--dark);color:#fff;padding:14px 16px}
-.fnome{font-size:18px;font-weight:600;margin-bottom:2px}
-.ftipo{font-size:12px;opacity:.7}
-.fbadges{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
-.fbadge{font-size:11px;padding:3px 10px;border-radius:10px;background:rgba(255,255,255,.18)}
-.fsec{padding:12px 16px;border-bottom:1px solid var(--border)}
-.fsec-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
-.fsec-title a{font-size:11px;color:var(--dark);cursor:pointer;text-transform:none;letter-spacing:0;font-weight:500}
-.irow{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid #f0ebe0}
-.irow:last-child{border-bottom:none}
-.irow-icon{font-size:16px;color:var(--text3);width:20px;text-align:center;flex-shrink:0;margin-top:1px}
-.ilbl{font-size:12px;color:var(--text3);flex:1}
-.ival{font-size:13px;font-weight:500;text-align:right;max-width:200px}
-.arow{display:flex;gap:8px;padding:12px 16px}
-.abtn{flex:1;padding:11px 4px;border:1px solid var(--border);border-radius:10px;background:var(--surface);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;color:var(--text);font-family:inherit}
-.abtn.pri{background:var(--green);border-color:var(--green);color:#fff}
-.vcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin:0 16px 8px;padding:12px 14px}
-.vtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
-.vdate{font-size:13px;font-weight:600}
-.vped{font-size:11px;padding:2px 8px;border-radius:8px;background:#dcfce7;color:#166534}
-.vobs{font-size:12px;color:var(--text2);margin-top:3px}
-.vestoque{margin-top:6px;padding-top:6px;border-top:1px solid #f0ebe0}
-.erow{display:flex;justify-content:space-between;font-size:11px;padding:2px 0}
-.enome{color:var(--text2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:8px}
-.eval{font-weight:600;white-space:nowrap}
-.eval.baixo{color:var(--red)}.eval.ok{color:var(--green)}
-.novisit{text-align:center;padding:24px;color:var(--text3);font-size:13px}
-.mix-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f0ebe0}
-.mix-item:last-child{border-bottom:none}
-.mix-tog{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px}
-.mix-tog.on{background:var(--green);border-color:var(--green);color:#fff}
-.mix-lbl{font-size:13px;flex:1}
-.mix-sub{font-size:11px;color:var(--text3)}
+.emp{text-align:center;padding:40px 20px;color:var(--t3);font-size:14px}
+.fab{position:fixed;bottom:72px;right:50%;transform:translateX(calc(50% - 196px));width:54px;height:54px;border-radius:50%;background:var(--gr);border:none;color:#fff;font-size:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.2);z-index:25;line-height:1}
 /* PRODUTOS */
-.psec{padding:8px 16px 4px}
-.psec-t{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;padding-top:6px;border-top:1px solid var(--border)}
-.pcard{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;display:flex;align-items:flex-start;gap:10px;margin-bottom:7px}
-.picon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.picon.dog{background:#dbeafe}.picon.cat{background:#fae8ff}.picon.supl{background:#dcfce7}
-.pinfo{flex:1;min-width:0}
-.pname{font-size:13px;font-weight:600;margin-bottom:2px}
-.psab{font-size:11px;color:var(--text3);margin-bottom:4px}
-.plinha{font-size:10px;padding:2px 7px;border-radius:6px;display:inline-block}
-.la{background:#dbeafe;color:#1e40af}.lph{background:#dcfce7;color:#166534}
-.lql{background:#fef9c3;color:#854d0e}.lqlu{background:#e0f2fe;color:#075985}
-.lac{background:#fae8ff;color:#6b21a8}.lqc{background:#f3e8ff;color:#7e22ce}
-.lsc{background:#fee2e2;color:#991b1b}.lpc{background:#dcfce7;color:#166534}
-.ppesos{display:flex;flex-wrap:wrap;gap:3px;margin-top:4px}
-.ppeso{background:#f5f0e8;border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:10px;color:var(--text2)}
-/* IMPORTAÇÕES */
-.imp-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;margin:12px 16px;overflow:hidden}
-.imp-card-hdr{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
-.imp-card-hdr-icon{font-size:22px}
-.imp-card-title{font-size:15px;font-weight:600}
-.imp-card-sub{font-size:12px;color:var(--text3)}
-.imp-card-body{padding:14px 16px}
-.imp-info{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:12px}
-.imp-info strong{color:var(--text)}
-.imp-btn{width:100%;padding:13px;border:none;border-radius:10px;background:var(--dark);color:#fff;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;font-family:inherit}
-.imp-btn.green{background:var(--green)}
-.imp-btn:disabled{opacity:.5;cursor:not-allowed}
-.imp-status{font-size:13px;text-align:center;min-height:20px;padding:6px 0}
-.imp-status.ok{color:var(--green)}.imp-status.err{color:var(--red)}.imp-status.loading{color:var(--amber)}
-.drive-link{font-size:12px;color:var(--dark);display:flex;align-items:center;gap:4px;margin-top:8px;text-decoration:none}
-.preview-box{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-top:10px;font-size:12px;max-height:160px;overflow-y:auto}
-.preview-row{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border);gap:8px}
-.preview-row:last-child{border-bottom:none}
-.preview-lbl{color:var(--text3);flex-shrink:0}
-.preview-val{font-weight:600;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.file-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}
-.file-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;cursor:pointer}
-.file-name{flex:1;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.upload-area{border:2px dashed var(--border);border-radius:10px;padding:24px 16px;text-align:center;cursor:pointer;margin-bottom:10px}
-.upload-area:hover{border-color:var(--dark);background:var(--bg)}
-.upload-icon{font-size:32px;display:block;margin-bottom:8px;color:var(--text3)}
-.upload-area p{font-size:13px;color:var(--text2)}
-.upload-area span{font-size:11px;color:var(--text3)}
-.confirm-btns{display:flex;gap:8px;margin-top:10px}
-.cbtn{flex:1;padding:11px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border);font-family:inherit}
-.cbtn.ok{background:var(--green);color:#fff;border-color:var(--green)}
-.cbtn.cancel{background:none;color:var(--text2)}
-/* MODAIS */
-.modal-bg{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);z-index:100;display:none;align-items:flex-end;justify-content:center;max-width:480px;margin:0 auto}
-.modal-bg.open{display:flex}
-.modal{background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-height:92vh;overflow-y:auto;padding:0 0 32px}
-.mhandle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 8px}
-.mhdr{padding:8px 16px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.mhdr h3{font-size:16px;font-weight:600}
-.mclose{background:none;border:none;cursor:pointer;color:var(--text3);font-size:26px;line-height:1;font-family:inherit}
-.fg{padding:12px 16px 0}
-.fl{font-size:12px;color:var(--text3);margin-bottom:5px;display:block;font-weight:600}
-.fi{width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;background:var(--surface);color:var(--text);outline:none;font-family:inherit}
-.fi:focus{border-color:var(--dark)}
-.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 16px 0}
-.factions{padding:16px 16px 0;display:flex;gap:8px}
-.bcancel{flex:1;padding:12px;border:1px solid var(--border);border-radius:10px;background:none;color:var(--text2);font-size:14px;cursor:pointer;font-family:inherit}
-.bsave{flex:2;padding:12px;border:none;border-radius:10px;background:var(--green);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
-select.fi{appearance:none}
-/* ESTOQUE/PEDIDO */
-.esec-title{font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;padding:12px 16px 0;display:block}
-.eitem{display:flex;align-items:center;gap:8px;padding:8px 16px;border-bottom:1px solid #f0ebe0}
+.plinhas{padding:10px 16px 4px;display:flex;flex-direction:column;gap:6px;padding-bottom:16px}
+.plinha-btn{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:0;overflow:hidden;cursor:pointer;text-align:left}
+.plinha-hdr{display:flex;align-items:center;gap:10px;padding:13px 14px}
+.plinha-ico{font-size:22px;width:36px;text-align:center;flex-shrink:0}
+.plinha-info{flex:1}
+.plinha-nome{font-size:15px;font-weight:600}
+.plinha-cnt{font-size:12px;color:var(--t3)}
+.plinha-arr{font-size:18px;color:var(--t3);transition:transform .2s}
+.plinha-btn.open .plinha-arr{transform:rotate(90deg)}
+.plinha-prods{display:none;border-top:1px solid var(--bd)}
+.plinha-btn.open .plinha-prods{display:block}
+.prod-item{padding:12px 14px;border-bottom:1px solid #f0ebe0;cursor:pointer}
+.prod-item:last-child{border-bottom:none}
+.prod-item:hover{background:#f8f5f0}
+.prod-nome{font-size:13px;font-weight:600;margin-bottom:2px}
+.prod-sabor{font-size:11px;color:var(--t3);margin-bottom:5px}
+.prod-tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.prod-cod{font-size:10px;background:#f0ebe0;border-radius:4px;padding:2px 6px;color:var(--t2)}
+.prod-peso{font-size:11px;background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:2px 7px;color:var(--t2);font-weight:500}
+.prod-preco{font-size:11px;color:var(--gr);font-weight:600}
+/* FICHA PRODUTO */
+.fp-hdr{background:var(--dk);color:#fff;padding:14px 16px}
+.fp-nome{font-size:17px;font-weight:600;margin-bottom:3px}
+.fp-sub{font-size:12px;opacity:.7}
+.fp-badges{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.fp-badge{font-size:11px;padding:3px 10px;border-radius:10px;background:rgba(255,255,255,.18)}
+.fp-sec{padding:12px 16px;border-bottom:1px solid var(--bd)}
+.fp-sec-t{font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
+.fp-arg{background:#f0f7f4;border-left:3px solid var(--gr);border-radius:0 8px 8px 0;padding:10px 12px;margin-bottom:8px;font-size:13px;line-height:1.5;color:var(--tx)}
+.fp-arg strong{color:var(--gr)}
+.fp-tab{width:100%;border-collapse:collapse;font-size:12px}
+.fp-tab td{padding:6px 8px;border-bottom:1px solid #f0ebe0}
+.fp-tab td:first-child{color:var(--t3);width:55%}
+.fp-tab td:last-child{font-weight:600;text-align:right}
+/* FICHA CLIENTE */
+.fhdr{background:var(--dk);color:#fff;padding:14px 16px}
+.fnm{font-size:18px;font-weight:600;margin-bottom:2px}
+.ftp{font-size:12px;opacity:.7}
+.fbg{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.fbdg{font-size:11px;padding:3px 10px;border-radius:10px;background:rgba(255,255,255,.18)}
+.fsec{padding:12px 16px;border-bottom:1px solid var(--bd)}
+.fst{font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.fst a{font-size:11px;color:var(--dk);cursor:pointer;text-transform:none;letter-spacing:0;font-weight:500}
+.ir{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid #f5f0e8}
+.ir:last-child{border-bottom:none}
+.ii{font-size:16px;color:var(--t3);width:20px;text-align:center;flex-shrink:0;margin-top:1px}
+.il{font-size:12px;color:var(--t3);flex:1}
+.iv{font-size:13px;font-weight:500;text-align:right;max-width:200px}
+.ar{display:flex;gap:8px;padding:12px 16px}
+.ab{flex:1;padding:11px 4px;border:1px solid var(--bd);border-radius:10px;background:var(--sf);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;color:var(--tx);font-family:inherit}
+.ab.p{background:var(--gr);border-color:var(--gr);color:#fff}
+/* VISITAS */
+.vc{background:var(--sf);border:1px solid var(--bd);border-radius:12px;margin:0 16px 8px;padding:12px 14px}
+.vt{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.vd{font-size:13px;font-weight:600}
+.vp{font-size:11px;padding:2px 8px;border-radius:8px;background:#dcfce7;color:#166534}
+.vo{font-size:12px;color:var(--t2);margin-top:3px}
+.ve{margin-top:6px;padding-top:6px;border-top:1px solid #f0ebe0}
+.er{display:flex;justify-content:space-between;font-size:11px;padding:2px 0}
+.en{color:var(--t2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:8px}
+.ev{font-weight:600;white-space:nowrap}
+.ev.bx{color:var(--rd)}.ev.ok{color:var(--gr)}
+.nv{text-align:center;padding:24px;color:var(--t3);font-size:13px}
+.vdel{float:right;background:none;border:none;cursor:pointer;color:var(--rd);font-size:13px;padding:0;font-family:inherit}
+/* MIX */
+.mxi{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f5f0e8}
+.mxi:last-child{border-bottom:none}
+.mxt{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--bd);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px}
+.mxt.on{background:var(--gr);border-color:var(--gr);color:#fff}
+.mxl{font-size:13px;flex:1}
+.mxs{font-size:11px;color:var(--t3)}
+/* IMPORTAÇÃO */
+.ic{background:var(--sf);border:1px solid var(--bd);border-radius:14px;margin:12px 16px;overflow:hidden}
+.ich{padding:14px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px}
+.ichi{font-size:22px}
+.ict{font-size:15px;font-weight:600}
+.ics{font-size:12px;color:var(--t3)}
+.icb{padding:14px 16px}
+.iin{font-size:12px;color:var(--t2);line-height:1.6;margin-bottom:12px}
+.iin strong{color:var(--tx)}
+.ibtn{width:100%;padding:13px;border:none;border-radius:10px;background:var(--dk);color:#fff;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;font-family:inherit}
+.ibtn:disabled{opacity:.5;cursor:not-allowed}
+.ist{font-size:13px;text-align:center;min-height:20px;padding:6px 0}
+.ist.ok{color:var(--gr)}.ist.er{color:var(--rd)}.ist.ld{color:var(--am)}
+.fl2{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.fi2{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg);border:1px solid var(--bd);border-radius:8px;cursor:pointer}
+.fn2{flex:1;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ua{border:2px dashed var(--bd);border-radius:10px;padding:24px 16px;text-align:center;cursor:pointer;margin-bottom:10px}
+.pbox{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:10px 12px;margin-top:10px;font-size:12px;max-height:160px;overflow-y:auto}
+.pr{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--bd);gap:8px}
+.pr:last-child{border-bottom:none}
+.pl{color:var(--t3);flex-shrink:0}
+.pv{font-weight:600;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cbs{display:flex;gap:8px;margin-top:10px}
+.cbok{flex:1;padding:11px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--bd);background:var(--gr);color:#fff;border-color:var(--gr);font-family:inherit}
+.cbcl{flex:1;padding:11px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--bd);background:none;color:var(--t2);font-family:inherit}
+/* VISITA MODAL */
+.lbtn{background:var(--sf);border:1px solid var(--bd);border-radius:10px;width:100%;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-family:inherit;margin-bottom:8px}
+.lbtn-nm{font-size:14px;font-weight:600;color:var(--tx)}
+.lbtn-cnt{font-size:11px;color:var(--t3)}
+.lbtn-ar{font-size:18px;color:var(--t3);transition:transform .2s}
+.lbtn.op .lbtn-ar{transform:rotate(90deg)}
+.lprods{display:none;padding:0 0 8px}
+.lbtn.op + .lprods{display:block}
+.eitem{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f0e8}
 .eitem:last-child{border-bottom:none}
-.ei-info{flex:1;min-width:0}
-.ei-nome{font-size:13px;font-weight:500}
-.ei-sub{font-size:11px;color:var(--text3)}
-.counter{display:flex;align-items:center;gap:6px;flex-shrink:0}
-.cbtn2{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--surface);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text);line-height:1;font-family:inherit}
-.cval{width:34px;text-align:center;font-size:15px;font-weight:600}
-.cval.baixo{color:var(--red)}.cval.medio{color:var(--amber)}.cval.bom{color:var(--green)}
-.ptoggle-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-top:12px}
-.tsw{width:44px;height:26px;border-radius:13px;background:#ccc;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
-.tsw.on{background:var(--green)}
-.tsw::after{content:'';width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:3px;left:3px;transition:left .2s}
-.tsw.on::after{left:21px}
-.pitem{display:flex;align-items:center;gap:8px;padding:8px 16px;border-bottom:1px solid #f0ebe0}
-.pitem-info{flex:1;min-width:0}
-.pinputs{display:flex;gap:6px;flex-shrink:0}
-.pismall{width:54px;border:1px solid var(--border);border-radius:6px;padding:6px;font-size:13px;text-align:center;background:var(--surface);color:var(--text);outline:none;font-family:inherit}
-.pilbl{font-size:10px;color:var(--text3);text-align:center;margin-top:2px}
-/* LOADING */
-.loading{display:flex;align-items:center;justify-content:center;padding:40px;color:var(--text3);font-size:14px;flex-direction:column;gap:12px}
-.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--dark);border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;z-index:200;opacity:0;transition:opacity .3s;white-space:nowrap;max-width:90vw;text-align:center}
+.ei{flex:1;min-width:0}
+.einm{font-size:13px;font-weight:500}
+.eisb{font-size:11px;color:var(--t3)}
+.ctr{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.cb2{width:30px;height:30px;border-radius:8px;border:1px solid var(--bd);background:var(--sf);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--tx);line-height:1;font-family:inherit}
+.cv{width:32px;text-align:center;font-size:15px;font-weight:600}
+.cv.bx{color:var(--rd)}.cv.md{color:var(--am)}.cv.ok{color:var(--gr)}
+.pitem{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f0e8}
+.pitem:last-child{border-bottom:none}
+.pi{flex:1;min-width:0}
+.pins{display:flex;gap:6px;flex-shrink:0}
+.ps{width:52px;border:1px solid var(--bd);border-radius:6px;padding:6px;font-size:13px;text-align:center;background:var(--sf);color:var(--tx);outline:none;font-family:inherit}
+.plb{font-size:10px;color:var(--t3);text-align:center;margin-top:2px}
+.tog{width:44px;height:26px;border-radius:13px;background:#ccc;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
+.tog.on{background:var(--gr)}
+.tog::after{content:'';width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:3px;left:3px;transition:left .2s}
+.tog.on::after{left:21px}
+.togr{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);margin-top:12px}
+/* MODAIS */
+.mbg{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);z-index:100;display:none;align-items:flex-end;justify-content:center;max-width:480px;margin:0 auto}
+.mbg.op{display:flex}
+.mo{background:var(--sf);border-radius:20px 20px 0 0;width:100%;max-height:92vh;overflow-y:auto;padding:0 0 32px}
+.mhnd{width:36px;height:4px;background:var(--bd);border-radius:2px;margin:12px auto 8px}
+.mhdr{padding:8px 16px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.mhdr h3{font-size:16px;font-weight:600}
+.mcl{background:none;border:none;cursor:pointer;color:var(--t3);font-size:26px;line-height:1;font-family:inherit}
+.fg{padding:12px 16px 0}
+.fl{font-size:12px;color:var(--t3);margin-bottom:5px;display:block;font-weight:600}
+.fi{width:100%;border:1px solid var(--bd);border-radius:8px;padding:10px 12px;font-size:14px;background:var(--sf);color:var(--tx);outline:none;font-family:inherit}
+.fi:focus{border-color:var(--dk)}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 16px 0}
+.fac{padding:16px 16px 0;display:flex;gap:8px}
+.bcl{flex:1;padding:12px;border:1px solid var(--bd);border-radius:10px;background:none;color:var(--t2);font-size:14px;cursor:pointer;font-family:inherit}
+.bsv{flex:2;padding:12px;border:none;border-radius:10px;background:var(--gr);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+select.fi{appearance:none}
+.est-sec{padding:12px 16px 0}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;z-index:200;opacity:0;transition:opacity .3s;white-space:nowrap;pointer-events:none}
 .toast.show{opacity:1}
 </style>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
-
-<!-- HEADER -->
-<div class="hdr" id="main-hdr">
-  <div class="hdr-left">
-    <button class="back-btn" id="btn-back" style="display:none" onclick="voltarDaFicha()">←</button>
-    <div>
-      <div class="hdr-title" id="hdr-title">PFS Clientes</div>
-      <div class="hdr-sub" id="hdr-sub">Carregando...</div>
-    </div>
+<div class="hdr" id="hdr">
+  <div class="hdr-l">
+    <button class="bk" id="bk" onclick="voltar()">←</button>
+    <div><div class="hdr-t" id="hdrt">PFS CRM</div><div class="hdr-s" id="hdrs">Carregando...</div></div>
   </div>
-  <button class="hdr-novo" id="hdr-novo" onclick="abrirNovoCliente()">+ Novo</button>
+  <button class="hn" id="hn" onclick="abrirNovoCliente()">+ Novo</button>
 </div>
 
 <!-- DASHBOARD -->
-<div class="screen active" id="screen-dash">
-  <div class="dash-banner">
-    <p>Bem-vindo de volta</p>
-    <h2 id="dash-titulo">Carregando...</h2>
+<div class="sc on" id="sc-dash">
+  <div class="dbanner"><p>Bem-vindo de volta</p><h2 id="dt">Carregando...</h2></div>
+  <div class="mets">
+    <div class="met b"><div class="mv" id="m0">0</div><div class="ml">Total clientes</div></div>
+    <div class="met g"><div class="mv" id="m1">0</div><div class="ml">Ativos</div></div>
+    <div class="met r"><div class="mv" id="m2">0</div><div class="ml">Visitas atrasadas</div></div>
+    <div class="met a"><div class="mv" id="m3">0</div><div class="ml">Pedidos</div></div>
   </div>
-  <div class="metrics">
-    <div class="metric blue"><div class="metric-val" id="m-total">0</div><div class="metric-lbl">Total clientes</div></div>
-    <div class="metric green"><div class="metric-val" id="m-ativos">0</div><div class="metric-lbl">Ativos</div></div>
-    <div class="metric red"><div class="metric-val" id="m-atrasados">0</div><div class="metric-lbl">Visitas atrasadas</div></div>
-    <div class="metric amber"><div class="metric-val" id="m-pedidos">0</div><div class="metric-lbl">Pedidos</div></div>
+  <div class="mets" style="padding-top:0">
+    <div class="met g"><div class="mv" id="m4">R$0</div><div class="ml">Volume pedidos</div></div>
+    <div class="met b"><div class="mv" id="m5">0</div><div class="ml">Total visitas</div></div>
   </div>
-  <div class="metrics" style="padding-top:0">
-    <div class="metric green"><div class="metric-val" id="m-valor">R$0</div><div class="metric-lbl">Volume pedidos</div></div>
-    <div class="metric blue"><div class="metric-val" id="m-visitas">0</div><div class="metric-lbl">Total visitas</div></div>
-  </div>
-  <div class="sec-title">Visitas atrasadas</div>
-  <div id="alertas-list"></div>
-  <div class="sec-title">Últimas visitas</div>
-  <div id="recentes-list"></div>
-  <div class="sec-title">Pedidos recentes</div>
-  <div id="pedidos-list"></div>
+  <div class="st">Visitas atrasadas</div><div id="dal"></div>
+  <div class="st">Últimas visitas</div><div id="drl"></div>
+  <div class="st">Pedidos recentes</div><div id="dpl"></div>
   <div style="height:20px"></div>
 </div>
 
 <!-- CLIENTES -->
-<div class="screen" id="screen-clientes">
-  <div class="search-wrap">
-    <div class="si"><span class="si-icon">🔍</span><input type="text" id="search-input" placeholder="Buscar cliente..." oninput="renderClientes()"></div>
+<div class="sc" id="sc-cli">
+  <div class="sw"><div class="si">🔍 <input type="text" id="srch" placeholder="Buscar cliente..." oninput="rCli()"></div></div>
+  <div class="flt">
+    <div class="fch on" data-f="todos" onclick="setF(this)">Todos</div>
+    <div class="fch" data-f="Ativo" onclick="setF(this)">Ativos</div>
+    <div class="fch" data-f="Prospect" onclick="setF(this)">Prospects</div>
+    <div class="fch" data-f="Inativo" onclick="setF(this)">Inativos</div>
+    <div class="fch" data-f="Pet Shop" onclick="setF(this)">Pet Shop</div>
+    <div class="fch" data-f="Agropecuária" onclick="setF(this)">Agro</div>
+    <div class="fch" data-f="Supermercado" onclick="setF(this)">Supermercado</div>
   </div>
-  <div class="filters">
-    <div class="fchip active" data-f="todos" onclick="setFilter(this)">Todos</div>
-    <div class="fchip" data-f="Ativo" onclick="setFilter(this)">Ativos</div>
-    <div class="fchip" data-f="Prospect" onclick="setFilter(this)">Prospects</div>
-    <div class="fchip" data-f="Inativo" onclick="setFilter(this)">Inativos</div>
-    <div class="fchip" data-f="Pet Shop" onclick="setFilter(this)">Pet Shop</div>
-    <div class="fchip" data-f="Agropecuária" onclick="setFilter(this)">Agro</div>
-    <div class="fchip" data-f="Supermercado" onclick="setFilter(this)">Supermercado</div>
-  </div>
-  <div class="clist" id="client-list"></div>
+  <div class="cl" id="cl"></div>
   <button class="fab" onclick="abrirNovoCliente()">+</button>
 </div>
 
 <!-- PRODUTOS -->
-<div class="screen" id="screen-produtos">
-  <div style="padding:10px 16px 4px;font-size:13px;color:var(--text3)">Portfólio Pet Food Solution</div>
-  <div id="produtos-list"></div>
+<div class="sc" id="sc-prod">
+  <div style="padding:10px 16px 4px;font-size:13px;color:var(--t3)">Portfólio Pet Food Solution — clique em uma linha para ver os produtos</div>
+  <div class="plinhas" id="plinhas"></div>
+</div>
+
+<!-- FATURAMENTO -->
+<div class="sc" id="sc-fat">
+  <div class="fat-hdr"><div class="fat-titulo">Faturamento</div><div class="fat-sub">Acompanhamento mensal de vendas</div></div>
+  <div class="msel" id="msel"></div>
+  <div class="fat-mets">
+    <div class="fat-met g"><div class="fat-val" id="fv">R$0</div><div class="fat-lbl">Faturado no mês</div></div>
+    <div class="fat-met b"><div class="fat-val" id="fkg">0 kg</div><div class="fat-lbl">Volume em kg</div></div>
+  </div>
+  <div class="meta-input-wrap">
+    <input type="number" class="meta-input" id="meta-inp" placeholder="Definir meta do mês (R$)" step="100">
+    <button class="meta-btn" onclick="salvarMeta()">Salvar</button>
+  </div>
+  <div class="meta-bar-wrap" id="meta-wrap" style="display:none">
+    <div class="meta-bar-lbl"><span>Progresso da meta</span><span id="meta-pct">0%</span></div>
+    <div class="meta-bar"><div class="meta-bar-fill" id="meta-fill" style="width:0%"></div></div>
+    <div style="font-size:11px;color:var(--t3);margin-top:6px" id="meta-txt"></div>
+  </div>
+  <div class="st">Ranking de clientes</div>
+  <div id="rank-list"></div>
   <div style="height:20px"></div>
 </div>
 
 <!-- IMPORTAÇÕES -->
-<div class="screen" id="screen-importar">
+<div class="sc" id="sc-imp">
   <div style="padding-bottom:20px">
-    <div class="imp-card">
-      <div class="imp-card-hdr">
-        <div class="imp-card-hdr-icon">📂</div>
-        <div><div class="imp-card-title">Importar pedidos</div><div class="imp-card-sub">Prints da pasta "Pedidos PFS" no Drive</div></div>
-      </div>
-      <div class="imp-card-body">
-        <div class="imp-info">Salve prints dos pedidos na pasta <strong>Pedidos PFS</strong> do seu Google Drive. A IA lê cada imagem, extrai os dados e registra no cliente correspondente.</div>
-        <button class="imp-btn" onclick="buscarPedidosDrive()" id="btn-buscar-drive">🔄 Verificar novos pedidos no Drive</button>
-        <div class="imp-status" id="drive-status"></div>
-        <div id="drive-files-list"></div>
-        <div id="drive-preview"></div>
+    <div class="ic">
+      <div class="ich"><div class="ichi">📂</div><div><div class="ict">Importar pedidos</div><div class="ics">Prints da pasta "Pedidos PFS" no Drive</div></div></div>
+      <div class="icb">
+        <div class="iin">Salve prints dos pedidos na pasta <strong>Pedidos PFS</strong> do Google Drive. A IA lê cada imagem e extrai: produtos, tamanhos, quantidades, preços, condições de pagamento e valor total.</div>
+        <button class="ibtn" id="bdrive" onclick="buscarDrive()">🔄 Verificar novos pedidos no Drive</button>
+        <div class="ist" id="dst"></div>
+        <div id="dfl"></div>
+        <div id="dpv"></div>
       </div>
     </div>
-    <div class="imp-card">
-      <div class="imp-card-hdr">
-        <div class="imp-card-hdr-icon">📊</div>
-        <div><div class="imp-card-title">Importar clientes</div><div class="imp-card-sub">Via planilha Excel ou CSV</div></div>
-      </div>
-      <div class="imp-card-body">
-        <div class="imp-info">Faça upload da planilha da área. A IA lê as colunas automaticamente e cadastra os clientes novos.</div>
-        <div class="upload-area" onclick="document.getElementById('file-upload').click()">
-          <span class="upload-icon">📋</span>
-          <p>Toque para selecionar a planilha</p>
-          <span>.xlsx, .xls ou .csv</span>
+    <div class="ic">
+      <div class="ich"><div class="ichi">📊</div><div><div class="ict">Importar clientes</div><div class="ics">Via planilha Excel ou CSV</div></div></div>
+      <div class="icb">
+        <div class="iin">Faça upload da planilha da área. A IA lê as colunas automaticamente e cadastra os clientes novos.</div>
+        <div class="ua" onclick="document.getElementById('fup').click()">
+          <div style="font-size:32px;margin-bottom:8px;color:var(--t3)">📋</div>
+          <p style="font-size:13px;color:var(--t2)">Toque para selecionar a planilha</p>
+          <span style="font-size:11px;color:var(--t3)">.xlsx, .xls ou .csv</span>
         </div>
-        <input type="file" id="file-upload" accept=".xlsx,.xls,.csv,.ods" style="display:none" onchange="lerPlanilha(event)">
-        <div class="imp-status" id="planilha-status"></div>
-        <div id="planilha-preview"></div>
+        <input type="file" id="fup" accept=".xlsx,.xls,.csv,.ods" style="display:none" onchange="lerPlanilha(event)">
+        <div class="ist" id="pst"></div>
+        <div id="ppv"></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- FICHA -->
-<div class="screen" id="screen-ficha">
-  <div class="fhdr">
-    <div class="fnome" id="fnome"></div>
-    <div class="ftipo" id="ftipo"></div>
-    <div class="fbadges" id="fbadges"></div>
+<!-- FICHA CLIENTE -->
+<div class="sc" id="sc-fic">
+  <div class="fhdr"><div class="fnm" id="fnm"></div><div class="ftp" id="ftp"></div><div class="fbg" id="fbg"></div></div>
+  <div class="ar">
+    <button class="ab p" onclick="abrirVisita()">📍 Nova visita</button>
+    <button class="ab" onclick="abrirMix()">✅ Mix</button>
+    <button class="ab" onclick="editarCliente()">✏️ Editar</button>
   </div>
-  <div class="arow">
-    <button class="abtn pri" onclick="abrirNovaVisita()">📍 Nova visita</button>
-    <button class="abtn" onclick="abrirMixModal()">✅ Mix ideal</button>
-    <button class="abtn" onclick="abrirEditarCliente()">✏️ Editar</button>
+  <div class="fsec"><div class="fst">Informações</div><div id="finfo"></div></div>
+  <div class="fsec"><div class="fst">Mix ideal <a onclick="abrirMix()">Editar</a></div><div id="fmix"></div></div>
+  <div class="fsec" style="border-bottom:none"><div class="fst">Histórico de visitas</div><div id="fvis"></div></div>
+  <div style="height:20px"></div>
+</div>
+
+<!-- FICHA PRODUTO -->
+<div class="sc" id="sc-fprod">
+  <div class="fp-hdr"><div class="fp-nome" id="fpnm"></div><div class="fp-sub" id="fpcp"></div><div class="fp-badges" id="fpbg"></div></div>
+  <div class="fsec">
+    <div class="fp-sec-t">Argumentos de venda</div>
+    <div id="fpargs"></div>
   </div>
-  <div class="fsec"><div class="fsec-title">Informações</div><div id="ficha-info"></div></div>
-  <div class="fsec"><div class="fsec-title">Mix ideal <a onclick="abrirMixModal()">Editar</a></div><div id="ficha-mix"></div></div>
-  <div class="fsec" style="border-bottom:none"><div class="fsec-title">Histórico de visitas</div><div id="ficha-visitas"></div></div>
+  <div class="fsec">
+    <div class="fp-sec-t">Informações técnicas</div>
+    <table class="fp-tab" id="fptab"></table>
+  </div>
   <div style="height:20px"></div>
 </div>
 
 <!-- NAV -->
 <div class="nav">
-  <button class="nav-btn active" id="nav-dash" onclick="goScreen('dash')"><span class="nav-icon">📊</span>Dashboard</button>
-  <button class="nav-btn" id="nav-clientes" onclick="goScreen('clientes')"><span class="nav-icon">🏪</span>Clientes</button>
-  <button class="nav-btn" id="nav-produtos" onclick="goScreen('produtos')"><span class="nav-icon">📦</span>Produtos</button>
-  <button class="nav-btn" id="nav-importar" onclick="goScreen('importar')"><span class="nav-icon">☁️</span>Importar</button>
+  <button class="nb on" id="nb0" onclick="goSc('dash')"><span class="ni">📊</span>Dashboard</button>
+  <button class="nb" id="nb1" onclick="goSc('cli')"><span class="ni">🏪</span>Clientes</button>
+  <button class="nb" id="nb2" onclick="goSc('prod')"><span class="ni">📦</span>Produtos</button>
+  <button class="nb" id="nb3" onclick="goSc('fat')"><span class="ni">💰</span>Fatura.</button>
+  <button class="nb" id="nb4" onclick="goSc('imp')"><span class="ni">☁️</span>Importar</button>
 </div>
 
 <!-- MODAL CLIENTE -->
-<div class="modal-bg" id="modal-cliente">
-  <div class="modal">
-    <div class="mhandle"></div>
-    <div class="mhdr"><h3 id="mctitulo">Novo cliente</h3><button class="mclose" onclick="fecharModal('modal-cliente')">×</button></div>
-    <div class="fg"><label class="fl">Nome da loja *</label><input type="text" class="fi" id="f-nome" placeholder="Ex: Pet Shop do Bairro"></div>
-    <div class="fg"><label class="fl">Responsável</label><input type="text" class="fi" id="f-resp" placeholder="Nome do dono ou gerente"></div>
-    <div class="frow">
-      <div><label class="fl">Telefone</label><input type="text" class="fi" id="f-tel" placeholder="(11) 99999-9999"></div>
-      <div><label class="fl">Tipo *</label><select class="fi" id="f-tipo"><option value="">Selecionar</option><option>Pet Shop</option><option>Agropecuária</option><option>Supermercado</option><option>Veterinária</option><option>Distribuidora</option><option>Outro</option></select></div>
-    </div>
-    <div class="fg"><label class="fl">Endereço / Bairro</label><input type="text" class="fi" id="f-end" placeholder="Rua, número - Bairro"></div>
-    <div class="frow">
-      <div><label class="fl">Status</label><select class="fi" id="f-status"><option value="Prospect">Prospect</option><option value="Ativo">Ativo</option><option value="Inativo">Inativo</option></select></div>
-      <div><label class="fl">Próx. visita</label><input type="date" class="fi" id="f-prox"></div>
-    </div>
-    <div class="fg"><label class="fl">Observações</label><textarea class="fi" id="f-obs" rows="2" placeholder="Potencial, concorrência, etc."></textarea></div>
-    <div class="factions"><button class="bcancel" onclick="fecharModal('modal-cliente')">Cancelar</button><button class="bsave" onclick="salvarCliente()">Salvar cliente</button></div>
+<div class="mbg" id="m-cli"><div class="mo">
+  <div class="mhnd"></div>
+  <div class="mhdr"><h3 id="mc-t">Novo cliente</h3><button class="mcl" onclick="fM('m-cli')">×</button></div>
+  <div class="fg"><label class="fl">Nome da loja *</label><input type="text" class="fi" id="f-nm" placeholder="Ex: Pet Shop do Bairro"></div>
+  <div class="fg"><label class="fl">Responsável</label><input type="text" class="fi" id="f-rp" placeholder="Nome do dono ou gerente"></div>
+  <div class="fr">
+    <div><label class="fl">Telefone</label><input type="text" class="fi" id="f-tl" placeholder="(11) 99999-9999"></div>
+    <div><label class="fl">Tipo *</label><select class="fi" id="f-tp"><option value="">Selecionar</option><option>Pet Shop</option><option>Agropecuária</option><option>Supermercado</option><option>Veterinária</option><option>Distribuidora</option><option>Outro</option></select></div>
   </div>
-</div>
+  <div class="fg"><label class="fl">Endereço / Bairro</label><input type="text" class="fi" id="f-en" placeholder="Rua, número - Bairro"></div>
+  <div class="fr">
+    <div><label class="fl">Status</label><select class="fi" id="f-st"><option value="Prospect">Prospect</option><option value="Ativo">Ativo</option><option value="Inativo">Inativo</option></select></div>
+    <div><label class="fl">Próx. visita</label><input type="date" class="fi" id="f-pv"></div>
+  </div>
+  <div class="fg"><label class="fl">Observações</label><textarea class="fi" id="f-ob" rows="2" placeholder="Potencial, concorrência, etc."></textarea></div>
+  <div class="fac"><button class="bcl" onclick="fM('m-cli')">Cancelar</button><button class="bsv" onclick="salvCliente()">Salvar cliente</button></div>
+</div></div>
 
 <!-- MODAL MIX -->
-<div class="modal-bg" id="modal-mix">
-  <div class="modal">
-    <div class="mhandle"></div>
-    <div class="mhdr"><h3>Mix ideal de produtos</h3><button class="mclose" onclick="fecharModal('modal-mix')">×</button></div>
-    <div style="padding:8px 16px 4px;font-size:12px;color:var(--text3)">Produtos que esta loja deve manter em estoque</div>
-    <div id="mix-content"></div>
-    <div class="factions"><button class="bcancel" onclick="fecharModal('modal-mix')">Cancelar</button><button class="bsave" onclick="salvarMix()">Salvar mix</button></div>
-  </div>
-</div>
+<div class="mbg" id="m-mix"><div class="mo">
+  <div class="mhnd"></div>
+  <div class="mhdr"><h3>Mix ideal de produtos</h3><button class="mcl" onclick="fM('m-mix')">×</button></div>
+  <div style="padding:8px 16px 4px;font-size:12px;color:var(--t3)">Selecione os produtos que esta loja deve manter (independente do tamanho)</div>
+  <div id="m-mix-c"></div>
+  <div class="fac"><button class="bcl" onclick="fM('m-mix')">Cancelar</button><button class="bsv" onclick="salvMix()">Salvar mix</button></div>
+</div></div>
 
 <!-- MODAL VISITA -->
-<div class="modal-bg" id="modal-visita">
-  <div class="modal">
-    <div class="mhandle"></div>
-    <div class="mhdr"><h3>Registrar visita</h3><button class="mclose" onclick="fecharModal('modal-visita')">×</button></div>
-    <div class="frow">
-      <div><label class="fl">Data *</label><input type="date" class="fi" id="v-data"></div>
-      <div><label class="fl">Próxima visita</label><input type="date" class="fi" id="v-prox"></div>
-    </div>
-    <div class="fg"><label class="fl">Observações</label><textarea class="fi" id="v-obs" rows="2" placeholder="Como foi, negociações, concorrência..."></textarea></div>
-    <span class="esec-title">Contagem de estoque na gôndola</span>
-    <div id="estoque-form"></div>
-    <div class="ptoggle-row">
-      <div><div style="font-size:14px;font-weight:600">Houve pedido?</div><div style="font-size:12px;color:var(--text3)">Registrar produtos pedidos</div></div>
-      <div class="tsw" id="pedido-toggle" onclick="togglePedido()"></div>
-    </div>
-    <div id="pedido-section" style="display:none">
-      <div class="fg"><label class="fl">Número do pedido</label><input type="text" class="fi" id="v-numpedido" placeholder="Ex: PFS-2026-0001"></div>
-      <div style="padding:10px 16px 4px;font-size:12px;color:var(--text3)">Produtos pedidos (qtd e preço unit.)</div>
-      <div id="pedido-form"></div>
-      <div class="fg"><label class="fl">Valor total (R$)</label><input type="number" class="fi" id="v-valor" placeholder="0,00" step="0.01"></div>
-    </div>
-    <div class="factions"><button class="bcancel" onclick="fecharModal('modal-visita')">Cancelar</button><button class="bsave" onclick="salvarVisita()">Salvar visita</button></div>
+<div class="mbg" id="m-vis"><div class="mo">
+  <div class="mhnd"></div>
+  <div class="mhdr"><h3>Registrar visita</h3><button class="mcl" onclick="fM('m-vis')">×</button></div>
+  <div class="fr">
+    <div><label class="fl">Data *</label><input type="date" class="fi" id="v-dt"></div>
+    <div><label class="fl">Próxima visita</label><input type="date" class="fi" id="v-pv"></div>
   </div>
-</div>
+  <div class="fg"><label class="fl">Observações</label><textarea class="fi" id="v-ob" rows="2" placeholder="Como foi, negociações, concorrência..."></textarea></div>
+  <div class="est-sec">
+    <div style="font-size:12px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Contagem de estoque — clique na linha para expandir</div>
+    <div id="est-form"></div>
+  </div>
+  <div class="togr">
+    <div><div style="font-size:14px;font-weight:600">Houve pedido?</div><div style="font-size:12px;color:var(--t3)">Registrar produtos pedidos</div></div>
+    <div class="tog" id="ped-tog" onclick="togPed()"></div>
+  </div>
+  <div id="ped-sec" style="display:none">
+    <div class="fg"><label class="fl">Número do pedido</label><input type="text" class="fi" id="v-np" placeholder="Ex: PFS-2026-0001"></div>
+    <div class="fg"><label class="fl">Condição de pagamento</label><input type="text" class="fi" id="v-cp" placeholder="Ex: 28/35/42 dias, Boleto"></div>
+    <div style="padding:10px 16px 4px;font-size:12px;color:var(--t3)">Produtos pedidos — clique na linha para expandir</div>
+    <div id="ped-form" style="padding:0 16px"></div>
+    <div class="fg"><label class="fl">Valor total do pedido (R$)</label><input type="number" class="fi" id="v-vl" placeholder="0,00" step="0.01"></div>
+  </div>
+  <div class="fac"><button class="bcl" onclick="fM('m-vis')">Cancelar</button><button class="bsv" onclick="salvVisita()">Salvar visita</button></div>
+</div></div>
 
 <!-- MODAL CONFIRMAR PEDIDO DRIVE -->
-<div class="modal-bg" id="modal-confirmar-pedido">
-  <div class="modal">
-    <div class="mhandle"></div>
-    <div class="mhdr"><h3>Confirmar pedido importado</h3><button class="mclose" onclick="fecharModal('modal-confirmar-pedido')">×</button></div>
-    <div style="padding:8px 16px 4px;font-size:12px;color:var(--text3)">Verifique os dados extraídos e confirme</div>
-    <div id="confirmar-pedido-content"></div>
-    <div class="factions"><button class="bcancel" onclick="fecharModal('modal-confirmar-pedido')">Cancelar</button><button class="bsave" onclick="confirmarPedidoImportado()">Confirmar e salvar</button></div>
-  </div>
-</div>
+<div class="mbg" id="m-ped"><div class="mo">
+  <div class="mhnd"></div>
+  <div class="mhdr"><h3>Confirmar pedido importado</h3><button class="mcl" onclick="fM('m-ped')">×</button></div>
+  <div style="padding:8px 16px 4px;font-size:12px;color:var(--t3)">Verifique os dados extraídos e confirme</div>
+  <div id="m-ped-c"></div>
+  <div class="fac"><button class="bcl" onclick="fM('m-ped')">Cancelar</button><button class="bsv" onclick="confPed()">Confirmar e salvar</button></div>
+</div></div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="tst"></div>
 
-<!-- FIREBASE SDK -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, doc, getDocs, getDoc, setDoc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCQu5zvrkKZ8EVCK_tO_4UDObWYhBmWjNM",
-  authDomain: "pfs-crm-4b988.firebaseapp.com",
-  projectId: "pfs-crm-4b988",
-  storageBucket: "pfs-crm-4b988.firebasestorage.app",
-  messagingSenderId: "361243236559",
-  appId: "1:361243236559:web:97a3ae5132d425af61bfba",
-  measurementId: "G-5RXW5HCBPV"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-window._db = db;
-window._fbModules = { collection, doc, getDocs, getDoc, setDoc, updateDoc, deleteDoc, query, orderBy };
-
-window.dispatchEvent(new Event('firebase-ready'));
-</script>
 
 <script>
 const PRODUTOS = [
-  {linha:'ProHealth',esp:'dog',nome:'ProHealth Adulto Raças Pequenas',sabor:'Frango, Abóbora, Blueberry e Cúrcuma',pesos:['1kg','2,5kg','10,1kg']},
-  {linha:'ProHealth',esp:'dog',nome:'ProHealth Filhote Raças Pequenas',sabor:'Frango, Batata Doce e Romã',pesos:['1kg','2,5kg','10,1kg']},
-  {linha:'ProHealth',esp:'dog',nome:'ProHealth Castrado Light Raças Pequenas',sabor:'Frango, Batata Doce, Gengibre e Damasco',pesos:['1kg','2,5kg','10,1kg']},
-  {linha:'ProHealth',esp:'dog',nome:'ProHealth Sênior Raças Pequenas',sabor:'Frango, Erva Doce e Maracujá',pesos:['1kg','2,5kg']},
-  {linha:'ProHealth',esp:'dog',nome:'ProHealth Adulto Raças Médias',sabor:'Frango, Abóbora, Blueberry e Cúrcuma',pesos:['2,5kg','10,1kg']},
-  {linha:'ProHealth',esp:'dog',nome:'ProHealth Filhote Raças Médias',sabor:'Frango, Batata Doce e Romã',pesos:['2,5kg','10,1kg']},
-  {linha:'ProHealth',esp:'dog',nome:'ProHealth Castrado Light Raças Médias',sabor:'Frango, Batata Doce, Gengibre e Damasco',pesos:['2,5kg','10,1kg']},
-  {linha:'ProHealth',esp:'dog',nome:'ProHealth Sênior Raças Médias',sabor:'Frango, Erva Doce e Maracujá',pesos:['2,5kg','10,1kg']},
-  {linha:'ProHealth',esp:'cat',nome:'ProHealth Gatos Filhote/Lactação',sabor:'Frango',pesos:['500g','1kg','5kg']},
-  {linha:'ProHealth',esp:'cat',nome:'ProHealth Gatos Adulto',sabor:'Frango',pesos:['500g','1kg','5kg']},
-  {linha:'ProHealth',esp:'cat',nome:'ProHealth Gatos Castrado',sabor:'Frango, Abóbora e Cranberry',pesos:['500g','1kg','5kg']},
-  {linha:'ProHealth',esp:'cat',nome:'ProHealth Gatos Castrado',sabor:'Salmão e Damasco',pesos:['500g','1kg','5kg']},
-  {linha:'Qualiday ProLife',esp:'dog',nome:'QualiDay ProLife Filhote Raças Pequenas',sabor:'Frango, Batata Doce e Romã',pesos:['1kg','10,1kg']},
-  {linha:'Qualiday ProLife',esp:'dog',nome:'QualiDay ProLife Adulto Raças Pequenas',sabor:'Frango, Arroz e Vegetais',pesos:['1kg','3kg','10,1kg']},
-  {linha:'Qualiday ProLife',esp:'dog',nome:'QualiDay ProLife Light Raças Pequenas',sabor:'Frango e Vegetais',pesos:['1kg','3kg','10,1kg']},
-  {linha:'Qualiday ProLife',esp:'dog',nome:'QualiDay ProLife Sênior Raças Pequenas',sabor:'Frango e Vegetais',pesos:['1kg','3kg']},
-  {linha:'Qualiday ProLife',esp:'dog',nome:'QualiDay ProLife Filhote Raças Médias',sabor:'Frango, Batata Doce e Romã',pesos:['10,1kg']},
-  {linha:'Qualiday ProLife',esp:'dog',nome:'QualiDay ProLife Adulto Raças Médias',sabor:'Frango, Arroz e Vegetais',pesos:['3kg','20kg']},
-  {linha:'Qualiday ProLife',esp:'dog',nome:'QualiDay ProLife Light Raças Médias',sabor:'Frango e Vegetais',pesos:['20kg']},
-  {linha:'Qualiday ProLife',esp:'dog',nome:'QualiDay ProLife Sênior Raças Médias',sabor:'Frango e Vegetais',pesos:['1kg','3kg']},
-  {linha:'Qualiday ProLife Úmido',esp:'dog',nome:'QualiDay ProLife Úmido',sabor:'Frango e Vegetais',pesos:['100g (sachê)']},
-  {linha:'Qualiday ProLife Úmido',esp:'dog',nome:'QualiDay ProLife Úmido',sabor:'Peru e Vegetais',pesos:['100g (sachê)']},
-  {linha:'Allcanis',esp:'dog',nome:'Allcanis Adulto',sabor:'Frango, Carne e Arroz',pesos:['15kg']},
-  {linha:'Allcanis',esp:'dog',nome:'Allcanis Adulto Raças Pequenas',sabor:'Frango, Carne e Arroz',pesos:['3kg','15kg']},
-  {linha:'Allcanis',esp:'dog',nome:'Allcanis Light Raças Pequenas',sabor:'Frango, Carne e Arroz',pesos:['15kg']},
-  {linha:'Allcanis',esp:'dog',nome:'Allcanis Light Raças Médias Grandes',sabor:'Frango, Carne e Arroz',pesos:['15kg']},
-  {linha:'Allcanis',esp:'dog',nome:'Allcanis Sênior Raças Pequenas',sabor:'Frango, Carne e Arroz',pesos:['15kg']},
-  {linha:'Allcanis',esp:'dog',nome:'Allcanis Sênior Raças Médias Grandes',sabor:'Frango, Carne e Arroz',pesos:['15kg']},
-  {linha:'Allcanis',esp:'dog',nome:'Allcanis Filhote / Fêmea Lactação',sabor:'Frango, Carne e Arroz',pesos:['3kg','15kg']},
-  {linha:'Allcats',esp:'cat',nome:'Allcats Premium Adulto Mix',sabor:'Frango, Carne e Salmão',pesos:['3kg','10,1kg']},
-  {linha:'Qualiday Cat',esp:'cat',nome:'Qualiday Cat Adulto',sabor:'Frango e Arroz',pesos:['1kg','3kg','10,1kg']},
-  {linha:'Qualiday Cat',esp:'cat',nome:'Qualiday Cat Adulto',sabor:'Carne e Arroz',pesos:['1kg','3kg','10,1kg']},
-  {linha:'Qualiday Cat',esp:'cat',nome:'Qualiday Cat Adulto',sabor:'Salmão e Arroz',pesos:['1kg','3kg','10,1kg']},
-  {linha:'Qualiday Cat',esp:'cat',nome:'Qualiday Cat Castrado',sabor:'Frango, Arroz e Vegetais',pesos:['1kg','3kg','10,1kg']},
-  {linha:'Qualiday Cat',esp:'cat',nome:'Qualiday Cat Castrado',sabor:'Carne, Arroz e Vegetais',pesos:['1kg','3kg','10,1kg']},
-  {linha:'Qualiday Cat',esp:'cat',nome:'Qualiday Cat Castrado',sabor:'Salmão, Arroz e Vegetais',pesos:['1kg','3kg','10,1kg']},
-  {linha:'Qualiday Cat',esp:'cat',nome:'Qualiday Cat Filhote/Lactação',sabor:'Frango, Arroz e Vegetais',pesos:['1kg','3kg','10,1kg']},
-  {linha:'Special Croc',esp:'dog',nome:'Special Croc Dog Adulto',sabor:'Carne',pesos:['15kg']},
-  {linha:'Special Croc',esp:'dog',nome:'Special Croc Dog Filhote',sabor:'Carne',pesos:['15kg']},
-  {linha:'Special Croc',esp:'cat',nome:'Special Croc Cat Castrado',sabor:'Frango',pesos:['10,1kg']},
-  {linha:'PetCare Solution',esp:'supl',nome:'PetCare Solution Idosos',sabor:'Suplemento para cães idosos',pesos:['—']},
-  {linha:'PetCare Solution',esp:'supl',nome:'PetCare Solution Articular',sabor:'Suplemento articular para cães',pesos:['—']},
-  {linha:'PetCare Solution',esp:'supl',nome:'PetCare Solution Skincare',sabor:'Pele e pelagem — cães e gatos',pesos:['—']},
+  // ── PRO HEALTH – CÃES RAÇAS PEQUENAS ─────────────────────────
+  {cod:'PA0300',linha:'ProHealth',esp:'dog',porte:'RP',nome:'ProHealth Cães RP Filhote',sabor:'Frango, Batata Doce e Romã',peso:1,unidade:'kg',qtdFardo:8,precoUnit:35.11,precoPDV:64.90},
+  {cod:'PA0301',linha:'ProHealth',esp:'dog',porte:'RP',nome:'ProHealth Cães RP Filhote',sabor:'Frango, Batata Doce e Romã',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:69.20,precoPDV:126.90},
+  {cod:'PA0302',linha:'ProHealth',esp:'dog',porte:'RP',nome:'ProHealth Cães RP Filhote',sabor:'Frango, Batata Doce e Romã',peso:10.1,unidade:'kg',qtdFardo:1,precoUnit:195.90,precoPDV:322.90},
+  {cod:'PA0335',linha:'ProHealth',esp:'dog',porte:'RP',nome:'ProHealth Cães RP Adulto',sabor:'Frango, Abóbora, Blueberry e Cúrcuma',peso:1,unidade:'kg',qtdFardo:8,precoUnit:33.50,precoPDV:61.90},
+  {cod:'PA0336',linha:'ProHealth',esp:'dog',porte:'RP',nome:'ProHealth Cães RP Adulto',sabor:'Frango, Abóbora, Blueberry e Cúrcuma',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:67.00,precoPDV:121.90},
+  {cod:'PA0337',linha:'ProHealth',esp:'dog',porte:'RP',nome:'ProHealth Cães RP Adulto',sabor:'Frango, Abóbora, Blueberry e Cúrcuma',peso:10.1,unidade:'kg',qtdFardo:1,precoUnit:191.00,precoPDV:319.90},
+  {cod:'PA0370',linha:'ProHealth',esp:'dog',porte:'RP',nome:'ProHealth Cães RP Light',sabor:'Frango, Batata Doce, Gengibre e Damasco',peso:1,unidade:'kg',qtdFardo:8,precoUnit:33.38,precoPDV:62.90},
+  {cod:'PA0371',linha:'ProHealth',esp:'dog',porte:'RP',nome:'ProHealth Cães RP Light',sabor:'Frango, Batata Doce, Gengibre e Damasco',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:70.20,precoPDV:126.90},
+  {cod:'PA0373',linha:'ProHealth',esp:'dog',porte:'RP',nome:'ProHealth Cães RP Light',sabor:'Frango, Batata Doce, Gengibre e Damasco',peso:10.1,unidade:'kg',qtdFardo:1,precoUnit:196.00,precoPDV:323.90},
+  {cod:'PA0403',linha:'ProHealth',esp:'dog',porte:'RP',nome:'ProHealth Cães RP Sênior',sabor:'Frango, Erva Doce e Maracujá',peso:1,unidade:'kg',qtdFardo:8,precoUnit:33.50,precoPDV:61.90},
+  {cod:'PA0404',linha:'ProHealth',esp:'dog',porte:'RP',nome:'ProHealth Cães RP Sênior',sabor:'Frango, Erva Doce e Maracujá',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:70.38,precoPDV:125.90},
+  {cod:'PA0406',linha:'ProHealth',esp:'dog',porte:'RP',nome:'ProHealth Cães RP Sênior',sabor:'Frango, Erva Doce e Maracujá',peso:10.1,unidade:'kg',qtdFardo:1,precoUnit:195.00,precoPDV:329.90},
+  // ── PRO HEALTH – CÃES RAÇAS MÉDIAS/GRANDES ───────────────────
+  {cod:'PA0318',linha:'ProHealth',esp:'dog',porte:'RMG',nome:'ProHealth Cães RM Filhote',sabor:'Frango, Batata Doce e Romã',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:70.00,precoPDV:127.90},
+  {cod:'PA0319',linha:'ProHealth',esp:'dog',porte:'RMG',nome:'ProHealth Cães RM Filhote',sabor:'Frango, Batata Doce e Romã',peso:10.1,unidade:'kg',qtdFardo:1,precoUnit:195.00,precoPDV:315.90},
+  {cod:'PA0353',linha:'ProHealth',esp:'dog',porte:'RMG',nome:'ProHealth Cães RM Adulto',sabor:'Frango, Abóbora, Blueberry e Cúrcuma',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:67.00,precoPDV:121.90},
+  {cod:'PA0354',linha:'ProHealth',esp:'dog',porte:'RMG',nome:'ProHealth Cães RM Adulto',sabor:'Frango, Abóbora, Blueberry e Cúrcuma',peso:10.1,unidade:'kg',qtdFardo:1,precoUnit:184.00,precoPDV:299.90},
+  {cod:'PA0386',linha:'ProHealth',esp:'dog',porte:'RMG',nome:'ProHealth Cães RM Light',sabor:'Frango, Batata Doce, Gengibre e Damasco',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:70.20,precoPDV:126.90},
+  {cod:'PA0387',linha:'ProHealth',esp:'dog',porte:'RMG',nome:'ProHealth Cães RM Light',sabor:'Frango, Batata Doce, Gengibre e Damasco',peso:10.1,unidade:'kg',qtdFardo:1,precoUnit:193.00,precoPDV:314.90},
+  {cod:'PA0419',linha:'ProHealth',esp:'dog',porte:'RMG',nome:'ProHealth Cães RM Sênior',sabor:'Frango, Erva Doce e Maracujá',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:69.78,precoPDV:125.90},
+  {cod:'PA0420',linha:'ProHealth',esp:'dog',porte:'RMG',nome:'ProHealth Cães RM Sênior',sabor:'Frango, Erva Doce e Maracujá',peso:10.1,unidade:'kg',qtdFardo:1,precoUnit:194.00,precoPDV:316.90},
+  // ── PRO HEALTH – GATOS ───────────────────────────────────────
+  {cod:'PA0437',linha:'ProHealth',esp:'cat',porte:'',nome:'ProHealth Gato Filhote/Lactação',sabor:'Frango',peso:1,unidade:'kg',qtdFardo:8,precoUnit:42.75,precoPDV:73.90},
+  {cod:'PA0438',linha:'ProHealth',esp:'cat',porte:'',nome:'ProHealth Gato Filhote/Lactação',sabor:'Frango',peso:5,unidade:'kg',qtdFardo:1,precoUnit:120.00,precoPDV:217.90},
+  {cod:'PA0455',linha:'ProHealth',esp:'cat',porte:'',nome:'ProHealth Gato Castrado Adulto',sabor:'Frango, Abóbora e Cranberry',peso:1,unidade:'kg',qtdFardo:8,precoUnit:41.75,precoPDV:71.90},
+  {cod:'PA0456',linha:'ProHealth',esp:'cat',porte:'',nome:'ProHealth Gato Castrado Adulto',sabor:'Frango, Abóbora e Cranberry',peso:5,unidade:'kg',qtdFardo:1,precoUnit:120.00,precoPDV:211.90},
+  {cod:'PA0472',linha:'ProHealth',esp:'cat',porte:'',nome:'ProHealth Gato Castrado Adulto',sabor:'Salmão e Damasco',peso:1,unidade:'kg',qtdFardo:8,precoUnit:42.38,precoPDV:71.90},
+  {cod:'PA0473',linha:'ProHealth',esp:'cat',porte:'',nome:'ProHealth Gato Castrado Adulto',sabor:'Salmão e Damasco',peso:5,unidade:'kg',qtdFardo:1,precoUnit:120.00,precoPDV:216.90},
+  // ── QUALIDAY PROLIFE – CÃES RAÇAS PEQUENAS ───────────────────
+  {cod:'PA0800',linha:'Qualiday ProLife',esp:'dog',porte:'RP',nome:'QualiDay ProLife RP Filhote',sabor:'Frango, Batata Doce e Romã',peso:1,unidade:'kg',qtdFardo:8,precoUnit:24.50,precoPDV:43.90},
+  {cod:'PA0801',linha:'Qualiday ProLife',esp:'dog',porte:'RP',nome:'QualiDay ProLife RP Filhote',sabor:'Frango, Batata Doce e Romã',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:52.00,precoPDV:92.90},
+  {cod:'PA0802',linha:'Qualiday ProLife',esp:'dog',porte:'RP',nome:'QualiDay ProLife RP Filhote',sabor:'Frango, Batata Doce e Romã',peso:10.1,unidade:'kg',qtdFardo:1,precoUnit:129.00,precoPDV:206.90},
+  {cod:'PA0830',linha:'Qualiday ProLife',esp:'dog',porte:'RP',nome:'QualiDay ProLife RP Adulto',sabor:'Frango, Arroz e Vegetais',peso:1,unidade:'kg',qtdFardo:8,precoUnit:23.88,precoPDV:40.90},
+  {cod:'PA0831',linha:'Qualiday ProLife',esp:'dog',porte:'RP',nome:'QualiDay ProLife RP Adulto',sabor:'Frango, Arroz e Vegetais',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:49.00,precoPDV:88.50},
+  {cod:'PA0833',linha:'Qualiday ProLife',esp:'dog',porte:'RP',nome:'QualiDay ProLife RP Adulto',sabor:'Frango, Arroz e Vegetais',peso:15,unidade:'kg',qtdFardo:1,precoUnit:159.60,precoPDV:247.90},
+  {cod:'PA0900',linha:'Qualiday ProLife',esp:'dog',porte:'RP',nome:'QualiDay ProLife RP Light',sabor:'Frango e Vegetais',peso:1,unidade:'kg',qtdFardo:8,precoUnit:24.50,precoPDV:43.90},
+  {cod:'PA0901',linha:'Qualiday ProLife',esp:'dog',porte:'RP',nome:'QualiDay ProLife RP Light',sabor:'Frango e Vegetais',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:52.40,precoPDV:91.90},
+  {cod:'PA0903',linha:'Qualiday ProLife',esp:'dog',porte:'RP',nome:'QualiDay ProLife RP Light',sabor:'Frango e Vegetais',peso:15,unidade:'kg',qtdFardo:1,precoUnit:159.60,precoPDV:249.90},
+  {cod:'PA0930',linha:'Qualiday ProLife',esp:'dog',porte:'RP',nome:'QualiDay ProLife RP Sênior',sabor:'Frango e Vegetais',peso:1,unidade:'kg',qtdFardo:8,precoUnit:27.63,precoPDV:48.90},
+  {cod:'PA0931',linha:'Qualiday ProLife',esp:'dog',porte:'RP',nome:'QualiDay ProLife RP Sênior',sabor:'Frango e Vegetais',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:51.80,precoPDV:91.90},
+  {cod:'PA0933',linha:'Qualiday ProLife',esp:'dog',porte:'RP',nome:'QualiDay ProLife RP Sênior',sabor:'Frango e Vegetais',peso:15,unidade:'kg',qtdFardo:1,precoUnit:185.00,precoPDV:299.90},
+  // ── QUALIDAY PROLIFE – CÃES RAÇAS MÉDIAS/GRANDES ─────────────
+  {cod:'PA0815',linha:'Qualiday ProLife',esp:'dog',porte:'RMG',nome:'QualiDay ProLife RM Filhote',sabor:'Frango, Batata Doce e Romã',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:52.00,precoPDV:92.90},
+  {cod:'PA0816',linha:'Qualiday ProLife',esp:'dog',porte:'RMG',nome:'QualiDay ProLife RM Filhote',sabor:'Frango, Batata Doce e Romã',peso:10.1,unidade:'kg',qtdFardo:1,precoUnit:130.00,precoPDV:208.90},
+  {cod:'PA0845',linha:'Qualiday ProLife',esp:'dog',porte:'RMG',nome:'QualiDay ProLife RM Adulto',sabor:'Frango, Arroz e Vegetais',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:49.80,precoPDV:88.90},
+  {cod:'PA0847',linha:'Qualiday ProLife',esp:'dog',porte:'RMG',nome:'QualiDay ProLife RM Adulto',sabor:'Frango, Arroz e Vegetais',peso:15,unidade:'kg',qtdFardo:1,precoUnit:159.60,precoPDV:248.90},
+  {cod:'PA0915',linha:'Qualiday ProLife',esp:'dog',porte:'RMG',nome:'QualiDay ProLife RM Light',sabor:'Frango e Vegetais',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:52.00,precoPDV:92.90},
+  {cod:'PA0917',linha:'Qualiday ProLife',esp:'dog',porte:'RMG',nome:'QualiDay ProLife RM Light',sabor:'Frango e Vegetais',peso:15,unidade:'kg',qtdFardo:1,precoUnit:159.60,precoPDV:250.90},
+  {cod:'PA0945',linha:'Qualiday ProLife',esp:'dog',porte:'RMG',nome:'QualiDay ProLife RM Sênior',sabor:'Frango e Vegetais',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:53.00,precoPDV:99.90},
+  {cod:'PA0947',linha:'Qualiday ProLife',esp:'dog',porte:'RMG',nome:'QualiDay ProLife RM Sênior',sabor:'Frango e Vegetais',peso:15,unidade:'kg',qtdFardo:1,precoUnit:183.00,precoPDV:299.90},
+  // ── QUALIDAY PROLIFE ÚMIDO – CÃES ────────────────────────────
+  {cod:'PA1100',linha:'Qualiday ProLife Úmido',esp:'dog',porte:'',nome:'QualiDay ProLife Úmido Cães',sabor:'Frango e Vegetais',peso:170,unidade:'g',qtdFardo:12,precoUnit:10.58,precoPDV:17.90},
+  {cod:'PA1101',linha:'Qualiday ProLife Úmido',esp:'dog',porte:'',nome:'QualiDay ProLife Úmido Cães',sabor:'Frango e Vegetais',peso:370,unidade:'g',qtdFardo:12,precoUnit:15.92,precoPDV:26.90},
+  {cod:'PA1102',linha:'Qualiday ProLife Úmido',esp:'dog',porte:'',nome:'QualiDay ProLife Úmido Cães',sabor:'Peru e Vegetais',peso:170,unidade:'g',qtdFardo:12,precoUnit:11.17,precoPDV:18.90},
+  {cod:'PA1103',linha:'Qualiday ProLife Úmido',esp:'dog',porte:'',nome:'QualiDay ProLife Úmido Cães',sabor:'Peru e Vegetais',peso:370,unidade:'g',qtdFardo:12,precoUnit:15.92,precoPDV:26.90},
+  // ── QUALIDAY PROLIFE ÚMIDO – GATOS ───────────────────────────
+  {cod:'PA1104',linha:'Qualiday ProLife Úmido',esp:'cat',porte:'',nome:'QualiDay ProLife Úmido Gatos',sabor:'Atum',peso:85,unidade:'g',qtdFardo:24,precoUnit:7.71,precoPDV:12.90},
+  {cod:'PA1105',linha:'Qualiday ProLife Úmido',esp:'cat',porte:'',nome:'QualiDay ProLife Úmido Gatos',sabor:'Atum',peso:156,unidade:'g',qtdFardo:24,precoUnit:9.21,precoPDV:15.60},
+  {cod:'PA1106',linha:'Qualiday ProLife Úmido',esp:'cat',porte:'',nome:'QualiDay ProLife Úmido Gatos',sabor:'Atum e Frango',peso:85,unidade:'g',qtdFardo:24,precoUnit:7.71,precoPDV:12.90},
+  {cod:'PA1107',linha:'Qualiday ProLife Úmido',esp:'cat',porte:'',nome:'QualiDay ProLife Úmido Gatos',sabor:'Atum e Frango',peso:156,unidade:'g',qtdFardo:24,precoUnit:9.38,precoPDV:15.90},
+  {cod:'PA1108',linha:'Qualiday ProLife Úmido',esp:'cat',porte:'',nome:'QualiDay ProLife Úmido Gatos',sabor:'Atum e Frutos do Mar',peso:85,unidade:'g',qtdFardo:24,precoUnit:8.04,precoPDV:13.50},
+  {cod:'PA1109',linha:'Qualiday ProLife Úmido',esp:'cat',porte:'',nome:'QualiDay ProLife Úmido Gatos',sabor:'Atum e Frutos do Mar',peso:156,unidade:'g',qtdFardo:24,precoUnit:9.46,precoPDV:16.00},
+  {cod:'PA1110',linha:'Qualiday ProLife Úmido',esp:'cat',porte:'',nome:'QualiDay ProLife Úmido Gatos',sabor:'Atum e Sardinha',peso:85,unidade:'g',qtdFardo:24,precoUnit:7.71,precoPDV:12.90},
+  {cod:'PA1111',linha:'Qualiday ProLife Úmido',esp:'cat',porte:'',nome:'QualiDay ProLife Úmido Gatos',sabor:'Atum e Sardinha',peso:156,unidade:'g',qtdFardo:24,precoUnit:9.21,precoPDV:15.60},
+  // ── QUALIDAY CÃES ─────────────────────────────────────────────
+  {cod:'PA0113',linha:'Qualiday Dog',esp:'dog',porte:'',nome:'Qualiday Cães Adulto Sabores',sabor:'Mix de Sabores',peso:3,unidade:'kg',qtdFardo:5,precoUnit:33.60,precoPDV:55.90},
+  {cod:'PA0114',linha:'Qualiday Dog',esp:'dog',porte:'',nome:'Qualiday Cães Adulto Sabores',sabor:'Mix de Sabores',peso:15,unidade:'kg',qtdFardo:1,precoUnit:129.00,precoPDV:186.90},
+  // ── QUALIDAY GATOS ────────────────────────────────────────────
+  {cod:'PA0192',linha:'Qualiday Cat',esp:'cat',porte:'',nome:'Qualiday Gato Filhote/Lactação',sabor:'Frango, Arroz e Vegetais',peso:1,unidade:'kg',qtdFardo:8,precoUnit:18.13,precoPDV:29.90},
+  {cod:'PA0196',linha:'Qualiday Cat',esp:'cat',porte:'',nome:'Qualiday Gato Filhote/Lactação',sabor:'Frango, Arroz e Vegetais',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:35.00,precoPDV:57.90},
+  {cod:'PA0193',linha:'Qualiday Cat',esp:'cat',porte:'',nome:'Qualiday Gato Filhote/Lactação',sabor:'Frango, Arroz e Vegetais',peso:10.1,unidade:'kg',qtdFardo:1,precoUnit:121.50,precoPDV:169.90},
+  {cod:'PA0234',linha:'Qualiday Cat',esp:'cat',porte:'',nome:'Qualiday Gato Adulto',sabor:'Frango e Arroz',peso:1,unidade:'kg',qtdFardo:8,precoUnit:17.25,precoPDV:28.90},
+  {cod:'PA0239',linha:'Qualiday Cat',esp:'cat',porte:'',nome:'Qualiday Gato Adulto',sabor:'Frango e Arroz',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:33.60,precoPDV:55.70},
+  {cod:'PA0236',linha:'Qualiday Cat',esp:'cat',porte:'',nome:'Qualiday Gato Adulto',sabor:'Frango e Arroz',peso:10.1,unidade:'kg',qtdFardo:1,precoUnit:112.90,precoPDV:155.50},
+  {cod:'PA0204',linha:'Qualiday Cat',esp:'cat',porte:'',nome:'Qualiday Gato Adulto',sabor:'Carne e Arroz',peso:1,unidade:'kg',qtdFardo:8,precoUnit:17.25,precoPDV:28.50},
+  {cod:'PA0209',linha:'Qualiday Cat',esp:'cat',porte:'',nome:'Qualiday Gato Adulto',sabor:'Carne e Arroz',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:33.60,precoPDV:55.70},
+  {cod:'PA0206',linha:'Qualiday Cat',esp:'cat',porte:'',nome:'Qualiday Gato Adulto',sabor:'Carne e Arroz',peso:10.1,unidade:'kg',qtdFardo:1,precoUnit:112.90,precoPDV:156.90},
+  {cod:'PA0263',linha:'Qualiday Cat',esp:'cat',porte:'',nome:'Qualiday Gato Adulto',sabor:'Salmão e Arroz',peso:1,unidade:'kg',qtdFardo:8,precoUnit:18.13,precoPDV:29.90},
+  {cod:'PA0268',linha:'Qualiday Cat',esp:'cat',porte:'',nome:'Qualiday Gato Adulto',sabor:'Salmão e Arroz',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:35.60,precoPDV:59.00},
+  {cod:'PA0265',linha:'Qualiday Cat',esp:'cat',porte:'',nome:'Qualiday Gato Adulto',sabor:'Salmão e Arroz',peso:10.1,unidade:'kg',qtdFardo:1,precoUnit:120.90,precoPDV:169.90},
+  {cod:'PA0248',linha:'Qualiday Cat',esp:'cat',porte:'',nome:'Qualiday Gato Castrado',sabor:'Frango, Arroz e Vegetais',peso:1,unidade:'kg',qtdFardo:8,precoUnit:18.63,precoPDV:30.90},
+  {cod:'PA0255',linha:'Qualiday Cat',esp:'cat',porte:'',nome:'Qualiday Gato Castrado',sabor:'Frango, Arroz e Vegetais',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:36.20,precoPDV:59.90},
+  {cod:'PA0250',linha:'Qualiday Cat',esp:'cat',porte:'',nome:'Qualiday Gato Castrado',sabor:'Frango, Arroz e Vegetais',peso:10.1,unidade:'kg',qtdFardo:1,precoUnit:122.90,precoPDV:170.90},
+  {cod:'PA0253',linha:'Qualiday Cat',esp:'cat',porte:'',nome:'Qualiday Gato Castrado',sabor:'Frango, Arroz e Vegetais',peso:20,unidade:'kg',qtdFardo:1,precoUnit:206.00,precoPDV:317.00},
+  {cod:'PA0218',linha:'Qualiday Cat',esp:'cat',porte:'',nome:'Qualiday Gato Castrado',sabor:'Carne, Arroz e Vegetais',peso:1,unidade:'kg',qtdFardo:8,precoUnit:18.63,precoPDV:30.90},
+  {cod:'PA0225',linha:'Qualiday Cat',esp:'cat',porte:'',nome:'Qualiday Gato Castrado',sabor:'Carne, Arroz e Vegetais',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:36.20,precoPDV:59.80},
+  {cod:'PA0220',linha:'Qualiday Cat',esp:'cat',porte:'',nome:'Qualiday Gato Castrado',sabor:'Carne, Arroz e Vegetais',peso:10.1,unidade:'kg',qtdFardo:1,precoUnit:122.90,precoPDV:171.90},
+  {cod:'PA0222',linha:'Qualiday Cat',esp:'cat',porte:'',nome:'Qualiday Gato Castrado',sabor:'Carne, Arroz e Vegetais',peso:20,unidade:'kg',qtdFardo:1,precoUnit:204.00,precoPDV:314.00},
+  {cod:'PA0277',linha:'Qualiday Cat',esp:'cat',porte:'',nome:'Qualiday Gato Castrado',sabor:'Salmão, Arroz e Vegetais',peso:1,unidade:'kg',qtdFardo:8,precoUnit:19.25,precoPDV:31.90},
+  {cod:'PA0284',linha:'Qualiday Cat',esp:'cat',porte:'',nome:'Qualiday Gato Castrado',sabor:'Salmão, Arroz e Vegetais',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:37.00,precoPDV:61.10},
+  {cod:'PA0279',linha:'Qualiday Cat',esp:'cat',porte:'',nome:'Qualiday Gato Castrado',sabor:'Salmão, Arroz e Vegetais',peso:10.1,unidade:'kg',qtdFardo:1,precoUnit:128.00,precoPDV:180.90},
+  {cod:'PA0282',linha:'Qualiday Cat',esp:'cat',porte:'',nome:'Qualiday Gato Castrado',sabor:'Salmão, Arroz e Vegetais',peso:20,unidade:'kg',qtdFardo:1,precoUnit:219.00,precoPDV:336.00},
+  // ── ALLCANIS – RAÇAS PEQUENAS ─────────────────────────────────
+  {cod:'PA0049',linha:'Allcanis',esp:'dog',porte:'RP',nome:'Allcanis Adulto RP Mini Bits',sabor:'Frango, Carne e Arroz',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:27.40,precoPDV:45.80},
+  {cod:'PA0043',linha:'Allcanis',esp:'dog',porte:'RP',nome:'Allcanis Adulto RP Mini Bits',sabor:'Frango, Carne e Arroz',peso:10.1,unidade:'kg',qtdFardo:1,precoUnit:84.00,precoPDV:129.90},
+  {cod:'PA0044',linha:'Allcanis',esp:'dog',porte:'RP',nome:'Allcanis Adulto RP Mini Bits',sabor:'Frango, Carne e Arroz',peso:15,unidade:'kg',qtdFardo:1,precoUnit:100.80,precoPDV:153.90},
+  {cod:'PA0050',linha:'Allcanis',esp:'dog',porte:'RP',nome:'Allcanis Adulto RP Mini Bits',sabor:'Frango, Carne e Arroz',peso:20,unidade:'kg',qtdFardo:1,precoUnit:129.00,precoPDV:201.90},
+  {cod:'PA0070',linha:'Allcanis',esp:'dog',porte:'RP',nome:'Allcanis Light RP',sabor:'Frango, Carne e Arroz',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:30.80,precoPDV:50.90},
+  {cod:'PA0071',linha:'Allcanis',esp:'dog',porte:'RP',nome:'Allcanis Light RP',sabor:'Frango, Carne e Arroz',peso:10.1,unidade:'kg',qtdFardo:1,precoUnit:94.00,precoPDV:141.90},
+  {cod:'PA0072',linha:'Allcanis',esp:'dog',porte:'RP',nome:'Allcanis Light RP',sabor:'Frango, Carne e Arroz',peso:15,unidade:'kg',qtdFardo:1,precoUnit:121.00,precoPDV:179.90},
+  {cod:'PA0073',linha:'Allcanis',esp:'dog',porte:'RP',nome:'Allcanis Light RP',sabor:'Frango, Carne e Arroz',peso:20,unidade:'kg',qtdFardo:1,precoUnit:148.50,precoPDV:226.90},
+  {cod:'PA0079',linha:'Allcanis',esp:'dog',porte:'RP',nome:'Allcanis Sênior RP',sabor:'Frango, Carne e Arroz',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:36.20,precoPDV:59.90},
+  {cod:'PA0080',linha:'Allcanis',esp:'dog',porte:'RP',nome:'Allcanis Sênior RP',sabor:'Frango, Carne e Arroz',peso:10.1,unidade:'kg',qtdFardo:1,precoUnit:110.50,precoPDV:166.60},
+  {cod:'PA0081',linha:'Allcanis',esp:'dog',porte:'RP',nome:'Allcanis Sênior RP',sabor:'Frango, Carne e Arroz',peso:15,unidade:'kg',qtdFardo:1,precoUnit:133.00,precoPDV:199.90},
+  {cod:'PA0082',linha:'Allcanis',esp:'dog',porte:'RP',nome:'Allcanis Sênior RP',sabor:'Frango, Carne e Arroz',peso:20,unidade:'kg',qtdFardo:1,precoUnit:168.00,precoPDV:253.80},
+  // ── ALLCANIS – RAÇAS MÉDIAS/GRANDES ──────────────────────────
+  {cod:'PA0006',linha:'Allcanis',esp:'dog',porte:'RMG',nome:'Allcanis Filhote',sabor:'Frango, Carne e Arroz',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:29.40,precoPDV:56.90},
+  {cod:'PA0002',linha:'Allcanis',esp:'dog',porte:'RMG',nome:'Allcanis Filhote',sabor:'Frango, Carne e Arroz',peso:10.1,unidade:'kg',qtdFardo:1,precoUnit:86.50,precoPDV:132.90},
+  {cod:'PA0003',linha:'Allcanis',esp:'dog',porte:'RMG',nome:'Allcanis Filhote',sabor:'Frango, Carne e Arroz',peso:15,unidade:'kg',qtdFardo:1,precoUnit:118.00,precoPDV:169.90},
+  {cod:'PA0027',linha:'Allcanis',esp:'dog',porte:'RMG',nome:'Allcanis Adulto',sabor:'Frango, Carne e Arroz',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:27.00,precoPDV:44.90},
+  {cod:'PA0021',linha:'Allcanis',esp:'dog',porte:'RMG',nome:'Allcanis Adulto',sabor:'Frango, Carne e Arroz',peso:10.1,unidade:'kg',qtdFardo:1,precoUnit:85.00,precoPDV:131.90},
+  {cod:'PA0029',linha:'Allcanis',esp:'dog',porte:'RMG',nome:'Allcanis Adulto',sabor:'Frango, Carne e Arroz',peso:15,unidade:'kg',qtdFardo:1,precoUnit:100.80,precoPDV:153.90},
+  {cod:'PA0028',linha:'Allcanis',esp:'dog',porte:'RMG',nome:'Allcanis Adulto',sabor:'Frango, Carne e Arroz',peso:20,unidade:'kg',qtdFardo:1,precoUnit:129.00,precoPDV:195.90},
+  {cod:'PA0075',linha:'Allcanis',esp:'dog',porte:'RMG',nome:'Allcanis Light RMG',sabor:'Frango, Carne e Arroz',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:30.80,precoPDV:50.90},
+  {cod:'PA0076',linha:'Allcanis',esp:'dog',porte:'RMG',nome:'Allcanis Light RMG',sabor:'Frango, Carne e Arroz',peso:15,unidade:'kg',qtdFardo:1,precoUnit:121.90,precoPDV:179.90},
+  {cod:'PA0077',linha:'Allcanis',esp:'dog',porte:'RMG',nome:'Allcanis Light RMG',sabor:'Frango, Carne e Arroz',peso:20,unidade:'kg',qtdFardo:1,precoUnit:148.50,precoPDV:223.90},
+  {cod:'PA0084',linha:'Allcanis',esp:'dog',porte:'RMG',nome:'Allcanis Sênior RMG',sabor:'Frango, Carne e Arroz',peso:2.5,unidade:'kg',qtdFardo:5,precoUnit:36.20,precoPDV:59.90},
+  {cod:'PA0085',linha:'Allcanis',esp:'dog',porte:'RMG',nome:'Allcanis Sênior RMG',sabor:'Frango, Carne e Arroz',peso:15,unidade:'kg',qtdFardo:1,precoUnit:133.00,precoPDV:199.90},
+  {cod:'PA0086',linha:'Allcanis',esp:'dog',porte:'RMG',nome:'Allcanis Sênior RMG',sabor:'Frango, Carne e Arroz',peso:20,unidade:'kg',qtdFardo:1,precoUnit:168.00,precoPDV:253.80},
+  // ── ALLCATS ───────────────────────────────────────────────────
+  {cod:'PA0062',linha:'Allcats',esp:'cat',porte:'',nome:'Allcats Mix Adulto',sabor:'Frango, Carne e Salmão',peso:10.1,unidade:'kg',qtdFardo:1,precoUnit:96.00,precoPDV:146.99},
+  {cod:'PA0063',linha:'Allcats',esp:'cat',porte:'',nome:'Allcats Mix Adulto',sabor:'Frango, Carne e Salmão',peso:20,unidade:'kg',qtdFardo:1,precoUnit:182.50,precoPDV:275.99},
+  {cod:'PA0065',linha:'Allcats',esp:'cat',porte:'',nome:'Allcats Castrados Mix',sabor:'Frango, Carne e Salmão',peso:10.1,unidade:'kg',qtdFardo:1,precoUnit:100.00,precoPDV:153.90},
+  {cod:'PA0066',linha:'Allcats',esp:'cat',porte:'',nome:'Allcats Castrados Mix',sabor:'Frango, Carne e Salmão',peso:20,unidade:'kg',qtdFardo:1,precoUnit:186.00,precoPDV:287.00},
+  // ── SPECIAL CROC ──────────────────────────────────────────────
+  {cod:'PA1000',linha:'Special Croc',esp:'dog',porte:'',nome:'Special Croc Dog Adulto',sabor:'Carne',peso:3,unidade:'kg',qtdFardo:5,precoUnit:24.58,precoPDV:33.90},
+  {cod:'PA1001',linha:'Special Croc',esp:'dog',porte:'',nome:'Special Croc Dog Adulto',sabor:'Carne',peso:15,unidade:'kg',qtdFardo:1,precoUnit:83.50,precoPDV:114.90},
+  {cod:'PA1002',linha:'Special Croc',esp:'dog',porte:'',nome:'Special Croc Dog Adulto',sabor:'Carne',peso:25,unidade:'kg',qtdFardo:1,precoUnit:132.50,precoPDV:181.90},
+  {cod:'PA1003',linha:'Special Croc',esp:'dog',porte:'',nome:'Special Croc Dog Filhote',sabor:'Carne',peso:3,unidade:'kg',qtdFardo:5,precoUnit:29.00,precoPDV:39.90},
+  {cod:'PA1004',linha:'Special Croc',esp:'dog',porte:'',nome:'Special Croc Dog Filhote',sabor:'Carne',peso:15,unidade:'kg',qtdFardo:1,precoUnit:92.50,precoPDV:127.90},
+  {cod:'PA1005',linha:'Special Croc',esp:'dog',porte:'',nome:'Special Croc Dog Filhote',sabor:'Carne',peso:25,unidade:'kg',qtdFardo:1,precoUnit:147.00,precoPDV:202.90},
+  {cod:'PA1006',linha:'Special Croc',esp:'cat',porte:'',nome:'Special Croc Cat Castrado',sabor:'Frango',peso:3,unidade:'kg',qtdFardo:5,precoUnit:31.20,precoPDV:43.90},
+  {cod:'PA1007',linha:'Special Croc',esp:'cat',porte:'',nome:'Special Croc Cat Castrado',sabor:'Frango',peso:10.1,unidade:'kg',qtdFardo:1,precoUnit:91.90,precoPDV:129.90},
+  {cod:'PA1008',linha:'Special Croc',esp:'cat',porte:'',nome:'Special Croc Cat Castrado',sabor:'Frango',peso:20,unidade:'kg',qtdFardo:1,precoUnit:165.90,precoPDV:229.90},
+  // ── PETCARE SOLUTION ──────────────────────────────────────────
+  {cod:'PA0700',linha:'PetCare Solution',esp:'supl',porte:'',nome:'PetCare Solution Idosos',sabor:'Suplemento para cães idosos',peso:1,unidade:'un',qtdFardo:6,precoUnit:46.84,precoPDV:77.90},
+  {cod:'PA0701',linha:'PetCare Solution',esp:'supl',porte:'',nome:'PetCare Solution Skin Care',sabor:'Suplemento pele e pelagem',peso:1,unidade:'un',qtdFardo:6,precoUnit:35.84,precoPDV:59.50},
+  {cod:'PA0702',linha:'PetCare Solution',esp:'supl',porte:'',nome:'PetCare Solution Articular',sabor:'Suplemento articular para cães',peso:1,unidade:'un',qtdFardo:6,precoUnit:45.00,precoPDV:74.90},
+  // ── ZOOE CHURITOS ─────────────────────────────────────────────
+  {cod:'PA1112',linha:'Zooe Churitos',esp:'snack',porte:'',nome:'Zooe Churitos',sabor:'Fígado de Frango',peso:56,unidade:'g',qtdFardo:25,precoUnit:13.48,precoPDV:22.10},
+  {cod:'PA1113',linha:'Zooe Churitos',esp:'snack',porte:'',nome:'Zooe Churitos',sabor:'Frango',peso:56,unidade:'g',qtdFardo:25,precoUnit:13.48,precoPDV:22.10},
+  {cod:'PA1114',linha:'Zooe Churitos',esp:'snack',porte:'',nome:'Zooe Churitos',sabor:'Peixe',peso:56,unidade:'g',qtdFardo:25,precoUnit:13.48,precoPDV:22.10},
 ];
 
-const LCLS = {ProHealth:'lph','Qualiday ProLife':'lql','Qualiday ProLife Úmido':'lqlu',Allcanis:'la',Allcats:'lac','Qualiday Cat':'lqc','Special Croc':'lsc','PetCare Solution':'lpc'};
-const FOLDER_ID = '1pe0ScWu5n0-17x3RA41dqmAytHOsyaWz';
-const FOLDER_PROC = '1Mgwz9s0GsIlYuPebJCzUlTLEfYutKAj7';
 
-let db, fbM;
-let clientes = [];
-let cidx = null;
-let filtroAtivo = 'todos';
-let pedidoOn = false;
-let mixTemp = [];
-let pedidoImportadoTemp = null;
-let editandoIdx = null;
 
-window.addEventListener('firebase-ready', async () => {
-  db = window._db;
-  fbM = window._fbModules;
-  await carregarClientes();
-  renderDash(); renderClientes(); renderProdutos(); atualizarSub();
+
+// ─── ARGUMENTOS DE VENDA POR LINHA ───────────────────────────
+const ARGS = {
+  'ProHealth': [
+    {t:'Super Premium com ingredientes funcionais', d:'A linha ProHealth vai além da nutrição básica — cada ingrediente tem uma função. O frango como proteína principal apoia massa muscular, a batata doce fornece energia sustentada, e ingredientes como blueberry, cúrcuma e romã são antioxidantes que retardam o envelhecimento celular. Argumento chave: <strong>qualidade de vida visível no pet</strong>.'},
+    {t:'DHA/EPA para desenvolvimento cerebral e visual', d:'Os ácidos graxos ômega-3 (DHA e EPA), vindos de microalgas, são fundamentais para filhotes em desenvolvimento e pets idosos. Para o lojista: <strong>diferencial científico que o tutor percebe em poucas semanas</strong> — mais brilho no pelo, olhos mais vivos, mais disposição.'},
+    {t:'Probióticos certificados — microbiota equilibrada', d:'Cinco cepas de probióticos (Bacillus cereus, Bacillus subtilis, Saccharomyces cerevisiae, Lactobacillus acidophilus, Enterococcus faecium) garantem flora intestinal saudável, menos gases, fezes mais firmes. <strong>Tutor nota a diferença na limpeza e no conforto do animal</strong>.'},
+    {t:'Condroitina e Glicosamina — proteção articular', d:'Presente nos filhotes para formação e nos sênior para manutenção, essa dupla é padrão em suplementos articulares vendidos separadamente a preço alto. <strong>Na ProHealth já está incluso</strong> — argumento poderoso frente ao consumidor consciente.'},
+  ],
+  'Qualiday ProLife': [
+    {t:'Super Premium com custo-benefício estratégico', d:'Qualiday ProLife entrega perfil nutricional de Super Premium a um preço acessível, abrindo o mercado premium para tutores que buscam qualidade mas têm orçamento moderado. Para o lojista: <strong>ticket maior que entrada, margem maior que economy</strong>.'},
+    {t:'Prebiótico + Probiótico + Polpa de beterraba', d:'A combinação prebiótico (MOS), probiótico e polpa de beterraba cria um sistema digestivo completo: o prebiótico alimenta as bactérias boas, o probiótico as repõe, e a beterraba garante trânsito intestinal saudável. <strong>Menos problemas digestivos = tutor mais satisfeito = fidelização</strong>.'},
+    {t:'Linha Sênior — argumento emocional poderoso', d:'Produtos sênior têm apelo emocional enorme. O tutor quer o melhor para o companheiro de anos. Qualiday ProLife Sênior tem perfil proteico ajustado e suporte articular. <strong>Venda consultiva: "Seu pet merece envelhecer com qualidade"</strong>.'},
+  ],
+  'Qualiday ProLife Úmido': [
+    {t:'Hidratação como diferencial de saúde', d:'Cães e gatos em dieta seca frequentemente ficam subhidratados. O alimento úmido garante ingestão de água suficiente, prevenindo problemas renais e urinários — especialmente em gatos castrados. <strong>Argumento de prevenção de saúde que o veterinário endossa</strong>.'},
+    {t:'Sachê — impulso de compra e fidelização', d:'Embalagem pequena (85g e 170g) tem o maior giro em pet shop. Fácil de comprar, fácil de presentear o pet. <strong>Produto de impulso: posicione próximo ao caixa ou à saída</strong>. Alta rotatividade = vitrine sempre viva.'},
+    {t:'Variedade de sabores — palatabilidade garantida', d:'Para gatos: 4 opções (atum, atum+frango, atum+frutos do mar, atum+sardinha). Para cães: frango e peru. <strong>Variedade reduz a rejeição alimentar e mantém o tutor comprando</strong>.'},
+  ],
+  'Allcanis': [
+    {t:'Premium Especial com comprovação de qualidade', d:'Allcanis é posicionada como Premium Especial — acima do básico, com proteínas de maior digestibilidade e ingredientes funcionais como ômega 3 e 6, MOS (mananoligossacarídeo) e extrato de Yucca para controle de amônia fecal. <strong>Resultado prático: fezes menos odorantes — argumento que fecha venda no balcão</strong>.'},
+    {t:'Linha completa por porte e fase de vida', d:'Allcanis cobre Filhote, Adulto, Light e Sênior tanto para Raças Pequenas quanto para Raças Médias e Grandes. Embalagens de 2,5kg a 20kg. <strong>Loja que fecha Allcanis fecha toda a vida útil do pet</strong> — cliente não precisa trocar de marca.'},
+    {t:'Extrato de Yucca — controle de odor fecal', d:'O extrato de Yucca reduz a produção de amônia nas fezes, diminuindo o mau cheiro. <strong>Argumento prático para quem mora em apartamento ou tem mais de um animal</strong>. Tutor percebe na primeira semana.'},
+    {t:'Alga Schizochytrium — fonte natural de DHA', d:'A biomassa de microalgas garante DHA sem depender de farinha de peixe — fonte mais sustentável e de melhor qualidade. Traduz para o tutor: <strong>"Ômega-3 de origem controlada, sem contaminantes"</strong>.'},
+  ],
+  'Allcats': [
+    {t:'Mix de proteínas — palatabilidade máxima', d:'Frango, carne e salmão em um único produto garante alto apetite e palatabilidade. Gatos são animais exigentes — a variedade no mix reduz rejeição. <strong>Para o lojista: produto que o cliente volta a comprar porque o gato aceita bem</strong>.'},
+    {t:'Castrado — necessidade específica atendida', d:'Allcats Castrado tem formulação específica para o perfil metabólico do gato castrado: menos calórico, com suporte urinário. <strong>Mais de 90% dos gatos domésticos são castrados — é o maior segmento do mercado felino</strong>.'},
+    {t:'Embalagem 20kg — para lojistas com alto giro', d:'A embalagem de 20kg atende distribuidoras, petshops de alto volume e criadores. <strong>Margem por kg preservada com menor frequência de reposição</strong> — argumento de eficiência operacional para o comprador de maior porte.'},
+  ],
+  'Qualiday Dog': [
+    {t:'Entrada premium — amplie o mercado da loja', d:'Qualiday Dog é o produto de entrada para tutores que querem migrar do básico para o premium. <strong>Preço acessível, qualidade superior</strong>. Para o lojista: porta de entrada para up-sell futuro para ProHealth ou Qualiday ProLife.'},
+    {t:'Mix de sabores — satisfaz o pet exigente', d:'Produto com mix de sabores que garante palatabilidade mesmo para animais seletivos. <strong>Boa alternativa quando o tutor relata que o pet "enjoou" da ração anterior</strong>.'},
+  ],
+  'Qualiday Cat': [
+    {t:'Três sabores de adulto — atende todos os perfis', d:'Frango, Carne e Salmão em 3 tamanhos cada (1kg, 2,5kg, 10,1kg). Loja que monta o mix completo de Qualiday Cat garante <strong>solução para qualquer perfil de tutor e orçamento</strong>.'},
+    {t:'Castrado em 4 tamanhos incluindo 20kg', d:'Qualiday Gato Castrado vai até 20kg, atendendo criadores e tutores com múltiplos gatos. <strong>Diferencial competitivo frente a marcas que param no 10kg</strong>.'},
+    {t:'Filhote/Lactação — início de relacionamento', d:'Produto para filhotes e fêmeas em lactação é a primeira compra do tutor de um pet novo. <strong>Quem fideliza no filhote fica por anos</strong> — trabalhe o lojista para ter sempre em estoque.'},
+  ],
+  'Special Croc': [
+    {t:'Economy premium — volume com qualidade', d:'Special Croc é posicionado como a opção de volume para tutores conscientes mas com orçamento restrito. <strong>Melhor que qualquer economy do mercado, preço competitivo</strong>. Para o lojista: alto giro, boa margem absoluta.'},
+    {t:'Embalagem 25kg — eficiência para criadores e revendas', d:'A embalagem de 25kg é a maior do portfólio PFS. Atende criadores de grande porte e lojas que vendem a granel. <strong>Custo por kg mais baixo — argumento de economia que convence rápido</strong>.'},
+    {t:'Cão e Gato na mesma linha — loja simplificada', d:'Special Croc tem linha para cães (adulto e filhote) e gatos (castrado). <strong>Lojista negocia uma linha e cobre ambas as espécies</strong> — praticidade de compra e estoque.'},
+  ],
+  'PetCare Solution': [
+    {t:'Suplementos veterinários — ticket alto e margem excelente', d:'PetCare Solution são suplementos vendidos em caixa de 6 unidades. Margem por unidade significativamente maior que rações. <strong>Upsell natural: ao vender ração premium, ofereça o suplemento adequado ao perfil do pet</strong>.'},
+    {t:'Idosos — argumento emocional e médico', d:'PetCare Idosos tem formulação específica para pets acima de 7 anos. Tutor de pet idoso tem alta disposição de gasto e alto engajamento emocional. <strong>"Seu companheiro de anos merece cuidado especial"</strong> — mensagem que converte.'},
+    {t:'Articular — prevenção que o veterinário recomenda', d:'Problemas articulares são a principal queixa em pets adultos e idosos. PetCare Articular com condroitina e glicosamina é frequentemente recomendado por veterinários. <strong>Parceria com clínicas veterinárias próximas pode gerar indicação constante</strong>.'},
+    {t:'Skin Care — resultado visível e rápido', d:'Pelo opaco, excesso de queda, coceira — queixas frequentes no balcão. PetCare Skin Care atua em 4 a 6 semanas com resultado visível. <strong>Tutor que vê resultado volta e indica</strong> — produto que gera testimonial espontâneo.'},
+  ],
+  'Zooe Churitos': [
+    {t:'Petisco de impulso — máximo giro no ponto de venda', d:'Zooe Churitos em 56g é o produto de impulso perfeito: preço baixo, embalagem atrativa, animal adora. <strong>Posicione no caixa ou na gôndola de destaque</strong> — adiciona R$22 ao ticket médio sem esforço de venda.'},
+    {t:'3 sabores — sortimento que atrai o olhar', d:'Fígado de Frango, Frango e Peixe. <strong>Loja que expõe os 3 sabores juntos cria volume visual e aumenta a conversão</strong>. Tutor compra um de cada para variar.'},
+    {t:'Fardo de 25 unidades — alto giro com preço competitivo', d:'A embalagem de 25 unidades por fardo garante custo por unidade baixo e margem preservada. <strong>Produto ideal para reposição rápida — nunca deve faltar</strong>.'},
+  ],
+};
+
+// ─── DADOS GLOBAIS ────────────────────────────────────────────
+const FOLDER_ID='1pe0ScWu5n0-17x3RA41dqmAytHOsyaWz';
+const FOLDER_PROC='1Mgwz9s0GsIlYuPebJCzUlTLEfYutKAj7';
+const LINHAS=[...new Set(PRODUTOS.map(p=>p.linha))];
+const LINHA_ICO={'ProHealth':'🏆','Qualiday ProLife':'⭐','Qualiday ProLife Úmido':'💧','Qualiday Dog':'🐕','Allcanis':'🐾','Allcats':'🐈','Qualiday Cat':'😺','Special Croc':'🦎','PetCare Solution':'💊','Zooe Churitos':'🍖'};
+const LINHA_ESP={'ProHealth':'dog/cat','Qualiday ProLife':'dog','Qualiday ProLife Úmido':'dog/cat','Qualiday Dog':'dog','Allcanis':'dog','Allcats':'cat','Qualiday Cat':'cat','Special Croc':'dog/cat','PetCare Solution':'supl','Zooe Churitos':'snack'};
+
+// Firebase init
+const firebaseCfg={apiKey:"AIzaSyCQu5zvrkKZ8EVCK_tO_4UDObWYhBmWjNM",authDomain:"pfs-crm-4b988.firebaseapp.com",projectId:"pfs-crm-4b988",storageBucket:"pfs-crm-4b988.firebasestorage.app",messagingSenderId:"361243236559",appId:"1:361243236559:web:97a3ae5132d425af61bfba"};
+if(!firebase.apps.length)firebase.initializeApp(firebaseCfg);
+const _db=firebase.firestore();
+
+let db,fb,clientes=[],cidx=null,fatMes=null,fatMeta={},pedTmp=null,mixTmp=[],editId=null,pedOn=false,filtro='todos',scHist=[];
+
+// Init on load
+window.addEventListener('load', async()=>{
+  db=_db;
+  fb={
+    collection:(db,col)=>db.collection(col),
+    doc:(db,col,id)=>db.collection(col).doc(id),
+    getDocs:async(ref)=>{const s=await ref.get();const docs=[];s.forEach(d=>docs.push({id:d.id,data:()=>d.data()}));return{forEach:(fn)=>docs.forEach(fn)};},
+    setDoc:async(ref,data)=>ref.set(data),
+    deleteDoc:async(ref)=>ref.delete(),
+  };
+  await carrClientes();
+  await carrMeta();
+  rDash();rCli();rProd();rFat();rSub();
 });
 
-async function carregarClientes() {
-  try {
-    const snap = await fbM.getDocs(fbM.collection(db, 'clientes'));
-    clientes = [];
-    snap.forEach(d => clientes.push({ id: d.id, ...d.data() }));
-    clientes.sort((a, b) => a.nome?.localeCompare(b.nome));
-  } catch(e) { console.error(e); }
+
+
+// ─── FIREBASE ────────────────────────────────────────────────
+async function carrClientes(){
+  try{const s=await _db.collection('clientes').get();clientes=[];s.forEach(d=>clientes.push({id:d.id,...d.data()}));clientes.sort((a,b)=>(a.nome||'').localeCompare(b.nome||''));}catch(e){console.error(e);}
+}
+async function salvFB(c){try{await _db.collection('clientes').doc(c.id).set({...c});}catch(e){console.error(e);}}
+async function delFB(id){try{await _db.collection('clientes').doc(id).delete();}catch(e){}}
+async function salvMeta2(){try{await _db.collection('config').doc('metas').set(fatMeta);}catch(e){}}
+async function carrMeta(){try{const d=await _db.collection('config').get();d.forEach(x=>{if(x.id==='metas')Object.assign(fatMeta,x.data());});}catch(e){}}
+
+// ─── HELPERS ─────────────────────────────────────────────────
+function fmtD(d){if(!d)return'—';const[y,m,dd]=d.split('-');return`${dd}/${m}/${y}`;}
+function fmtR(v){return'R$ '+Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function diasAte(d){if(!d)return null;return Math.floor((new Date(d)-new Date())/864e5);}
+function diasDe(d){if(!d)return null;return Math.floor((new Date()-new Date(d))/864e5);}
+function svCor(c){if(!c.proxVisita)return'c';const d=diasAte(c.proxVisita);if(d<0)return'r';if(d<=7)return'a';return'v';}
+function dLabel(c){if(!c.visitas?.length)return{t:'Sem visita',c:'dn'};const d=diasDe(c.visitas[c.visitas.length-1].data);if(d===0)return{t:'Hoje',c:'dok'};if(d===1)return{t:'Ontem',c:'dok'};if(d<=14)return{t:`${d}d atrás`,c:'dok'};if(d<=30)return{t:`${d}d atrás`,c:'dw'};return{t:`${d}d atrás`,c:'dl'};}
+function toast(m){const t=document.getElementById('tst');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+function fmtPeso(p){return p.unidade==='kg'?`${p.peso}kg`:p.unidade==='g'?`${p.peso}g`:p.unidade==='un'?`cx c/${p.qtdFardo}`:p.peso+p.unidade;}
+
+// ─── NAVEGAÇÃO ────────────────────────────────────────────────
+function goSc(s,push=true){
+  document.querySelectorAll('.sc').forEach(e=>e.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(e=>e.classList.remove('on'));
+  document.getElementById('sc-'+s).classList.add('on');
+  const nb=document.getElementById('nb'+['dash','cli','prod','fat','imp'].indexOf(s));
+  if(nb)nb.classList.add('on');
+  const bk=document.getElementById('bk');
+  const hn=document.getElementById('hn');
+  const ficha=s==='fic'||s==='fprod';
+  bk.style.display=ficha?'block':'none';
+  hn.style.display=s==='cli'?'flex':'none';
+  if(s==='fic'){document.getElementById('hdrt').textContent=clientes[cidx]?.nome||'Cliente';document.getElementById('hdrs').textContent='Ficha do cliente';}
+  else if(s==='fprod'){document.getElementById('hdrt').textContent='Produto';document.getElementById('hdrs').textContent='Portfólio PFS';}
+  else{document.getElementById('hdrt').textContent='PFS CRM';rSub();}
+  if(push)scHist.push(s);
+}
+function voltar(){scHist.pop();const prev=scHist.length?scHist[scHist.length-1]:'dash';scHist.pop();goSc(prev);}
+function fM(id){document.getElementById(id).classList.remove('op');}
+function oM(id){document.getElementById(id).classList.add('op');}
+function rSub(){const a=clientes.filter(c=>c.status==='Ativo').length;document.getElementById('hdrs').textContent=`${clientes.length} clientes · ${a} ativos`;}
+
+// ─── DASHBOARD ───────────────────────────────────────────────
+function rDash(){
+  const at=clientes.filter(c=>c.status==='Ativo');
+  const atr=clientes.filter(c=>svCor(c)==='r');
+  const tp=clientes.reduce((s,c)=>s+(c.pedidos||0),0);
+  const tv2=clientes.reduce((s,c)=>s+(c.visitas||[]).reduce((ss,v)=>ss+(v.valorTotal||0),0),0);
+  const tvis=clientes.reduce((s,c)=>s+(c.visitas||[]).length,0);
+  document.getElementById('m0').textContent=clientes.length;
+  document.getElementById('m1').textContent=at.length;
+  document.getElementById('m2').textContent=atr.length;
+  document.getElementById('m3').textContent=tp;
+  document.getElementById('m4').textContent=tv2>0?'R$'+Math.round(tv2/1000)+'k':'R$0';
+  document.getElementById('m5').textContent=tvis;
+  document.getElementById('dt').textContent=`${clientes.length} cliente${clientes.length!==1?'s':''} na carteira`;
+  const al=document.getElementById('dal');
+  const atrl=clientes.filter(c=>svCor(c)==='r').slice(0,3);
+  al.innerHTML=atrl.length===0?'<div style="padding:4px 16px 8px;font-size:13px;color:var(--t3)">Nenhuma visita atrasada 👍</div>'
+    :atrl.map(c=>{const d=Math.abs(diasAte(c.proxVisita));return`<div class="ac" onclick="abrirFicha(${clientes.indexOf(c)})"><div class="ad"></div><div class="ai"><div class="an">${c.nome}</div><div class="ay">${d} dia${d!==1?'s':''} atrasado${d!==1?'s':''}</div></div><div style="font-size:12px;color:var(--dk);font-weight:600">Ver →</div></div>`;}).join('');
+  const rl=document.getElementById('drl');
+  const cv=clientes.filter(c=>c.visitas?.length).sort((a,b)=>new Date(b.visitas[b.visitas.length-1].data)-new Date(a.visitas[a.visitas.length-1].data)).slice(0,3);
+  rl.innerHTML=cv.length===0?'<div style="padding:4px 16px 8px;font-size:13px;color:var(--t3)">Nenhuma visita registrada</div>'
+    :cv.map(c=>{const v=c.visitas[c.visitas.length-1];return`<div class="rc" onclick="abrirFicha(${clientes.indexOf(c)})"><div class="rt"><span class="rn">${c.nome}</span><span class="rd2">${fmtD(v.data)}</span></div><div class="rs">${v.pedido?'<span style="color:var(--gr);font-weight:600">Pedido</span> · ':''}${v.obs||'Sem obs.'}</div></div>`;}).join('');
+  const pl=document.getElementById('dpl');
+  const cp=clientes.filter(c=>c.visitas?.some(v=>v.pedido)).map(c=>({c,v:c.visitas.filter(v=>v.pedido).sort((a,b)=>new Date(b.data)-new Date(a.data))[0]})).sort((a,b)=>new Date(b.v.data)-new Date(a.v.data)).slice(0,3);
+  pl.innerHTML=cp.length===0?'<div style="padding:4px 16px 8px;font-size:13px;color:var(--t3)">Nenhum pedido registrado</div>'
+    :cp.map(({c,v})=>`<div class="rc" onclick="abrirFicha(${clientes.indexOf(c)})"><div class="rt"><span class="rn">${c.nome}</span><span class="rd2">${fmtD(v.data)}</span></div><div class="rs">${v.numPedido?'#'+v.numPedido+' · ':''}${v.valorTotal?fmtR(v.valorTotal):'Valor não informado'}${v.condPag?' · '+v.condPag:''}</div></div>`).join('');
 }
 
-async function salvarClienteFirebase(c) {
-  const id = c.id || Date.now().toString();
-  await fbM.setDoc(fbM.doc(db, 'clientes', id), { ...c, id });
-  return id;
-}
-
-function toast(msg, dur = 2500) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), dur);
-}
-
-function fmtD(d) { if (!d) return '—'; const [y, m, dd] = d.split('-'); return `${dd}/${m}/${y}`; }
-function diasDesde(d) { if (!d) return null; return Math.floor((new Date() - new Date(d)) / 864e5); }
-function diasAte(d) { if (!d) return null; return Math.floor((new Date(d) - new Date()) / 864e5); }
-function svCor(c) { if (!c.proxVisita) return 'cinza'; const d = diasAte(c.proxVisita); if (d < 0) return 'vermelho'; if (d <= 7) return 'amber'; return 'verde'; }
-function labelD(c) {
-  if (!c.visitas?.length) return { t: 'Sem visita', c: 'dn' };
-  const d = diasDesde(c.visitas[c.visitas.length - 1].data);
-  if (d === 0) return { t: 'Hoje', c: 'dok' }; if (d === 1) return { t: 'Ontem', c: 'dok' };
-  if (d <= 14) return { t: `${d}d atrás`, c: 'dok' }; if (d <= 30) return { t: `${d}d atrás`, c: 'dw' };
-  return { t: `${d}d atrás`, c: 'dl' };
-}
-function fmtR(v) { return 'R$ ' + Number(v || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-
-function renderDash() {
-  const at = clientes.filter(c => c.status === 'Ativo');
-  const atr = clientes.filter(c => svCor(c) === 'vermelho');
-  const tp = clientes.reduce((s, c) => s + (c.pedidos || 0), 0);
-  const tv = clientes.reduce((s, c) => s + (c.visitas || []).reduce((ss, v) => ss + (v.valorTotal || 0), 0), 0);
-  const tvis = clientes.reduce((s, c) => s + (c.visitas || []).length, 0);
-  document.getElementById('m-total').textContent = clientes.length;
-  document.getElementById('m-ativos').textContent = at.length;
-  document.getElementById('m-atrasados').textContent = atr.length;
-  document.getElementById('m-pedidos').textContent = tp;
-  document.getElementById('m-valor').textContent = tv > 0 ? 'R$' + Math.round(tv / 1000) + 'k' : 'R$0';
-  document.getElementById('m-visitas').textContent = tvis;
-  document.getElementById('dash-titulo').textContent = `${clientes.length} cliente${clientes.length !== 1 ? 's' : ''} na carteira`;
-
-  const al = document.getElementById('alertas-list');
-  const atrl = clientes.filter(c => svCor(c) === 'vermelho').slice(0, 3);
-  al.innerHTML = atrl.length === 0 ? '<div style="padding:4px 16px 8px;font-size:13px;color:var(--text3)">Nenhuma visita atrasada 👍</div>'
-    : atrl.map(c => { const d = Math.abs(diasAte(c.proxVisita)); return `<div class="alert-card" onclick="abrirFicha(${clientes.indexOf(c)})"><div class="alert-dot"></div><div class="alert-info"><div class="alert-name">${c.nome}</div><div class="alert-days">${d} dia${d !== 1 ? 's' : ''} atrasado${d !== 1 ? 's' : ''}</div></div><div style="font-size:12px;color:var(--dark);font-weight:600">Ver →</div></div>`; }).join('');
-
-  const rl = document.getElementById('recentes-list');
-  const cv = clientes.filter(c => c.visitas?.length).sort((a, b) => new Date(b.visitas[b.visitas.length - 1].data) - new Date(a.visitas[a.visitas.length - 1].data)).slice(0, 3);
-  rl.innerHTML = cv.length === 0 ? '<div style="padding:4px 16px 8px;font-size:13px;color:var(--text3)">Nenhuma visita registrada</div>'
-    : cv.map(c => { const v = c.visitas[c.visitas.length - 1]; return `<div class="recent-card" onclick="abrirFicha(${clientes.indexOf(c)})"><div class="recent-top"><span class="recent-name">${c.nome}</span><span class="recent-date">${fmtD(v.data)}</span></div><div class="recent-sub">${v.pedido ? '<span style="color:var(--green);font-weight:600">Pedido</span> · ' : ''}${v.obs || 'Sem obs.'}</div></div>`; }).join('');
-
-  const pr = document.getElementById('pedidos-list');
-  const cp = clientes.filter(c => c.visitas?.some(v => v.pedido)).map(c => ({ c, v: c.visitas.filter(v => v.pedido).sort((a, b) => new Date(b.data) - new Date(a.data))[0] })).sort((a, b) => new Date(b.v.data) - new Date(a.v.data)).slice(0, 3);
-  pr.innerHTML = cp.length === 0 ? '<div style="padding:4px 16px 8px;font-size:13px;color:var(--text3)">Nenhum pedido registrado</div>'
-    : cp.map(({ c, v }) => `<div class="recent-card" onclick="abrirFicha(${clientes.indexOf(c)})"><div class="recent-top"><span class="recent-name">${c.nome}</span><span class="recent-date">${fmtD(v.data)}</span></div><div class="recent-sub">${v.numPedido ? '#' + v.numPedido + ' · ' : ''}${v.valorTotal ? fmtR(v.valorTotal) : 'Valor não informado'}</div></div>`).join('');
-}
-
-function renderClientes() {
-  const q = (document.getElementById('search-input').value || '').toLowerCase();
-  const lista = clientes.filter(c => {
-    const mq = !q || c.nome?.toLowerCase().includes(q) || (c.resp || '').toLowerCase().includes(q) || (c.end || '').toLowerCase().includes(q);
-    const mf = filtroAtivo === 'todos' || c.status === filtroAtivo || c.tipo === filtroAtivo;
-    return mq && mf;
+// ─── CLIENTES ────────────────────────────────────────────────
+function rCli(){
+  const q=(document.getElementById('srch')?.value||'').toLowerCase();
+  const lista=clientes.filter(c=>{
+    const mq=!q||c.nome?.toLowerCase().includes(q)||(c.resp||'').toLowerCase().includes(q)||(c.end||'').toLowerCase().includes(q);
+    const mf=filtro==='todos'||c.status===filtro||c.tipo===filtro;
+    return mq&&mf;
   });
-  const el = document.getElementById('client-list');
-  el.innerHTML = lista.length === 0 ? '<div class="empty">🏪<br>Nenhum cliente encontrado</div>'
-    : lista.map(c => {
-      const i = clientes.indexOf(c); const sv = svCor(c); const dl = labelD(c);
-      const bc = c.status === 'Ativo' ? 'ba' : c.status === 'Prospect' ? 'bp' : 'bi';
-      return `<div class="ccard" onclick="abrirFicha(${i})"><div class="sbar ${sv}"></div><div class="cbody"><div class="ctop"><div class="cname">${c.nome}</div><div class="cbadge ${bc}">${c.status}</div></div><div class="ctipo">${c.tipo || '—'}${c.resp ? ' · ' + c.resp : ''}</div><div class="cbot"><div class="clast">${!c.visitas?.length ? 'Sem visitas' : 'Última: ' + fmtD(c.visitas[c.visitas.length - 1].data)}</div><div class="cdays ${dl.c}">${dl.t}</div></div></div></div>`;
+  const el=document.getElementById('cl');
+  el.innerHTML=lista.length===0?'<div class="emp">🏪<br>Nenhum cliente encontrado</div>'
+    :lista.map(c=>{
+      const i=clientes.indexOf(c);const sv=svCor(c);const dl=dLabel(c);
+      const bc=c.status==='Ativo'?'ba':c.status==='Prospect'?'bp':'bi';
+      return`<div class="cc" onclick="abrirFicha(${i})"><div class="sb ${sv}"></div><div class="cb"><div class="ct"><div class="cn">${c.nome}</div><div class="cbg ${bc}">${c.status}</div></div><div class="ctp">${c.tipo||'—'}${c.resp?' · '+c.resp:''}</div><div class="cbt"><div class="cla">${!c.visitas?.length?'Sem visitas':'Última: '+fmtD(c.visitas[c.visitas.length-1].data)}</div><div class="cdy ${dl.c}">${dl.t}</div></div></div></div>`;
     }).join('');
 }
+function setF(el){document.querySelectorAll('.fch').forEach(e=>e.classList.remove('on'));el.classList.add('on');filtro=el.dataset.f;rCli();}
 
-function renderProdutos() {
-  const g = { dog: [], cat: [], supl: [] };
-  PRODUTOS.forEach(p => g[p.esp].push(p));
-  let h = '';
-  [['dog', '🐕 Cães'], ['cat', '🐈 Gatos'], ['supl', '💊 Suplementos']].forEach(([e, label]) => {
-    if (!g[e].length) return;
-    h += `<div class="psec"><div class="psec-t">${label}</div>`;
-    g[e].forEach(p => {
-      const pesosH = p.pesos.map(ps => `<span class="ppeso">${ps}</span>`).join('');
-      h += `<div class="pcard"><div class="picon ${e}">${e === 'dog' ? '🐕' : e === 'cat' ? '🐈' : '💊'}</div><div class="pinfo"><div class="pname">${p.nome}</div><div class="psab">${p.sabor}</div><span class="plinha ${LCLS[p.linha] || ''}">${p.linha}</span><div class="ppesos">${pesosH}</div></div></div>`;
+// ─── PRODUTOS ────────────────────────────────────────────────
+function rProd(){
+  const el=document.getElementById('plinhas');
+  let h='';
+  LINHAS.forEach(l=>{
+    const prods=PRODUTOS.filter(p=>p.linha===l);
+    const ico=LINHA_ICO[l]||'📦';
+    const esp=LINHA_ESP[l]||'';
+    h+=`<div class="plinha-btn" id="lb-${l.replace(/[^a-z]/gi,'_')}">
+      <div class="plinha-hdr" onclick="togLinha(this.parentElement)">
+        <div class="plinha-ico">${ico}</div>
+        <div class="plinha-info">
+          <div class="plinha-nome">${l}</div>
+          <div class="plinha-cnt">${prods.length} SKU${prods.length!==1?'s':''} · ${esp}</div>
+        </div>
+        <div class="plinha-arr">›</div>
+      </div>
+      <div class="plinha-prods">`;
+    // Agrupar por nome+sabor para listar tamanhos juntos
+    const grupos={};
+    prods.forEach(p=>{const k=p.nome+'||'+p.sabor;if(!grupos[k])grupos[k]=[];grupos[k].push(p);});
+    Object.entries(grupos).forEach(([k,ps])=>{
+      const p0=ps[0];
+      const pesosH=ps.map(p=>`<span class="prod-peso">${fmtPeso(p)}</span>`).join('');
+      h+=`<div class="prod-item" onclick="abrirFichaProd('${p0.cod}')">
+        <div class="prod-nome">${p0.nome}</div>
+        <div class="prod-sabor">${p0.sabor}</div>
+        <div class="prod-tags">
+          <span class="prod-cod">${p0.cod}</span>
+          ${pesosH}
+          <span class="prod-preco">PDV: ${fmtR(p0.precoPDV)}</span>
+        </div>
+      </div>`;
     });
-    h += '</div>';
+    h+='</div></div>';
   });
-  h += '<div style="height:20px"></div>';
-  document.getElementById('produtos-list').innerHTML = h;
+  el.innerHTML=h;
 }
 
-function abrirFicha(idx) {
-  cidx = idx; const c = clientes[idx];
-  document.getElementById('fnome').textContent = c.nome;
-  document.getElementById('ftipo').textContent = `${c.tipo || ''}${c.end ? ' · ' + c.end : ''}`;
-  document.getElementById('fbadges').innerHTML = `<div class="fbadge">${c.status}</div>${c.proxVisita ? `<div class="fbadge">Próx: ${fmtD(c.proxVisita)}</div>` : ''}${c.pedidos ? `<div class="fbadge">${c.pedidos} pedido${c.pedidos !== 1 ? 's' : ''}</div>` : ''}`;
-  document.getElementById('ficha-info').innerHTML = `
-    <div class="irow"><span class="irow-icon">👤</span><span class="ilbl">Responsável</span><span class="ival">${c.resp || '—'}</span></div>
-    <div class="irow"><span class="irow-icon">📞</span><span class="ilbl">Telefone</span><span class="ival">${c.tel || '—'}</span></div>
-    <div class="irow"><span class="irow-icon">📍</span><span class="ilbl">Endereço</span><span class="ival" style="font-size:11px">${c.end || '—'}</span></div>
-    <div class="irow"><span class="irow-icon">🛒</span><span class="ilbl">Total pedidos</span><span class="ival">${c.pedidos || 0}</span></div>
-    <div class="irow"><span class="irow-icon">📅</span><span class="ilbl">Próxima visita</span><span class="ival">${fmtD(c.proxVisita)}</span></div>
-    ${c.obs ? `<div class="irow"><span class="irow-icon">📝</span><span class="ilbl">Obs.</span><span class="ival" style="font-size:11px">${c.obs}</span></div>` : ''}
+function togLinha(el){el.classList.toggle('open');}
+
+function abrirFichaProd(cod){
+  const p=PRODUTOS.find(x=>x.cod===cod);if(!p)return;
+  const mesmos=PRODUTOS.filter(x=>x.nome===p.nome&&x.sabor===p.sabor);
+  document.getElementById('fpnm').textContent=p.nome;
+  document.getElementById('fpcp').textContent=p.sabor;
+  document.getElementById('fpbg').innerHTML=`<div class="fp-badge">${p.linha}</div><div class="fp-badge">${p.esp==='dog'?'Cães':p.esp==='cat'?'Gatos':p.esp==='supl'?'Suplemento':'Snack'}</div>`;
+  const args=ARGS[p.linha]||[];
+  document.getElementById('fpargs').innerHTML=args.map(a=>`<div class="fp-arg"><strong>${a.t}</strong><br>${a.d}</div>`).join('');
+  let tabH='';
+  mesmos.forEach(x=>{tabH+=`<tr><td>Apresentação</td><td>${fmtPeso(x)} · Fardo c/${x.qtdFardo}</td></tr><tr><td>Preço unit. (sem imp.)</td><td>${fmtR(x.precoUnit)}</td></tr><tr><td>Sugestão PDV</td><td>${fmtR(x.precoPDV)}</td></tr>`;});
+  tabH+=`<tr><td>Código</td><td>${mesmos.map(x=>x.cod).join(', ')}</td></tr>`;
+  document.getElementById('fptab').innerHTML=tabH;
+  scHist.push('prod');goSc('fprod');
+}
+
+// ─── FICHA CLIENTE ───────────────────────────────────────────
+function abrirFicha(idx){
+  cidx=idx;const c=clientes[idx];
+  document.getElementById('fnm').textContent=c.nome;
+  document.getElementById('ftp').textContent=`${c.tipo||''}${c.end?' · '+c.end:''}`;
+  document.getElementById('fbg').innerHTML=`<div class="fbdg">${c.status}</div>${c.proxVisita?`<div class="fbdg">Próx: ${fmtD(c.proxVisita)}</div>`:''}${c.pedidos?`<div class="fbdg">${c.pedidos} pedido${c.pedidos!==1?'s':''}</div>`:''}`;
+  document.getElementById('finfo').innerHTML=`
+    <div class="ir"><span class="ii">👤</span><span class="il">Responsável</span><span class="iv">${c.resp||'—'}</span></div>
+    <div class="ir"><span class="ii">📞</span><span class="il">Telefone</span><span class="iv">${c.tel||'—'}</span></div>
+    <div class="ir"><span class="ii">📍</span><span class="il">Endereço</span><span class="iv" style="font-size:11px">${c.end||'—'}</span></div>
+    <div class="ir"><span class="ii">🛒</span><span class="il">Total pedidos</span><span class="iv">${c.pedidos||0}</span></div>
+    <div class="ir"><span class="ii">📅</span><span class="il">Próxima visita</span><span class="iv">${fmtD(c.proxVisita)}</span></div>
+    ${c.obs?`<div class="ir"><span class="ii">📝</span><span class="il">Obs.</span><span class="iv" style="font-size:11px">${c.obs}</span></div>`:''}
   `;
-  renderMixFicha(c); renderVisitasFicha(c);
-  goScreen('ficha');
+  rMixFicha(c);rVisFicha(c);
+  scHist.push('cli');goSc('fic');
 }
 
-function renderMixFicha(c) {
-  const el = document.getElementById('ficha-mix');
-  if (!c.mix?.length) { el.innerHTML = '<div style="font-size:13px;color:var(--text3);padding:4px 0">Nenhum produto definido. <span style="color:var(--dark);cursor:pointer" onclick="abrirMixModal()">Definir →</span></div>'; return; }
-  el.innerHTML = c.mix.map(i => { const p = PRODUTOS[i]; if (!p) return ''; return `<div class="mix-item"><div class="mix-tog on">✓</div><div><div class="mix-lbl">${p.nome}</div><div class="mix-sub">${p.sabor} · ${p.pesos.join('/')}</div></div></div>`; }).join('');
+function rMixFicha(c){
+  const el=document.getElementById('fmix');
+  if(!c.mix?.length){el.innerHTML='<div style="font-size:13px;color:var(--t3);padding:4px 0">Nenhum produto definido. <span style="color:var(--dk);cursor:pointer" onclick="abrirMix()">Definir →</span></div>';return;}
+  const grupos={};
+  c.mix.forEach(cod=>{const p=PRODUTOS.find(x=>x.cod===cod);if(!p)return;const k=p.nome+'||'+p.sabor;if(!grupos[k])grupos[k]=p;});
+  el.innerHTML=Object.values(grupos).map(p=>`<div class="mxi"><div class="mxt on">✓</div><div><div class="mxl">${p.nome}</div><div class="mxs">${p.sabor} · ${p.linha}</div></div></div>`).join('');
 }
 
-function renderVisitasFicha(c) {
-  const el = document.getElementById('ficha-visitas');
-  if (!c.visitas?.length) { el.innerHTML = '<div class="novisit">Nenhuma visita registrada</div>'; return; }
-  el.innerHTML = [...c.visitas].reverse().map(v => {
-    let eH = '';
-    if (v.estoque?.filter(e => e.qtd > 0).length) {
-      const rows = v.estoque.filter(e => e.qtd > 0).map(e => { const p = PRODUTOS[e.idx]; if (!p) return ''; const cls = e.qtd <= 2 ? 'baixo' : e.qtd >= 6 ? 'ok' : ''; return `<div class="erow"><span class="enome">${p.nome}</span><span class="eval ${cls}">${e.qtd} un.</span></div>`; }).join('');
-      if (rows) eH = `<div class="vestoque"><div style="font-size:10px;color:var(--text3);margin-bottom:4px;font-weight:600">ESTOQUE ENCONTRADO</div>${rows}</div>`;
+function rVisFicha(c){
+  const el=document.getElementById('fvis');
+  if(!c.visitas?.length){el.innerHTML='<div class="nv">Nenhuma visita registrada</div>';return;}
+  el.innerHTML=[...c.visitas].reverse().map((v,ri)=>{
+    const oi=c.visitas.length-1-ri;
+    let eH='';
+    if(v.estoque?.filter(e=>e.qtd>0).length){
+      const rows=v.estoque.filter(e=>e.qtd>0).map(e=>{const p=PRODUTOS.find(x=>x.cod===e.cod);if(!p)return'';const cls=e.qtd<=2?'bx':e.qtd>=6?'ok':'';return`<div class="er"><span class="en">${p.nome} ${fmtPeso(p)}</span><span class="ev ${cls}">${e.qtd} un.</span></div>`;}).join('');
+      if(rows)eH=`<div class="ve"><div style="font-size:10px;color:var(--t3);margin-bottom:4px;font-weight:600">ESTOQUE ENCONTRADO</div>${rows}</div>`;
     }
-    let pH = '';
-    if (v.pedido && v.produtos?.filter(p => p.qtd > 0).length) {
-      const pp = v.produtos.filter(p => p.qtd > 0).map(p => { const pr = PRODUTOS[p.idx]; return pr ? `${pr.nome.split(' ').slice(0, 3).join(' ')} x${p.qtd}` : ''; }).filter(Boolean).join(', ');
-      if (pp) pH = `<div style="font-size:12px;color:var(--text3);margin-top:3px">📦 ${pp}</div>`;
-      if (v.valorTotal) pH += `<div style="font-size:12px;color:var(--green);font-weight:600;margin-top:2px">${fmtR(v.valorTotal)}</div>`;
+    let pH='';
+    if(v.pedido&&v.produtos?.filter(p=>p.qtd>0).length){
+      const pp=v.produtos.filter(p=>p.qtd>0).map(p=>{const pr=PRODUTOS.find(x=>x.cod===p.cod);return pr?`${pr.nome} ${fmtPeso(pr)} x${p.qtd}`:''}).filter(Boolean).join(', ');
+      if(pp)pH=`<div style="font-size:12px;color:var(--t3);margin-top:3px">📦 ${pp}</div>`;
+      if(v.valorTotal)pH+=`<div style="font-size:12px;color:var(--gr);font-weight:600;margin-top:2px">${fmtR(v.valorTotal)}</div>`;
+      if(v.condPag)pH+=`<div style="font-size:11px;color:var(--t3);margin-top:1px">💳 ${v.condPag}</div>`;
     }
-    return `<div class="vcard"><div class="vtop"><span class="vdate">📅 ${fmtD(v.data)}</span>${v.pedido ? `<span class="vped">🛒 ${v.numPedido || 'Pedido'}</span>` : ''}</div>${v.obs ? `<div class="vobs">${v.obs}</div>` : ''}${pH}${eH}</div>`;
+    return`<div class="vc">
+      <div class="vt">
+        <span class="vd">📅 ${fmtD(v.data)}</span>
+        <div style="display:flex;align-items:center;gap:6px">
+          ${v.pedido?`<span class="vp">🛒 ${v.numPedido||'Pedido'}</span>`:''}
+          <button class="vdel" onclick="delVisita(${oi})" title="Excluir visita">🗑️</button>
+        </div>
+      </div>
+      ${v.obs?`<div class="vo">${v.obs}</div>`:''}
+      ${pH}${eH}
+    </div>`;
   }).join('');
 }
 
-function abrirMixModal() {
-  const c = clientes[cidx]; mixTemp = [...(c.mix || [])];
-  const g = { dog: [], cat: [], supl: [] };
-  PRODUTOS.forEach((p, i) => g[p.esp].push({ ...p, idx: i }));
-  let h = '';
-  [['dog', '🐕 Cães'], ['cat', '🐈 Gatos'], ['supl', '💊 Suplementos']].forEach(([e, label]) => {
-    if (!g[e].length) return;
-    h += `<div style="padding:8px 16px 4px"><div style="font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">${label}</div>`;
-    g[e].forEach(p => { const on = mixTemp.includes(p.idx); h += `<div class="mix-item"><div class="mix-tog ${on ? 'on' : ''}" id="mt-${p.idx}" onclick="toggleMix(${p.idx})">${on ? '✓' : ''}</div><div><div class="mix-lbl">${p.nome}</div><div class="mix-sub">${p.sabor} · ${p.pesos.join('/')}</div></div></div>`; });
-    h += '</div>';
+async function delVisita(idx){
+  if(!confirm('Excluir esta visita? Esta ação não pode ser desfeita.'))return;
+  const c=clientes[cidx];
+  const v=c.visitas[idx];
+  if(v.pedido&&v.produtos?.filter(p=>p.qtd>0).length)c.pedidos=Math.max(0,(c.pedidos||1)-1);
+  c.visitas.splice(idx,1);
+  await salvFB(c);rDash();rCli();rVisFicha(c);rFat();toast('Visita excluída.');
+}
+
+// ─── MIX IDEAL ───────────────────────────────────────────────
+function abrirMix(){
+  const c=clientes[cidx];
+  mixTmp=[...(c.mix||[])];
+  const grupos={};
+  PRODUTOS.forEach(p=>{const k=p.nome+'||'+p.sabor+'||'+p.linha;if(!grupos[k])grupos[k]=p;});
+  const linhasGrupos={};
+  Object.values(grupos).forEach(p=>{if(!linhasGrupos[p.linha])linhasGrupos[p.linha]=[];linhasGrupos[p.linha].push(p);});
+  let h='';
+  Object.entries(linhasGrupos).forEach(([l,ps])=>{
+    h+=`<div style="padding:8px 16px 4px"><div style="font-size:11px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">${LINHA_ICO[l]||'📦'} ${l}</div>`;
+    ps.forEach(p=>{const on=mixTmp.includes(p.cod);h+=`<div class="mxi"><div class="mxt ${on?'on':''}" id="mxt-${p.cod}" onclick="togMix('${p.cod}')">${on?'✓':''}</div><div><div class="mxl">${p.nome}</div><div class="mxs">${p.sabor}</div></div></div>`;});
+    h+='</div>';
   });
-  document.getElementById('mix-content').innerHTML = h;
-  document.getElementById('modal-mix').classList.add('open');
+  document.getElementById('m-mix-c').innerHTML=h;
+  oM('m-mix');
 }
+function togMix(cod){const el=document.getElementById('mxt-'+cod);if(mixTmp.includes(cod)){mixTmp=mixTmp.filter(c=>c!==cod);el.classList.remove('on');el.textContent='';}else{mixTmp.push(cod);el.classList.add('on');el.textContent='✓';}}
+async function salvMix(){clientes[cidx].mix=[...mixTmp];await salvFB(clientes[cidx]);fM('m-mix');rMixFicha(clientes[cidx]);toast('Mix salvo!');}
 
-function toggleMix(idx) {
-  const el = document.getElementById('mt-' + idx);
-  if (mixTemp.includes(idx)) { mixTemp = mixTemp.filter(i => i !== idx); el.classList.remove('on'); el.textContent = ''; }
-  else { mixTemp.push(idx); el.classList.add('on'); el.textContent = '✓'; }
-}
-
-async function salvarMix() {
-  clientes[cidx].mix = [...mixTemp];
-  await salvarClienteFirebase(clientes[cidx]);
-  fecharModal('modal-mix'); renderMixFicha(clientes[cidx]); toast('Mix ideal salvo!');
-}
-
-function abrirNovaVisita() {
-  const hoje = new Date().toISOString().split('T')[0];
-  document.getElementById('v-data').value = hoje;
-  document.getElementById('v-prox').value = '';
-  document.getElementById('v-obs').value = '';
-  document.getElementById('v-numpedido').value = '';
-  document.getElementById('v-valor').value = '';
-  pedidoOn = false;
-  document.getElementById('pedido-toggle').classList.remove('on');
-  document.getElementById('pedido-section').style.display = 'none';
-  const c = clientes[cidx];
-  const prods = c.mix?.length ? c.mix : PRODUTOS.map((_, i) => i);
-  const g = { dog: [], cat: [], supl: [] };
-  prods.forEach(i => { const p = PRODUTOS[i]; if (p) g[p.esp].push(i); });
-  let eh = '', ph = '';
-  [['dog', '🐕 Cães'], ['cat', '🐈 Gatos'], ['supl', '💊']].forEach(([e, label]) => {
-    if (!g[e].length) return;
-    eh += `<div style="padding:0 16px;margin-bottom:8px"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">${label}</div>`;
-    g[e].forEach(i => { const p = PRODUTOS[i]; eh += `<div class="eitem"><div class="ei-info"><div class="ei-nome">${p.nome}</div><div class="ei-sub">${p.sabor}</div></div><div class="counter"><button class="cbtn2" onclick="chgC('e',${i},-1)">−</button><div class="cval" id="e-${i}">0</div><button class="cbtn2" onclick="chgC('e',${i},1)">+</button></div></div>`; });
-    eh += '</div>';
-    ph += `<div style="padding:4px 16px 2px;font-size:11px;color:var(--text3);font-weight:600">${label}</div>`;
-    g[e].forEach(i => { const p = PRODUTOS[i]; ph += `<div class="pitem"><div class="pitem-info"><div class="ei-nome">${p.nome}</div><div class="ei-sub">${p.sabor} · ${p.pesos.join('/')}</div></div><div class="pinputs"><div><input type="number" class="pismall" id="p-${i}" value="0" min="0"><div class="pilbl">Qtd</div></div><div><input type="number" class="pismall" id="pv-${i}" placeholder="R$" step="0.01" min="0"><div class="pilbl">Preço</div></div></div></div>`; });
+// ─── NOVA VISITA ─────────────────────────────────────────────
+function buildLinhaForm(tipo){
+  // tipo: 'est' para estoque, 'ped' para pedido
+  const c=clientes[cidx];
+  const mixCods=c.mix?.length?c.mix:null;
+  const grupos={};
+  PRODUTOS.forEach(p=>{
+    if(p.esp==='supl'||p.esp==='snack'){const k=p.linha+'||supl';if(!grupos[k])grupos[k]={l:p.linha,prods:[]};grupos[k].prods.push(p);}
+    else{const k=p.linha+'||'+p.esp+'||'+p.porte;if(!grupos[k])grupos[k]={l:p.linha,prods:[]};grupos[k].prods.push(p);}
   });
-  document.getElementById('estoque-form').innerHTML = eh;
-  document.getElementById('pedido-form').innerHTML = ph;
-  document.getElementById('modal-visita').classList.add('open');
+  let h='';
+  Object.entries(grupos).forEach(([k,g])=>{
+    const l=g.l;
+    const filtrados=mixCods?g.prods.filter(p=>mixCods.some(cod=>{const pm=PRODUTOS.find(x=>x.cod===cod);return pm&&pm.nome===p.nome&&pm.sabor===p.sabor;})):g.prods;
+    if(!filtrados.length)return;
+    const uid=tipo+'_'+k.replace(/[^a-z0-9]/gi,'_');
+    h+=`<div style="margin-bottom:6px">
+      <button class="lbtn" id="lb_${uid}" onclick="togL('${uid}')">
+        <span class="lbtn-nm">${LINHA_ICO[l]||'📦'} ${l}</span>
+        <span class="lbtn-cnt">${filtrados.length} produto${filtrados.length!==1?'s':''}</span>
+        <span class="lbtn-ar">›</span>
+      </button>
+      <div class="lprods" id="lp_${uid}">`;
+    filtrados.forEach(p=>{
+      if(tipo==='est'){
+        h+=`<div class="eitem"><div class="ei"><div class="einm">${p.nome}</div><div class="eisb">${p.sabor} · ${fmtPeso(p)}</div></div><div class="ctr"><button class="cb2" onclick="chg('ec_${p.cod}',-1)">−</button><div class="cv" id="ec_${p.cod}">0</div><button class="cb2" onclick="chg('ec_${p.cod}',1)">+</button></div></div>`;
+      }else{
+        h+=`<div class="pitem"><div class="pi"><div class="einm">${p.nome}</div><div class="eisb">${p.sabor} · ${fmtPeso(p)} · PDV: ${fmtR(p.precoPDV)}</div></div><div class="pins"><div><input type="number" class="ps" id="pq_${p.cod}" value="0" min="0"><div class="plb">Qtd</div></div><div><input type="number" class="ps" id="pv_${p.cod}" placeholder="${p.precoUnit.toFixed(2)}" step="0.01" min="0"><div class="plb">Preço</div></div></div></div>`;
+      }
+    });
+    h+='</div></div>';
+  });
+  return h;
 }
 
-function chgC(t, idx, d) {
-  const el = document.getElementById(`${t}-${idx}`);
-  const v = Math.max(0, parseInt(el.textContent || 0) + d);
-  el.textContent = v; el.className = 'cval' + (v === 0 ? '' : v <= 2 ? ' baixo' : v <= 5 ? ' medio' : ' bom');
+function togL(uid){
+  const btn=document.getElementById('lb_'+uid);
+  const prods=document.getElementById('lp_'+uid);
+  if(!btn||!prods)return;
+  btn.classList.toggle('op');
+  prods.style.display=btn.classList.contains('op')?'block':'none';
 }
 
-function togglePedido() {
-  pedidoOn = !pedidoOn;
-  document.getElementById('pedido-toggle').classList.toggle('on', pedidoOn);
-  document.getElementById('pedido-section').style.display = pedidoOn ? 'block' : 'none';
+function abrirVisita(){
+  const hoje=new Date().toISOString().split('T')[0];
+  document.getElementById('v-dt').value=hoje;
+  document.getElementById('v-pv').value='';
+  document.getElementById('v-ob').value='';
+  document.getElementById('v-np').value='';
+  document.getElementById('v-cp').value='';
+  document.getElementById('v-vl').value='';
+  pedOn=false;
+  document.getElementById('ped-tog').classList.remove('on');
+  document.getElementById('ped-sec').style.display='none';
+  document.getElementById('est-form').innerHTML=buildLinhaForm('est');
+  document.getElementById('ped-form').innerHTML=buildLinhaForm('ped');
+  oM('m-vis');
 }
 
-async function salvarVisita() {
-  const data = document.getElementById('v-data').value;
-  if (!data) { alert('Informe a data da visita.'); return; }
-  const c = clientes[cidx];
-  const prods = c.mix?.length ? c.mix : PRODUTOS.map((_, i) => i);
-  const estoque = prods.map(i => { const el = document.getElementById(`e-${i}`); return { idx: i, qtd: el ? parseInt(el.textContent || 0) : 0 }; }).filter(e => e.qtd > 0);
-  let produtos = [], valorTotal = 0, numPedido = '';
-  if (pedidoOn) {
-    numPedido = document.getElementById('v-numpedido').value.trim();
-    if (numPedido) {
-      const dup = clientes.some(cl => cl.visitas?.some(v => v.numPedido === numPedido));
-      if (dup) { alert(`Pedido ${numPedido} já cadastrado!`); return; }
-    }
-    produtos = prods.map(i => ({ idx: i, qtd: parseInt(document.getElementById(`p-${i}`)?.value || 0), valor: parseFloat(document.getElementById(`pv-${i}`)?.value || 0) })).filter(p => p.qtd > 0);
-    valorTotal = parseFloat(document.getElementById('v-valor').value || 0);
+function chg(id,d){const el=document.getElementById(id);const v=Math.max(0,parseInt(el.textContent||0)+d);el.textContent=v;el.className='cv'+(v===0?'':v<=2?' bx':v<=5?' md':' ok');}
+function togPed(){pedOn=!pedOn;document.getElementById('ped-tog').classList.toggle('on',pedOn);document.getElementById('ped-sec').style.display=pedOn?'block':'none';}
+
+async function salvVisita(){
+  const data=document.getElementById('v-dt').value;
+  if(!data){alert('Informe a data.');return;}
+  const c=clientes[cidx];
+  const estoque=PRODUTOS.map(p=>{const el=document.getElementById('ec_'+p.cod);return{cod:p.cod,qtd:el?parseInt(el.textContent||0):0};}).filter(e=>e.qtd>0);
+  let produtos=[],valorTotal=0,numPedido='',condPag='';
+  if(pedOn){
+    numPedido=document.getElementById('v-np').value.trim();
+    condPag=document.getElementById('v-cp').value.trim();
+    if(numPedido){const dup=clientes.some(cl=>cl.visitas?.some(v=>v.numPedido===numPedido));if(dup){alert(`Pedido ${numPedido} já cadastrado!`);return;}}
+    produtos=PRODUTOS.map(p=>({cod:p.cod,qtd:parseInt(document.getElementById('pq_'+p.cod)?.value||0),preco:parseFloat(document.getElementById('pv_'+p.cod)?.value||p.precoUnit)})).filter(p=>p.qtd>0);
+    valorTotal=parseFloat(document.getElementById('v-vl').value||0);
+    if(!valorTotal&&produtos.length)valorTotal=produtos.reduce((s,p)=>{const pr=PRODUTOS.find(x=>x.cod===p.cod);return s+(p.preco||pr?.precoUnit||0)*p.qtd;},0);
   }
-  const pv = document.getElementById('v-prox').value;
-  if (!c.visitas) c.visitas = [];
-  c.visitas.push({ data, pedido: pedidoOn, numPedido, produtos, valorTotal, estoque, obs: document.getElementById('v-obs').value.trim() });
-  if (pedidoOn && produtos.length) c.pedidos = (c.pedidos || 0) + 1;
-  if (pv) c.proxVisita = pv;
-  c.status = 'Ativo';
-  await salvarClienteFirebase(c);
-  fecharModal('modal-visita'); renderDash(); renderClientes(); atualizarSub(); abrirFicha(cidx);
-  toast('Visita registrada!');
+  const pv=document.getElementById('v-pv').value;
+  if(!c.visitas)c.visitas=[];
+  c.visitas.push({data,pedido:pedOn,numPedido,condPag,produtos,valorTotal,estoque,obs:document.getElementById('v-ob').value.trim()});
+  if(pedOn&&produtos.length)c.pedidos=(c.pedidos||0)+1;
+  if(pv)c.proxVisita=pv;
+  c.status='Ativo';
+  await salvFB(c);fM('m-vis');rDash();rCli();rVisFicha(c);rFat();toast('Visita salva!');
 }
 
-let editandoId = null;
-function abrirNovoCliente() {
-  editandoId = null;
-  document.getElementById('mctitulo').textContent = 'Novo cliente';
-  ['nome', 'resp', 'tel', 'end', 'obs'].forEach(f => document.getElementById('f-' + f).value = '');
-  document.getElementById('f-tipo').value = '';
-  document.getElementById('f-status').value = 'Prospect';
-  document.getElementById('f-prox').value = '';
-  document.getElementById('modal-cliente').classList.add('open');
+// ─── CLIENTE CRUD ────────────────────────────────────────────
+function abrirNovoCliente(){
+  editId=null;document.getElementById('mc-t').textContent='Novo cliente';
+  ['nm','rp','tl','en','ob'].forEach(f=>document.getElementById('f-'+f).value='');
+  document.getElementById('f-tp').value='';document.getElementById('f-st').value='Prospect';document.getElementById('f-pv').value='';
+  oM('m-cli');
 }
-
-function abrirEditarCliente() {
-  const c = clientes[cidx]; editandoId = c.id;
-  document.getElementById('mctitulo').textContent = 'Editar cliente';
-  document.getElementById('f-nome').value = c.nome || '';
-  document.getElementById('f-resp').value = c.resp || '';
-  document.getElementById('f-tel').value = c.tel || '';
-  document.getElementById('f-tipo').value = c.tipo || '';
-  document.getElementById('f-end').value = c.end || '';
-  document.getElementById('f-status').value = c.status || 'Prospect';
-  document.getElementById('f-prox').value = c.proxVisita || '';
-  document.getElementById('f-obs').value = c.obs || '';
-  document.getElementById('modal-cliente').classList.add('open');
+function editarCliente(){
+  const c=clientes[cidx];editId=c.id;document.getElementById('mc-t').textContent='Editar cliente';
+  document.getElementById('f-nm').value=c.nome||'';document.getElementById('f-rp').value=c.resp||'';
+  document.getElementById('f-tl').value=c.tel||'';document.getElementById('f-tp').value=c.tipo||'';
+  document.getElementById('f-en').value=c.end||'';document.getElementById('f-st').value=c.status||'Prospect';
+  document.getElementById('f-pv').value=c.proxVisita||'';document.getElementById('f-ob').value=c.obs||'';
+  oM('m-cli');
 }
-
-async function salvarCliente() {
-  const nome = document.getElementById('f-nome').value.trim();
-  const tipo = document.getElementById('f-tipo').value;
-  if (!nome || !tipo) { alert('Preencha nome e tipo.'); return; }
-  const dados = { nome, resp: document.getElementById('f-resp').value.trim(), tel: document.getElementById('f-tel').value.trim(), tipo, end: document.getElementById('f-end').value.trim(), status: document.getElementById('f-status').value, proxVisita: document.getElementById('f-prox').value, obs: document.getElementById('f-obs').value.trim() };
-  if (editandoId) {
-    const idx = clientes.findIndex(c => c.id === editandoId);
-    if (idx >= 0) { clientes[idx] = { ...clientes[idx], ...dados }; await salvarClienteFirebase(clientes[idx]); }
-  } else {
-    const id = Date.now().toString();
-    const novo = { id, ...dados, mix: [], visitas: [], pedidos: 0 };
-    clientes.push(novo); await salvarClienteFirebase(novo);
-    clientes.sort((a, b) => a.nome?.localeCompare(b.nome));
-  }
-  fecharModal('modal-cliente'); renderDash(); renderClientes(); atualizarSub();
-  if (editandoId) abrirFicha(clientes.findIndex(c => c.id === editandoId));
+async function salvCliente(){
+  const nome=document.getElementById('f-nm').value.trim();const tipo=document.getElementById('f-tp').value;
+  if(!nome||!tipo){alert('Preencha nome e tipo.');return;}
+  const dados={nome,resp:document.getElementById('f-rp').value.trim(),tel:document.getElementById('f-tl').value.trim(),tipo,end:document.getElementById('f-en').value.trim(),status:document.getElementById('f-st').value,proxVisita:document.getElementById('f-pv').value,obs:document.getElementById('f-ob').value.trim()};
+  if(editId){const i=clientes.findIndex(c=>c.id===editId);if(i>=0){clientes[i]={...clientes[i],...dados};await salvFB(clientes[i]);}}
+  else{const id=Date.now().toString();const n={id,...dados,mix:[],visitas:[],pedidos:0};clientes.push(n);await salvFB(n);clientes.sort((a,b)=>(a.nome||'').localeCompare(b.nome||''));}
+  fM('m-cli');rDash();rCli();rSub();
+  if(editId){const i=clientes.findIndex(c=>c.id===editId);if(i>=0)abrirFicha(i);}
   toast('Cliente salvo!');
 }
 
-async function buscarPedidosDrive() {
-  const btn = document.getElementById('btn-buscar-drive');
-  const st = document.getElementById('drive-status');
-  const fl = document.getElementById('drive-files-list');
-  btn.disabled = true; st.className = 'imp-status loading'; st.textContent = 'Verificando pasta Pedidos PFS...'; fl.innerHTML = '';
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6', max_tokens: 1000,
-        mcp_servers: [{ type: 'url', url: 'https://drivemcp.googleapis.com/mcp/v1', name: 'gdrive' }],
-        messages: [{ role: 'user', content: `Liste os arquivos de imagem (PNG, JPG, JPEG) na pasta do Google Drive com ID "${FOLDER_ID}". Retorne SOMENTE JSON válido sem markdown: [{"id":"file_id","name":"filename","createdTime":"ISO date"}]. Se não houver, retorne [].` }]
-      })
-    });
-    const data = await resp.json();
-    const txt = data.content.filter(b => b.type === 'text').map(b => b.text).join('');
-    let arquivos = [];
-    try { const m = txt.match(/\[[\s\S]*\]/); if (m) arquivos = JSON.parse(m[0]); } catch {}
-    if (!arquivos.length) { st.className = 'imp-status ok'; st.textContent = '✅ Nenhum print novo. Tudo em dia!'; btn.disabled = false; return; }
-    st.className = 'imp-status ok'; st.textContent = `${arquivos.length} arquivo${arquivos.length !== 1 ? 's' : ''} encontrado${arquivos.length !== 1 ? 's' : ''}`;
-    fl.innerHTML = '<div class="file-list">' + arquivos.map(f => `<div class="file-item" onclick="processarPedidoDrive('${f.id}','${f.name}')"><span style="font-size:18px">🖼️</span><div class="file-name">${f.name}</div><span style="font-size:12px;color:var(--text3)">${f.createdTime ? new Date(f.createdTime).toLocaleDateString('pt-BR') : ''}</span><span>›</span></div>`).join('') + '</div>';
-  } catch { st.className = 'imp-status err'; st.textContent = '❌ Erro ao acessar o Drive.'; }
-  btn.disabled = false;
+// ─── FATURAMENTO ─────────────────────────────────────────────
+function getMeses(){
+  const meses=new Set();
+  clientes.forEach(c=>c.visitas?.forEach(v=>{if(v.pedido&&v.valorTotal>0){const[y,m]=v.data.split('-');meses.add(`${y}-${m}`);}}););
+  const agora=new Date();const am=`${agora.getFullYear()}-${String(agora.getMonth()+1).padStart(2,'0')}`;
+  meses.add(am);
+  return[...meses].sort().reverse().slice(0,12);
+}
+function rFat(){
+  const meses=getMeses();
+  if(!fatMes||!meses.includes(fatMes))fatMes=meses[0];
+  const msel=document.getElementById('msel');
+  msel.innerHTML=meses.map(m=>{const[y,mo]=m.split('-');const nm=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'][parseInt(mo)-1]+'/'+y.slice(2);return`<div class="mchip ${m===fatMes?'on':''}" onclick="selMes('${m}')">${nm}</div>`;}).join('');
+  const[y,mo]=fatMes.split('-');
+  const pedMes=clientes.flatMap(c=>(c.visitas||[]).filter(v=>v.pedido&&v.valorTotal>0&&v.data.startsWith(fatMes)).map(v=>({c,v})));
+  const totalR=pedMes.reduce((s,{v})=>s+(v.valorTotal||0),0);
+  const totalKg=pedMes.reduce((s,{v})=>s+(v.produtos||[]).reduce((ss,p)=>{const pr=PRODUTOS.find(x=>x.cod===p.cod);if(!pr||pr.unidade!=='kg')return ss;return ss+p.qtd*pr.peso;},0),0);
+  document.getElementById('fv').textContent=fmtR(totalR);
+  document.getElementById('fkg').textContent=totalKg>0?totalKg.toFixed(1)+' kg':'0 kg';
+  const meta=fatMeta[fatMes];
+  const minp=document.getElementById('meta-inp');
+  if(minp)minp.value=meta||'';
+  const mw=document.getElementById('meta-wrap');
+  if(meta&&meta>0){
+    mw.style.display='block';
+    const pct=Math.min(100,Math.round((totalR/meta)*100));
+    document.getElementById('meta-pct').textContent=pct+'%';
+    document.getElementById('meta-fill').style.width=pct+'%';
+    const falta=meta-totalR;
+    document.getElementById('meta-txt').textContent=pct>=100?`✅ Meta atingida! Superou em ${fmtR(totalR-meta)}`:`Faltam ${fmtR(falta)} para atingir a meta de ${fmtR(meta)}`;
+  }else{mw.style.display='none';}
+  // Ranking
+  const porCliente={};
+  clientes.forEach(c=>{
+    const peds=(c.visitas||[]).filter(v=>v.pedido&&v.valorTotal>0&&v.data.startsWith(fatMes));
+    if(!peds.length)return;
+    porCliente[c.id]={nome:c.nome,valor:peds.reduce((s,v)=>s+(v.valorTotal||0),0),idx:clientes.indexOf(c)};
+  });
+  const rank=Object.values(porCliente).sort((a,b)=>b.valor-a.valor);
+  const maxV=rank[0]?.valor||1;
+  const rl=document.getElementById('rank-list');
+  if(!rank.length){rl.innerHTML='<div style="padding:4px 16px 8px;font-size:13px;color:var(--t3)">Nenhum pedido neste mês</div>';return;}
+  rl.innerHTML=rank.slice(0,10).map((r,i)=>{
+    const pos=i<3?`p${i+1}`:'';
+    return`<div class="rank-card" onclick="abrirFicha(${r.idx})">
+      <div class="rank-top">
+        <div class="rank-pos ${pos}">${i+1}</div>
+        <div class="rank-nome">${r.nome}</div>
+        <div class="rank-val">${fmtR(r.valor)}</div>
+      </div>
+      <div class="rank-bar"><div class="rank-bar-fill" style="width:${Math.round(r.valor/maxV*100)}%"></div></div>
+    </div>`;
+  }).join('');
+}
+function selMes(m){fatMes=m;rFat();}
+async function salvarMeta(){const v=parseFloat(document.getElementById('meta-inp').value||0);fatMeta[fatMes]=v;await salvMeta2();rFat();toast('Meta salva!');}
+
+// ─── IMPORTAÇÃO DRIVE ────────────────────────────────────────
+async function buscarDrive(){
+  const btn=document.getElementById('bdrive');const st=document.getElementById('dst');const fl=document.getElementById('dfl');
+  btn.disabled=true;st.className='ist ld';st.textContent='Verificando pasta Pedidos PFS...';fl.innerHTML='';
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,mcp_servers:[{type:'url',url:'https://drivemcp.googleapis.com/mcp/v1',name:'gdrive'}],messages:[{role:'user',content:`Liste arquivos de imagem (PNG, JPG, JPEG) na pasta Google Drive ID "${FOLDER_ID}". Retorne SOMENTE JSON válido sem markdown: [{"id":"file_id","name":"filename","createdTime":"ISO"}]. Se não houver, retorne [].`}]})});
+    const d=await r.json();const txt=d.content.filter(b=>b.type==='text').map(b=>b.text).join('');
+    let arqs=[];try{const m=txt.match(/\[[\s\S]*\]/);if(m)arqs=JSON.parse(m[0]);}catch{}
+    if(!arqs.length){st.className='ist ok';st.textContent='✅ Nenhum print novo. Tudo em dia!';}
+    else{st.className='ist ok';st.textContent=`${arqs.length} arquivo${arqs.length!==1?'s':''} encontrado${arqs.length!==1?'s':''}`;fl.innerHTML='<div class="fl2">'+arqs.map(f=>`<div class="fi2" onclick="procDrive('${f.id}','${f.name}')"><span style="font-size:18px">🖼️</span><div class="fn2">${f.name}</div><span style="font-size:11px;color:var(--t3)">${f.createdTime?new Date(f.createdTime).toLocaleDateString('pt-BR'):''}</span><span>›</span></div>`).join('')+'</div>';}
+  }catch{st.className='ist er';st.textContent='❌ Erro ao acessar o Drive.';}
+  btn.disabled=false;
 }
 
-async function processarPedidoDrive(fileId, fileName) {
-  const st = document.getElementById('drive-status');
-  const prev = document.getElementById('drive-preview');
-  st.className = 'imp-status loading'; st.textContent = `Lendo "${fileName}" com IA...`; prev.innerHTML = '';
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6', max_tokens: 1000,
-        mcp_servers: [{ type: 'url', url: 'https://drivemcp.googleapis.com/mcp/v1', name: 'gdrive' }],
-        messages: [{ role: 'user', content: `Leia o arquivo de imagem do Google Drive com ID "${fileId}" e extraia as informações do pedido. Retorne SOMENTE JSON válido sem markdown: {"numeroPedido":"","cliente":"","data":"DD/MM/AAAA","produtos":[{"nome":"","quantidade":0,"precoUnitario":0}],"valorTotal":0,"observacoes":""}` }]
-      })
-    });
-    const data = await resp.json();
-    const txt = data.content.filter(b => b.type === 'text').map(b => b.text).join('');
-    let pedido = {};
-    try { const m = txt.match(/\{[\s\S]*\}/); if (m) pedido = JSON.parse(m[0]); } catch {}
-    if (!pedido.numeroPedido && !pedido.cliente) { st.className = 'imp-status err'; st.textContent = '❌ Não foi possível extrair os dados.'; return; }
-    const dup = clientes.some(c => c.visitas?.some(v => v.numPedido && v.numPedido === pedido.numeroPedido));
-    if (dup) { st.className = 'imp-status err'; st.textContent = `❌ Pedido ${pedido.numeroPedido} já cadastrado!`; return; }
-    pedidoImportadoTemp = { ...pedido, fileId, fileName };
-    const cm = clientes.find(c => c.nome.toLowerCase().includes((pedido.cliente || '').toLowerCase().split(' ')[0]));
-    pedidoImportadoTemp.clienteIdx = cm ? clientes.indexOf(cm) : 0;
-    const opts = clientes.map((c, i) => `<option value="${i}" ${i === pedidoImportadoTemp.clienteIdx ? 'selected' : ''}>${c.nome}</option>`).join('');
-    const prods = pedido.produtos?.length ? pedido.produtos.map(p => `<div class="preview-row"><span class="preview-lbl">${p.nome}</span><span class="preview-val">x${p.quantidade}${p.precoUnitario ? ' · ' + fmtR(p.precoUnitario) : ''}</span></div>`).join('') : '<div style="font-size:12px;color:var(--text3)">Nenhum produto extraído</div>';
-    document.getElementById('confirmar-pedido-content').innerHTML = `
-      <div class="fg"><label class="fl">Cliente *</label><select class="fi" id="imp-cliente-sel">${opts}</select></div>
-      <div class="fg"><div class="preview-box"><div class="preview-row"><span class="preview-lbl">Nº Pedido</span><span class="preview-val">${pedido.numeroPedido || '—'}</span></div><div class="preview-row"><span class="preview-lbl">Data</span><span class="preview-val">${pedido.data || '—'}</span></div><div class="preview-row"><span class="preview-lbl">Total</span><span class="preview-val">${pedido.valorTotal ? fmtR(pedido.valorTotal) : '—'}</span></div></div></div>
-      <div class="fg" style="padding-bottom:4px"><label class="fl">Produtos</label><div class="preview-box">${prods}</div></div>
+async function procDrive(fid,fnm){
+  const st=document.getElementById('dst');const pv=document.getElementById('dpv');
+  st.className='ist ld';st.textContent=`Lendo "${fnm}" com IA...`;pv.innerHTML='';
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:2000,mcp_servers:[{type:'url',url:'https://drivemcp.googleapis.com/mcp/v1',name:'gdrive'}],messages:[{role:'user',content:`Leia a imagem do Google Drive ID "${fid}". Extraia as informações do pedido. Retorne SOMENTE JSON válido sem markdown: {"numeroPedido":"","cliente":"","data":"DD/MM/AAAA","condPag":"","produtos":[{"codigo":"","nome":"","peso":"","quantidade":0,"precoUnit":0}],"valorTotal":0,"observacoes":""}`}]})});
+    const d=await r.json();const txt=d.content.filter(b=>b.type==='text').map(b=>b.text).join('');
+    let ped={};try{const m=txt.match(/\{[\s\S]*\}/);if(m)ped=JSON.parse(m[0]);}catch{}
+    if(!ped.numeroPedido&&!ped.cliente){st.className='ist er';st.textContent='❌ Não foi possível extrair os dados.';return;}
+    const dup=clientes.some(c=>c.visitas?.some(v=>v.numPedido&&v.numPedido===ped.numeroPedido));
+    if(dup){st.className='ist er';st.textContent=`❌ Pedido ${ped.numeroPedido} já cadastrado!`;return;}
+    pedTmp={...ped,fid,fnm};
+    const cm=clientes.find(c=>c.nome.toLowerCase().includes((ped.cliente||'').toLowerCase().split(' ')[0]))||clientes[0];
+    pedTmp.cidx=clientes.indexOf(cm);
+    const opts=clientes.map((c,i)=>`<option value="${i}" ${i===pedTmp.cidx?'selected':''}>${c.nome}</option>`).join('');
+    const prods=ped.produtos?.length?ped.produtos.map(p=>`<div class="pr"><span class="pl">${p.codigo||''} ${p.nome}</span><span class="pv">x${p.quantidade}${p.peso?' ('+p.peso+')':''}${p.precoUnit?' · '+fmtR(p.precoUnit):''}</span></div>`).join(''):'<div style="font-size:12px;color:var(--t3)">Nenhum produto extraído</div>';
+    document.getElementById('m-ped-c').innerHTML=`
+      <div class="fg"><label class="fl">Cliente *</label><select class="fi" id="imp-cli">${opts}</select></div>
+      <div class="fg"><div class="pbox">
+        <div class="pr"><span class="pl">Nº Pedido</span><span class="pv">${ped.numeroPedido||'—'}</span></div>
+        <div class="pr"><span class="pl">Data</span><span class="pv">${ped.data||'—'}</span></div>
+        <div class="pr"><span class="pl">Cond. Pagamento</span><span class="pv">${ped.condPag||'—'}</span></div>
+        <div class="pr"><span class="pl">Valor total</span><span class="pv">${ped.valorTotal?fmtR(ped.valorTotal):'—'}</span></div>
+      </div></div>
+      <div class="fg"><label class="fl">Produtos</label><div class="pbox">${prods}</div></div>
+      ${ped.observacoes?`<div class="fg"><label class="fl">Obs.</label><div style="font-size:13px;color:var(--t2);padding:8px 0">${ped.observacoes}</div></div>`:''}
     `;
-    st.className = 'imp-status ok'; st.textContent = '✅ Dados extraídos. Confirme abaixo.';
-    document.getElementById('modal-confirmar-pedido').classList.add('open');
-  } catch { st.className = 'imp-status err'; st.textContent = '❌ Erro ao processar o arquivo.'; }
+    st.className='ist ok';st.textContent='✅ Dados extraídos. Confirme abaixo.';
+    oM('m-ped');
+  }catch{st.className='ist er';st.textContent='❌ Erro ao processar.';}
 }
 
-async function confirmarPedidoImportado() {
-  if (!pedidoImportadoTemp) return;
-  const selIdx = parseInt(document.getElementById('imp-cliente-sel').value);
-  if (isNaN(selIdx) || selIdx < 0) { alert('Selecione o cliente.'); return; }
-  const c = clientes[selIdx];
-  if (!c.visitas) c.visitas = [];
-  const hoje = new Date().toISOString().split('T')[0];
-  const produtos = (pedidoImportadoTemp.produtos || []).map(p => { const idx = PRODUTOS.findIndex(pr => pr.nome.toLowerCase().includes((p.nome || '').toLowerCase().split(' ')[0])); return { idx: idx >= 0 ? idx : 0, qtd: p.quantidade || 0, valor: p.precoUnitario || 0 }; }).filter(p => p.qtd > 0);
-  c.visitas.push({ data: hoje, pedido: true, numPedido: pedidoImportadoTemp.numeroPedido || '', produtos, valorTotal: pedidoImportadoTemp.valorTotal || 0, estoque: [], obs: `Importado via Drive (${pedidoImportadoTemp.fileName})` });
-  c.pedidos = (c.pedidos || 0) + 1; c.status = 'Ativo';
-  await salvarClienteFirebase(c);
-  fecharModal('modal-confirmar-pedido'); renderDash(); renderClientes(); atualizarSub();
-  toast(`Pedido salvo para ${c.nome}!`);
-  pedidoImportadoTemp = null;
-  document.getElementById('drive-status').className = 'imp-status ok';
-  document.getElementById('drive-status').textContent = '✅ Pedido importado com sucesso!';
-  document.getElementById('drive-files-list').innerHTML = '';
+async function confPed(){
+  if(!pedTmp)return;
+  const si=parseInt(document.getElementById('imp-cli').value);
+  if(isNaN(si)||si<0){alert('Selecione o cliente.');return;}
+  const c=clientes[si];
+  if(!c.visitas)c.visitas=[];
+  const hoje=new Date().toISOString().split('T')[0];
+  const produtos=(pedTmp.produtos||[]).map(p=>{
+    const match=PRODUTOS.find(x=>x.cod===p.codigo||(x.nome.toLowerCase().includes((p.nome||'').toLowerCase().split(' ')[0])&&String(x.peso)===String((p.peso||'').replace(/[^0-9.]/g,''))));
+    return{cod:match?.cod||'',qtd:p.quantidade||0,preco:p.precoUnit||match?.precoUnit||0};
+  }).filter(p=>p.qtd>0);
+  c.visitas.push({data:hoje,pedido:true,numPedido:pedTmp.numeroPedido||'',condPag:pedTmp.condPag||'',produtos,valorTotal:pedTmp.valorTotal||0,estoque:[],obs:`Importado via Drive (${pedTmp.fnm})`});
+  c.pedidos=(c.pedidos||0)+1;c.status='Ativo';
+  await salvFB(c);fM('m-ped');rDash();rCli();rFat();toast(`Pedido salvo para ${c.nome}!`);pedTmp=null;
+  document.getElementById('dst').className='ist ok';document.getElementById('dst').textContent='✅ Importado com sucesso!';document.getElementById('dfl').innerHTML='';
 }
 
-function lerPlanilha(event) {
-  const file = event.target.files[0]; if (!file) return;
-  const st = document.getElementById('planilha-status');
-  const prev = document.getElementById('planilha-preview');
-  st.className = 'imp-status loading'; st.textContent = `Lendo "${file.name}" com IA...`; prev.innerHTML = '';
-  const reader = new FileReader();
-  reader.onload = async (e) => {
-    const base64 = btoa(String.fromCharCode(...new Uint8Array(e.target.result)));
-    try {
-      const resp = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-6', max_tokens: 4000,
-          messages: [{ role: 'user', content: [{ type: 'document', source: { type: 'base64', media_type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', data: base64 } }, { type: 'text', text: 'Esta é uma planilha de clientes. Extraia todos e retorne SOMENTE JSON válido sem markdown: [{"nome":"","responsavel":"","telefone":"","tipo":"","endereco":"","status":"Ativo","observacoes":""}]. Tipo: Pet Shop, Agropecuária, Supermercado, Veterinária, Distribuidora, Outro.' }] }]
-        })
-      });
-      const data = await resp.json();
-      const txt = data.content.filter(b => b.type === 'text').map(b => b.text).join('');
-      let lista = [];
-      try { const m = txt.match(/\[[\s\S]*\]/); if (m) lista = JSON.parse(m[0]); } catch {}
-      if (!lista.length) { st.className = 'imp-status err'; st.textContent = '❌ Não foi possível extrair clientes.'; return; }
-      const novos = lista.filter(c => !clientes.some(ex => ex.nome.toLowerCase().trim() === c.nome.toLowerCase().trim()));
-      st.className = 'imp-status ok'; st.textContent = `${lista.length} clientes · ${novos.length} novos · ${lista.length - novos.length} já existentes`;
-      if (novos.length) {
-        const rows = novos.slice(0, 10).map(c => `<div class="preview-row"><span class="preview-lbl">${c.nome}</span><span class="preview-val">${c.tipo || '—'}</span></div>`).join('');
-        prev.innerHTML = `<div class="preview-box">${rows}${novos.length > 10 ? `<div style="font-size:11px;color:var(--text3);padding-top:4px">+${novos.length - 10} mais...</div>` : ''}</div><div class="confirm-btns"><button class="cbtn cancel" onclick="document.getElementById('planilha-preview').innerHTML=''">Cancelar</button><button class="cbtn ok" onclick="importarClientes(${JSON.stringify(novos).replace(/"/g, '&quot;')})">Importar ${novos.length} cliente${novos.length !== 1 ? 's' : ''}</button></div>`;
+// ─── IMPORTAÇÃO PLANILHA ─────────────────────────────────────
+function lerPlanilha(e){
+  const file=e.target.files[0];if(!file)return;
+  const st=document.getElementById('pst');const pv=document.getElementById('ppv');
+  st.className='ist ld';st.textContent=`Lendo "${file.name}"...`;pv.innerHTML='';
+  const reader=new FileReader();
+  reader.onload=async(ev)=>{
+    const b64=btoa(String.fromCharCode(...new Uint8Array(ev.target.result)));
+    try{
+      const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4000,messages:[{role:'user',content:[{type:'document',source:{type:'base64',media_type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',data:b64}},{type:'text',text:'Extraia todos os clientes desta planilha. Retorne SOMENTE JSON válido sem markdown: [{"nome":"","responsavel":"","telefone":"","tipo":"","endereco":"","status":"Ativo","observacoes":""}]. Tipo: Pet Shop, Agropecuária, Supermercado, Veterinária, Distribuidora, Outro.'}]}]})});
+      const d=await r.json();const txt=d.content.filter(b=>b.type==='text').map(b=>b.text).join('');
+      let lista=[];try{const m=txt.match(/\[[\s\S]*\]/);if(m)lista=JSON.parse(m[0]);}catch{}
+      if(!lista.length){st.className='ist er';st.textContent='❌ Não foi possível extrair clientes.';return;}
+      const novos=lista.filter(c=>!clientes.some(ex=>ex.nome.toLowerCase().trim()===c.nome.toLowerCase().trim()));
+      st.className='ist ok';st.textContent=`${lista.length} clientes · ${novos.length} novos · ${lista.length-novos.length} já existentes`;
+      if(novos.length){
+        pv.innerHTML=`<div class="pbox">${novos.slice(0,10).map(c=>`<div class="pr"><span class="pl">${c.nome}</span><span class="pv">${c.tipo||'—'}</span></div>`).join('')}${novos.length>10?`<div style="font-size:11px;color:var(--t3);padding-top:4px">+${novos.length-10} mais...</div>`:''}</div><div class="cbs"><button class="cbcl" onclick="document.getElementById('ppv').innerHTML=''">Cancelar</button><button class="cbok" onclick="impClientes(${JSON.stringify(novos).replace(/"/g,'&quot;')})">Importar ${novos.length}</button></div>`;
       }
-    } catch { st.className = 'imp-status err'; st.textContent = '❌ Erro ao processar a planilha.'; }
+    }catch{st.className='ist er';st.textContent='❌ Erro ao processar.';}
   };
   reader.readAsArrayBuffer(file);
 }
 
-async function importarClientes(novos) {
-  try {
-    const lista = typeof novos === 'string' ? JSON.parse(novos) : novos;
-    for (const c of lista) {
-      const id = Date.now().toString() + Math.random().toString(36).slice(2);
-      const novo = { id, nome: c.nome, resp: c.responsavel || '', tel: c.telefone || '', tipo: c.tipo || 'Outro', end: c.endereco || '', status: c.status || 'Ativo', proxVisita: '', obs: c.observacoes || '', mix: [], visitas: [], pedidos: 0 };
-      clientes.push(novo); await salvarClienteFirebase(novo);
+async function impClientes(novos){
+  try{
+    const lista=typeof novos==='string'?JSON.parse(novos):novos;
+    for(const c of lista){
+      const id=Date.now().toString()+Math.random().toString(36).slice(2);
+      const n={id,nome:c.nome,resp:c.responsavel||'',tel:c.telefone||'',tipo:c.tipo||'Outro',end:c.endereco||'',status:c.status||'Ativo',proxVisita:'',obs:c.observacoes||'',mix:[],visitas:[],pedidos:0};
+      clientes.push(n);await salvFB(n);
     }
-    clientes.sort((a, b) => a.nome?.localeCompare(b.nome));
-    renderDash(); renderClientes(); atualizarSub();
-    document.getElementById('planilha-status').className = 'imp-status ok';
-    document.getElementById('planilha-status').textContent = `✅ ${lista.length} cliente${lista.length !== 1 ? 's' : ''} importado${lista.length !== 1 ? 's' : ''}!`;
-    document.getElementById('planilha-preview').innerHTML = '';
-    toast(`${lista.length} clientes importados!`);
-  } catch { document.getElementById('planilha-status').className = 'imp-status err'; document.getElementById('planilha-status').textContent = '❌ Erro ao importar.'; }
-}
-
-function fecharModal(id) { document.getElementById(id).classList.remove('open'); }
-function setFilter(el) { document.querySelectorAll('.fchip').forEach(e => e.classList.remove('active')); el.classList.add('active'); filtroAtivo = el.dataset.f; renderClientes(); }
-function voltarDaFicha() { goScreen('clientes'); }
-function atualizarSub() { const a = clientes.filter(c => c.status === 'Ativo').length; document.getElementById('hdr-sub').textContent = `${clientes.length} clientes · ${a} ativos`; }
-
-function goScreen(s) {
-  document.querySelectorAll('.screen').forEach(e => e.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(e => e.classList.remove('active'));
-  document.getElementById('screen-' + s).classList.add('active');
-  const nb = document.getElementById('nav-' + s); if (nb) nb.classList.add('active');
-  const bk = document.getElementById('btn-back');
-  const hn = document.getElementById('hdr-novo');
-  if (s === 'ficha') {
-    bk.style.display = 'flex';
-    document.getElementById('hdr-title').textContent = clientes[cidx]?.nome || 'Cliente';
-    document.getElementById('hdr-sub').textContent = 'Ficha do cliente';
-    hn.style.display = 'none';
-  } else {
-    bk.style.display = 'none';
-    document.getElementById('hdr-title').textContent = 'PFS Clientes';
-    atualizarSub();
-    hn.style.display = s === 'clientes' ? 'flex' : 'none';
-  }
+    clientes.sort((a,b)=>(a.nome||'').localeCompare(b.nome||''));
+    rDash();rCli();rSub();
+    document.getElementById('pst').className='ist ok';document.getElementById('pst').textContent=`✅ ${lista.length} cliente${lista.length!==1?'s':''} importado${lista.length!==1?'s':''}!`;
+    document.getElementById('ppv').innerHTML='';toast(`${lista.length} clientes importados!`);
+  }catch{document.getElementById('pst').className='ist er';document.getElementById('pst').textContent='❌ Erro ao importar.';}
 }
 </script>
 </body>
