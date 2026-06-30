@@ -646,6 +646,7 @@ function init() {
           var salvasSemDuplicar = cs.visitas.filter(function(v){return !chavesHist[v.data] || !v.historico;});
           encontrado.visitas = historicas.concat(salvasSemDuplicar).sort(function(a,b){return a.data.localeCompare(b.data);});
         }
+        if(cs.historicoFat && cs.historicoFat.length) encontrado.historicoFat = cs.historicoFat;
         if(cs.mix && cs.mix.length) encontrado.mix = cs.mix;
         if(cs.resp) encontrado.resp = cs.resp;
         if(cs.tel) encontrado.tel = cs.tel;
@@ -655,6 +656,8 @@ function init() {
       }
     });
   }
+  // Garante que nenhum cliente fique com mais de 10 visitas detalhadas (arquiva excedentes)
+  clientes.forEach(function(c){arquivarVisitasAntigas(c);});
   dbSave();
   var m = null;
   try { m = JSON.parse(localStorage.getItem('pfs_meta') || 'null'); } catch(e){}
@@ -699,6 +702,32 @@ function go(s,push){
 function voltar(){hist.pop();var prev=hist.length?hist[hist.length-1]:'dash';hist.pop();go(prev);}
 function rSub(){var a=clientes.filter(function(c){return c.status==='Ativo';}).length;document.getElementById('hdrs').textContent=clientes.length+' clientes / '+a+' ativos';}
 
+function pedidosDoCliente(c){
+  // Combina pedidos das visitas detalhadas (10 mais recentes) com o historico arquivado (resumido)
+  var dasVisitas=(c.visitas||[]).filter(function(v){return v.pedido&&v.valorTotal>0;});
+  var doArquivo=(c.historicoFat||[]).map(function(h){return{data:h.data,pedido:true,valorTotal:h.valorTotal,kgTotal:h.kgTotal,produtos:[],arquivado:true};});
+  return dasVisitas.concat(doArquivo);
+}
+function arquivarVisitasAntigas(c){
+  // Mantem apenas as 10 visitas detalhadas mais recentes por cliente.
+  // As excedentes tem seu valor/kg/data resumidos em c.historicoFat (leve, sem produtos/observacoes)
+  // para que faturamento mensal e graficos continuem corretos mesmo apos o arquivamento.
+  if(!c.visitas||c.visitas.length<=10)return;
+  c.visitas.sort(function(a,b){return a.data.localeCompare(b.data);});
+  var excedentes=c.visitas.slice(0,c.visitas.length-10);
+  var recentes=c.visitas.slice(c.visitas.length-10);
+  if(!c.historicoFat)c.historicoFat=[];
+  excedentes.forEach(function(v){
+    if(v.pedido&&v.valorTotal>0){
+      c.historicoFat.push({
+        data:v.data,
+        valorTotal:v.valorTotal,
+        kgTotal:v.kgTotal||(v.produtos||[]).reduce(function(s,p){var pr=P.find(function(x){return x.cod===p.cod;});return pr&&pr.u==='kg'?s+p.qtd*pr.kg:s;},0)
+      });
+    }
+  });
+  c.visitas=recentes;
+}
 function rDash(){
   var at=clientes.filter(function(c){return c.status==='Ativo';});
   var atr=clientes.filter(function(c){return svCor(c)==='r';});
@@ -716,11 +745,9 @@ function rDash(){
   // Agregar faturamento por mes (AAAA-MM) - todos os clientes
   var fatPorMes={};
   clientes.forEach(function(c){
-    (c.visitas||[]).forEach(function(v){
-      if(v.pedido&&v.valorTotal>0){
-        var k=v.data.slice(0,7);
-        fatPorMes[k]=(fatPorMes[k]||0)+v.valorTotal;
-      }
+    pedidosDoCliente(c).forEach(function(v){
+      var k=v.data.slice(0,7);
+      fatPorMes[k]=(fatPorMes[k]||0)+v.valorTotal;
     });
   });
   var mesesOrd=Object.keys(fatPorMes).sort();
@@ -772,10 +799,9 @@ function rDash(){
   // Clientes inativos (sem pedido ha mais tempo) - considera apenas clientes ativos com pelo menos uma compra
   var hoje=new Date();
   var comUltimaCompra=clientes.filter(function(c){
-    var peds=(c.visitas||[]).filter(function(v){return v.pedido&&v.valorTotal>0;});
-    return peds.length>0;
+    return pedidosDoCliente(c).length>0;
   }).map(function(c){
-    var peds=(c.visitas||[]).filter(function(v){return v.pedido&&v.valorTotal>0;});
+    var peds=pedidosDoCliente(c);
     var ultima=peds.sort(function(a,b){return b.data.localeCompare(a.data);})[0];
     var dias=Math.floor((hoje-new Date(ultima.data))/86400000);
     return {c:c,dias:dias,data:ultima.data};
@@ -789,25 +815,36 @@ function rDash(){
   }).join(''):'<div style="padding:4px 14px 6px;font-size:12px;color:#999">Nenhum cliente ha mais de 30 dias sem comprar</div>';
 
   // Top 5 produtos por valor vendido (historico completo)
+  // Agrupa por nome+peso normalizado (nao so codigo) para evitar duplicar o mesmo produto fisico
+  // quando codigos divergem entre o catalogo atual e a planilha de faturamento historica
   var prodValor={};
-  var prodNomeFallback={};
   clientes.forEach(function(c){
     (c.visitas||[]).forEach(function(v){
       if(v.pedido&&v.produtos&&v.produtos.length){
         v.produtos.forEach(function(p){
           if(p.qtd>0){
             var val=(p.preco||0)*p.qtd;
-            prodValor[p.cod]=(prodValor[p.cod]||0)+val;
-            if(p.descPlanilha)prodNomeFallback[p.cod]=p.descPlanilha;
+            var prCat=P.find(function(x){return x.cod===p.cod;});
+            var nomeExibir,pesoKey;
+            if(prCat){
+              nomeExibir=prCat.n+' '+prCat.kg+(prCat.u==='kg'?'kg':prCat.u==='g'?'g':'un');
+              pesoKey=prCat.kg+prCat.u;
+            } else {
+              nomeExibir=p.descPlanilha||p.cod;
+              var mPeso=(p.descPlanilha||'').match(/([\d,]+)\s*KG/i);
+              pesoKey=mPeso?mPeso[1].replace(',','.')+'kg':p.cod;
+            }
+            var nomeBase=(prCat?prCat.n:(p.descPlanilha||'').replace(/[\d,]+\s*KG.*$/i,'')).toUpperCase().replace(/\s+/g,' ').trim();
+            var chave=nomeBase+'|'+pesoKey;
+            if(!prodValor[chave])prodValor[chave]={valor:0,nomeExibir:nomeExibir};
+            prodValor[chave].valor+=val;
           }
         });
       }
     });
   });
-  var topProd=Object.keys(prodValor).map(function(cod){
-    var p=P.find(function(x){return x.cod===cod;});
-    var nomeP=p?p.n+' '+p.s:(prodNomeFallback[cod]||cod);
-    return {nome:nomeP,valor:prodValor[cod]};
+  var topProd=Object.keys(prodValor).map(function(k){
+    return {nome:prodValor[k].nomeExibir,valor:prodValor[k].valor};
   }).sort(function(a,b){return b.valor-a.valor;}).slice(0,5);
   var topEl=document.getElementById('dtop');
   if(topProd.length){
@@ -1200,10 +1237,13 @@ function tgMix(cod){var el=document.getElementById('mx_'+cod);var i=mixTmp.index
 function savMix(){clientes[cidx].mix=mixTmp.slice();sav(clientes[cidx]).then(function(){fM('m-mix');rMix(clientes[cidx]);toast('Mix salvo!');});}
 
 function totalUltimaVisita(c){
-  // Retorna {cod: totalAnterior} = estoque que ficou + quantidade pedida na ultima visita
+  // Retorna {cod: totalAnterior} = estoque que ficou + quantidade pedida na ultima visita REAL
+  // (visitas historicas importadas do faturamento nao tem contagem real de estoque/qtd, entao sao ignoradas)
   var totais={};
   if(!c.visitas||!c.visitas.length)return totais;
-  var ultima=c.visitas[c.visitas.length-1];
+  var visitasReais=c.visitas.filter(function(v){return !v.historico;});
+  if(!visitasReais.length)return totais;
+  var ultima=visitasReais[visitasReais.length-1];
   (ultima.estoque||[]).forEach(function(e){
     if(e.qtd>0)totais[e.cod]=(totais[e.cod]||0)+e.qtd;
   });
@@ -1228,9 +1268,8 @@ function bLinha(tipo){
     prods.forEach(function(p){
       if(tipo==='est'){
         var sug=totAnt[p.cod]||0;
-        var cls=sug===0?'':sug<=2?' bx':sug<=5?' md':' ok';
         var refTag=sug>0?'<div style="font-size:9px;color:#999;margin-top:1px">Visita anterior: '+sug+'</div>':'';
-        h+='<div class="eitem"><div class="ei"><div class="einm">'+p.n+'</div><div class="eisb">'+p.s+' / '+fmtP(p)+'</div>'+refTag+'</div><div class="ctr"><button class="cb2" onclick="chg(\'ec_'+p.cod+'\',-1)">-</button><div class="cv'+cls+'" id="ec_'+p.cod+'">'+sug+'</div><button class="cb2" onclick="chg(\'ec_'+p.cod+'\',1)">+</button></div></div>';
+        h+='<div class="eitem"><div class="ei"><div class="einm">'+p.n+'</div><div class="eisb">'+p.s+' / '+fmtP(p)+'</div>'+refTag+'</div><div class="ctr"><button class="cb2" onclick="chg(\'ec_'+p.cod+'\',-1)">-</button><div class="cv" id="ec_'+p.cod+'">0</div><button class="cb2" onclick="chg(\'ec_'+p.cod+'\',1)">+</button></div></div>';
       }
       else{h+='<div class="pitem"><div class="pi2"><div class="einm">'+p.n+'</div><div class="eisb">'+p.s+' / '+fmtP(p)+' PDV:'+fmtR(p.pdv)+'</div></div><div class="pins"><div><input type="number" class="ps" id="pq_'+p.cod+'" value="0" min="0"><div class="plb">Qtd</div></div><div><input type="number" class="ps" id="pv_'+p.cod+'" placeholder="'+p.pu.toFixed(2)+'" step="0.01"><div class="plb">Preco</div></div></div></div>';}
     });
@@ -1271,6 +1310,7 @@ function savVis(){
   c.visitas.push({data:data,pedido:pedOn,numPedido:np,condPag:cp,produtos:prods,valorTotal:vt,estoque:est,obs:document.getElementById('v-ob').value.trim()});
   if(pedOn&&prods.length)c.pedidos=(c.pedidos||0)+1;
   if(pv)c.proxVisita=pv;c.status='Ativo';
+  arquivarVisitasAntigas(c);
   sav(c).then(function(){fM('m-vis');rDash();rCli();rVis(c);rFat();toast('Visita salva!');});
 }
 
@@ -1298,7 +1338,7 @@ function savCli(){
 
 function rFat(){
   var meses=[];var ms={};
-  clientes.forEach(function(c){(c.visitas||[]).forEach(function(v){if(v.pedido&&v.valorTotal>0){var p=v.data.split('-');var k=p[0]+'-'+p[1];if(!ms[k]){ms[k]=true;meses.push(k);}}});});
+  clientes.forEach(function(c){pedidosDoCliente(c).forEach(function(v){var p=v.data.split('-');var k=p[0]+'-'+p[1];if(!ms[k]){ms[k]=true;meses.push(k);}});});
   var am=new Date().getFullYear()+'-'+String(new Date().getMonth()+1).padStart(2,'0');
   if(!ms[am])meses.push(am);meses.sort();meses=meses.slice(-12);
   if(!fatMes||meses.indexOf(fatMes)<0)fatMes=meses[0];
@@ -1314,7 +1354,7 @@ function rFat(){
     btn.addEventListener('click',function(){sMes(m);});
     mselEl.appendChild(btn);
   });
-  var pM=[];clientes.forEach(function(c){(c.visitas||[]).forEach(function(v){if(v.pedido&&v.valorTotal>0&&v.data.indexOf(fatMes)===0)pM.push({c:c,v:v});});});
+  var pM=[];clientes.forEach(function(c){pedidosDoCliente(c).forEach(function(v){if(v.data.indexOf(fatMes)===0)pM.push({c:c,v:v});});});
   var tR=pM.reduce(function(s,x){return s+(x.v.valorTotal||0);},0);
   var tKg=pM.reduce(function(s,x){
     if(x.v.kgTotal)return s+x.v.kgTotal;
@@ -1325,7 +1365,7 @@ function rFat(){
   var meta=fatMeta[fatMes];var mi=document.getElementById('minp');if(mi)mi.value=meta||'';
   var mp=document.getElementById('mprog');
   if(meta&&meta>0){mp.style.display='block';var pct=Math.min(100,Math.round((tR/meta)*100));document.getElementById('mpct').textContent=pct+'%';document.getElementById('mfill').style.width=pct+'%';document.getElementById('mtxt').textContent=pct>=100?'Meta atingida!':'Faltam '+fmtR(meta-tR);}else{mp.style.display='none';}
-  var pC={};clientes.forEach(function(c){var ps=(c.visitas||[]).filter(function(v){return v.pedido&&v.valorTotal>0&&v.data.indexOf(fatMes)===0;});if(!ps.length)return;pC[c.id]={nome:c.nome,valor:ps.reduce(function(s,v){return s+(v.valorTotal||0);},0),idx:clientes.indexOf(c)};});
+  var pC={};clientes.forEach(function(c){var ps=pedidosDoCliente(c).filter(function(v){return v.data.indexOf(fatMes)===0;});if(!ps.length)return;pC[c.id]={nome:c.nome,valor:ps.reduce(function(s,v){return s+(v.valorTotal||0);},0),idx:clientes.indexOf(c)};});
   var rank=Object.values(pC).sort(function(a,b){return b.valor-a.valor;});var mxV=rank.length?rank[0].valor:1;
   var rl=document.getElementById('rklist');
   rl.innerHTML=rank.length?rank.slice(0,10).map(function(r,i){var pc=i<3?'p'+(i+1):'';return'<div class="rkc" onclick="aFicha('+r.idx+')"><div class="rkt"><div class="rkp '+pc+'">'+(i+1)+'</div><div class="rkn">'+r.nome+'</div><div class="rkv">'+fmtR(r.valor)+'</div></div><div class="rkb"><div class="rkbf" style="width:'+Math.round(r.valor/mxV*100)+'%"></div></div></div>';}).join(''):'<div style="padding:4px 14px 6px;font-size:12px;color:#999">Nenhum pedido neste mes</div>';
@@ -1387,6 +1427,7 @@ function confPed(){
   var prods=(pedTmp.produtos||[]).map(function(p){var match=P.find(function(x){return x.cod===p.codigo||x.n.toLowerCase().indexOf((p.nome||'').toLowerCase().split(' ')[0])>=0;});return{cod:match?match.cod:'',qtd:p.quantidade||0,preco:p.precoUnit||0};}).filter(function(p){return p.qtd>0;});
   c.visitas.push({data:hoje,pedido:true,numPedido:pedTmp.numeroPedido||'',condPag:pedTmp.condPag||'',produtos:prods,valorTotal:pedTmp.valorTotal||0,estoque:[],obs:'Importado via Drive ('+pedTmp.fnm+')'});
   c.pedidos=(c.pedidos||0)+1;c.status='Ativo';
+  arquivarVisitasAntigas(c);
   sav(c).then(function(){fM('m-ped');rDash();rCli();rFat();toast('Pedido salvo para '+c.nome+'!');pedTmp=null;document.getElementById('dst').className='ist ok';document.getElementById('dst').textContent='Importado com sucesso!';document.getElementById('dfl').innerHTML='';});
 }
 
