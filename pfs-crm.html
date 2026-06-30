@@ -1030,7 +1030,7 @@ function rProd(){
     var gsKeys=Object.keys(gs).sort();gsKeys.forEach(function(key){var plist=gs[key];
       var p0=plist[0];
       var sizeTags=plist.map(function(p){
-        return '<span class="tpes tpes-link" data-cod="'+p.cod+'" style="cursor:pointer">'+fmtP(p)+' <b style="color:var(--gr)">'+fmtR(p.pdv)+'</b></span>';
+        return '<span class="tpes tpes-link" data-cod="'+p.cod+'" style="cursor:pointer">'+fmtP(p)+' <b style="color:var(--gr)">'+fmtR(p.puImp)+'</b></span>';
       }).join('');
       h+='<div class="pi pcard" data-cod="'+p0.cod+'">';
       h+='<div class="pinm">'+p0.n+'</div>';
@@ -1058,7 +1058,7 @@ function aFicha(idx){
   document.getElementById('fnm').textContent=c.nome;
   document.getElementById('ftp').textContent=(c.tipo||'')+(c.end?' / '+c.end:'');
   document.getElementById('fbg').innerHTML='<div class="fbdg">'+statusReal(c)+'</div>'+(c.proxVisita?'<div class="fbdg">Prox: '+fmtD(c.proxVisita)+'</div>':'')+(c.pedidos?'<div class="fbdg">'+c.pedidos+' pedido'+(c.pedidos!==1?'s':'')+'</div>':'');
-  document.getElementById('finfo').innerHTML='<div class="ir"><span class="il">Responsavel</span><span class="iv">'+(c.resp||'--')+'</span></div><div class="ir"><span class="il">Telefone</span><span class="iv">'+(c.tel||'--')+'</span></div><div class="ir"><span class="il">Endereco</span><span class="iv">'+(c.end||'--')+'</span></div><div class="ir"><span class="il">Total pedidos</span><span class="iv">'+(c.pedidos||0)+'</span></div><div class="ir"><span class="il">Prox. visita</span><span class="iv">'+fmtD(c.proxVisita)+'</span></div>'+(c.obs?'<div class="ir"><span class="il">Obs.</span><span class="iv">'+c.obs+'</span></div>':'');
+  document.getElementById('finfo').innerHTML='<div class="ir"><span class="il">Responsavel</span><span class="iv">'+(c.resp||'--')+'</span></div><div class="ir"><span class="il">Prox. visita</span><span class="iv">'+fmtD(c.proxVisita)+'</span></div>'+(c.obs?'<div class="ir"><span class="il">Obs.</span><span class="iv">'+c.obs+'</span></div>':'');
   rMix(c);rVis(c);hist.push('cli');go('fic');
 }
 
@@ -1291,7 +1291,7 @@ function bLinha(tipo,pfx){
         var refTag=sug>0?'<div style="font-size:9px;color:#999;margin-top:1px">Visita anterior: '+sug+'</div>':'';
         h+='<div class="eitem"><div class="ei"><div class="einm">'+p.n+' <span style="color:var(--dk);font-weight:700">'+fmtP(p)+'</span></div><div class="eisb">'+p.s+'</div>'+refTag+'</div><div class="ctr"><button class="cb2" onclick="chg(\''+pfx+'ec_'+p.cod+'\',-1)">-</button><div class="cv" id="'+pfx+'ec_'+p.cod+'">0</div><button class="cb2" onclick="chg(\''+pfx+'ec_'+p.cod+'\',1)">+</button></div></div>';
       }
-      else{h+='<div class="pitem"><div class="pi2"><div class="einm">'+p.n+' <span style="color:var(--dk);font-weight:700">'+fmtP(p)+'</span></div><div class="eisb">'+p.s+' / PDV:'+fmtR(p.pdv)+'</div></div><div class="pins"><div><input type="number" class="ps" id="'+pfx+'pq_'+p.cod+'" value="0" min="0"><div class="plb">Qtd</div></div><div><input type="number" class="ps" id="'+pfx+'pv_'+p.cod+'" placeholder="'+p.pu.toFixed(2)+'" step="0.01"><div class="plb">Preco</div></div></div></div>';}
+      else{h+='<div class="pitem"><div class="pi2"><div class="einm">'+p.n+' <span style="color:var(--dk);font-weight:700">'+fmtP(p)+'</span></div><div class="eisb">'+p.s+' / Custo: '+fmtR(p.puImp)+' / PDV: '+fmtR(p.pdv)+'</div></div><div class="pins"><div><input type="number" class="ps" id="'+pfx+'pq_'+p.cod+'" value="0" min="0"><div class="plb">Qtd</div></div><div><input type="number" class="ps" id="'+pfx+'pv_'+p.cod+'" placeholder="'+p.puImp.toFixed(2)+'" step="0.01"><div class="plb">Preco</div></div></div></div>';}
     });
     h+='</div>';
   });
