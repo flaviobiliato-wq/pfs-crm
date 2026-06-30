@@ -5,3 +5,1312 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>PFS CRM</title>
 <style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--dk:#1B3A4B;--gr:#2E7D52;--am:#E8A020;--rd:#C0392B}
+body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#F5F0E8;color:#1a1a1a;max-width:480px;margin:0 auto;display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.hdr{background:var(--dk);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.ht{font-size:16px;font-weight:600}.hs{font-size:11px;opacity:.7;margin-top:1px}
+.hbtn{background:rgba(255,255,255,.18);border:none;color:#fff;border-radius:7px;padding:5px 10px;font-size:12px;cursor:pointer}
+.nav{background:#fff;border-top:1px solid #e0dbd0;display:flex;flex-shrink:0}
+.nb{flex:1;border:none;background:none;padding:9px 4px 7px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:#999;font-family:inherit}
+.nb.on{color:var(--dk)}.ni{font-size:18px}
+.scr{display:none;flex:1;overflow-y:auto;flex-direction:column}.scr.on{display:flex}
+.dbanner{background:var(--dk);color:#fff;padding:14px 16px 18px}
+.dbanner p{font-size:12px;opacity:.7;margin-bottom:2px}.dbanner h2{font-size:18px;font-weight:600}
+.mets{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 14px 6px}
+.met{background:#fff;border:1px solid #e0dbd0;border-radius:10px;padding:12px;border-left:4px solid #ccc}
+.met.b{border-left-color:var(--dk)}.met.g{border-left-color:var(--gr)}.met.r{border-left-color:var(--rd)}.met.a{border-left-color:var(--am)}
+.mv{font-size:22px;font-weight:600;line-height:1;margin-bottom:3px}.ml{font-size:11px;color:#999}
+.st{font-size:11px;font-weight:600;color:#999;padding:8px 14px 4px;text-transform:uppercase;letter-spacing:.05em}
+.rc{background:#fff;border:1px solid #e0dbd0;border-radius:10px;margin:0 14px 6px;padding:10px 12px;cursor:pointer}
+.rt{display:flex;justify-content:space-between;margin-bottom:2px}.rn{font-size:13px;font-weight:600}.rd2{font-size:11px;color:#999}
+.rs{font-size:11px;color:#666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sw{padding:8px 14px;background:#F5F0E8}
+.si{display:flex;align-items:center;background:#fff;border:1px solid #e0dbd0;border-radius:8px;padding:7px 10px;gap:6px;font-size:13px;color:#999}
+.si input{border:none;background:none;width:100%;font-size:13px;color:#1a1a1a;outline:none;font-family:inherit}
+.flt{display:flex;gap:5px;padding:6px 14px 8px;overflow-x:auto;scrollbar-width:none}.flt::-webkit-scrollbar{display:none}
+.fc{border:1px solid #e0dbd0;border-radius:16px;padding:4px 10px;font-size:11px;white-space:nowrap;cursor:pointer;background:#fff;color:#666;flex-shrink:0;font-family:inherit}
+.fc.on{background:var(--dk);color:#fff;border-color:var(--dk)}
+.cl{padding:0 14px;display:flex;flex-direction:column;gap:6px;padding-bottom:70px}
+.cc{background:#fff;border:1px solid #e0dbd0;border-radius:10px;overflow:hidden;cursor:pointer;display:flex}
+.sb{width:4px;flex-shrink:0}.sb.v{background:var(--gr)}.sb.a{background:var(--am)}.sb.r{background:var(--rd)}.sb.c{background:#ccc}
+.cb{padding:10px 12px;flex:1;min-width:0}
+.ct{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2px}
+.cn{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;margin-right:6px}
+.cbg{font-size:10px;padding:1px 7px;border-radius:8px;white-space:nowrap;flex-shrink:0}
+.ba{background:#dcfce7;color:#166534}.bp{background:#dbeafe;color:#1e40af}.bi{background:#fee2e2;color:#991b1b}
+.ctp{font-size:11px;color:#999;margin-bottom:4px}.cbt{display:flex;justify-content:space-between;align-items:center}
+.cla{font-size:11px;color:#666}.cdy{font-size:10px;padding:1px 7px;border-radius:8px;font-weight:600}
+.dok{background:#dcfce7;color:#166534}.dw{background:#fef9c3;color:#854d0e}.dl{background:#fee2e2;color:#991b1b}.dn{background:#dbeafe;color:#1e40af}
+.emp{text-align:center;padding:30px 16px;color:#999;font-size:13px}
+.fab{position:fixed;bottom:62px;right:max(16px,calc(50% - 224px));width:48px;height:48px;border-radius:50%;background:var(--gr);border:none;color:#fff;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(0,0,0,.2);z-index:20}
+.plinha{background:#fff;border:1px solid #e0dbd0;border-radius:10px;overflow:hidden;margin-bottom:6px}
+.plhdr{display:flex;align-items:center;gap:8px;padding:11px 12px;cursor:pointer;user-select:none}
+.plico{font-size:20px;width:30px;text-align:center;flex-shrink:0}.plnm{font-size:14px;font-weight:600;flex:1}
+.plcnt{font-size:11px;color:#999}.plarr{font-size:16px;color:#999;transition:transform .2s;flex-shrink:0}
+.plinha.open .plarr{transform:rotate(90deg)}.plbody{display:none;border-top:1px solid #f0ebe0}
+.plinha.open .plbody{display:block}
+.pi{padding:10px 12px;border-bottom:1px solid #f8f4ee}.pi:last-child{border-bottom:none}
+.pinm{font-size:12px;font-weight:600;margin-bottom:2px}.pisb{font-size:10px;color:#999;margin-bottom:4px}
+.pitgs{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.tcod{font-size:9px;background:#f0ebe0;border-radius:3px;padding:1px 5px;color:#666}
+.tpes{font-size:10px;background:#F5F0E8;border:1px solid #e0dbd0;border-radius:3px;padding:1px 6px;color:#666;font-weight:500}
+.tpdv{font-size:10px;color:var(--gr);font-weight:600}
+.fhdr{background:var(--dk);color:#fff;padding:12px 14px}
+.fnm{font-size:16px;font-weight:600;margin-bottom:2px}.ftp{font-size:11px;opacity:.7}
+.fbg{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
+.fbdg{font-size:10px;padding:2px 8px;border-radius:8px;background:rgba(255,255,255,.18)}
+.fsec{padding:10px 14px;border-bottom:1px solid #f0ebe0}
+.fst{font-size:10px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.fst a{font-size:10px;color:var(--dk);cursor:pointer;text-transform:none;letter-spacing:0}
+.ir{display:flex;gap:8px;padding:5px 0;border-bottom:1px solid #f8f4ee;font-size:12px}.ir:last-child{border-bottom:none}
+.il{color:#999;flex:1}.iv{font-weight:500;text-align:right;max-width:200px;font-size:11px}
+.arow{display:flex;gap:6px;padding:10px 14px}
+.abtn{flex:1;padding:9px 4px;border:1px solid #e0dbd0;border-radius:8px;background:#fff;font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px;color:#1a1a1a;font-family:inherit}
+.abtn.p{background:var(--gr);border-color:var(--gr);color:#fff}
+.vc{background:#fff;border:1px solid #e0dbd0;border-radius:10px;margin:0 14px 6px;padding:10px 12px}
+.vt{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.vd{font-size:12px;font-weight:600}.vp{font-size:10px;padding:1px 7px;border-radius:7px;background:#dcfce7;color:#166534}
+.vo{font-size:11px;color:#666;margin-top:2px}.vest{margin-top:5px;padding-top:5px;border-top:1px solid #f0ebe0}
+.er{display:flex;justify-content:space-between;font-size:10px;padding:1px 0}
+.en{color:#666;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:6px}
+.ev{font-weight:600;white-space:nowrap}.ev.bx{color:var(--rd)}.ev.ok{color:var(--gr)}
+.nv{text-align:center;padding:20px;color:#999;font-size:12px}
+.vdel{background:none;border:none;cursor:pointer;color:var(--rd);font-size:12px;padding:0;font-family:inherit;margin-left:4px}
+.mxi{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f8f4ee;font-size:12px}.mxi:last-child{border-bottom:none}
+.mxt{width:20px;height:20px;border-radius:5px;border:1.5px solid #ccc;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px}
+.mxt.on{background:var(--gr);border-color:var(--gr);color:#fff}
+.fhdrb{background:var(--dk);color:#fff;padding:12px 14px}
+.fat-t{font-size:16px;font-weight:600;margin-bottom:2px}.fat-s{font-size:11px;opacity:.7}
+.msel{display:flex;gap:5px;padding:8px 14px 4px;overflow-x:auto;scrollbar-width:none}.msel::-webkit-scrollbar{display:none}
+.mchip{border:1px solid #e0dbd0;border-radius:16px;padding:4px 10px;font-size:11px;white-space:nowrap;cursor:pointer;background:#fff;color:#666;flex-shrink:0;font-family:inherit}
+.mchip.on{background:var(--dk);color:#fff;border-color:var(--dk)}
+.fatm{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 14px 6px}
+.fatmet{background:#fff;border:1px solid #e0dbd0;border-radius:10px;padding:12px;border-left:4px solid transparent}
+.fatmet.g{border-left-color:var(--gr)}.fatmet.b{border-left-color:var(--dk)}
+.fatv{font-size:18px;font-weight:600;margin-bottom:3px}.fatl{font-size:11px;color:#999}
+.mw{margin:0 14px 10px;background:#fff;border:1px solid #e0dbd0;border-radius:10px;padding:12px}
+.mrow{display:flex;gap:6px;align-items:center;margin-bottom:8px}
+.minp{flex:1;border:1px solid #e0dbd0;border-radius:7px;padding:7px 10px;font-size:13px;background:#fff;color:#1a1a1a;outline:none;font-family:inherit}
+.mbtn{padding:7px 12px;border:none;border-radius:7px;background:var(--dk);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.mbar{height:8px;background:#e0e0e0;border-radius:4px;overflow:hidden;margin-bottom:4px}
+.mfill{height:100%;background:var(--gr);border-radius:4px;transition:width .5s}
+.mtxt{font-size:10px;color:#999}
+.rkc{background:#fff;border:1px solid #e0dbd0;border-radius:10px;margin:0 14px 6px;padding:10px 12px;cursor:pointer}
+.rkt{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.rkp{width:22px;height:22px;border-radius:50%;background:var(--dk);color:#fff;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rkp.p1{background:#F5A623}.rkp.p2{background:#9B9B9B}.rkp.p3{background:#7B5E3A}
+.rkn{font-size:12px;font-weight:600;flex:1}.rkv{font-size:11px;color:var(--gr);font-weight:600}
+.rkb{height:3px;background:#e0e0e0;border-radius:2px;overflow:hidden}.rkbf{height:100%;background:var(--gr);border-radius:2px}
+.ic{background:#fff;border:1px solid #e0dbd0;border-radius:12px;margin:10px 14px;overflow:hidden}
+.ich{padding:12px 14px;border-bottom:1px solid #e0dbd0;display:flex;align-items:center;gap:8px}
+.ichi{font-size:20px}.ict{font-size:14px;font-weight:600}.ics{font-size:11px;color:#999}
+.icb{padding:12px 14px}
+.iin{font-size:12px;color:#666;line-height:1.6;margin-bottom:10px}.iin strong{color:#1a1a1a}
+.ibtn{width:100%;padding:11px;border:none;border-radius:8px;background:var(--dk);color:#fff;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:8px;font-family:inherit}
+.ibtn:disabled{opacity:.5;cursor:not-allowed}
+.ist{font-size:12px;text-align:center;padding:4px 0;min-height:18px}
+.ist.ok{color:var(--gr)}.ist.er{color:var(--rd)}.ist.ld{color:var(--am)}
+.flist{display:flex;flex-direction:column;gap:5px;margin-top:6px}
+.fitem{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#F5F0E8;border:1px solid #e0dbd0;border-radius:7px;cursor:pointer;font-size:12px}
+.fnm2{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ua{border:2px dashed #e0dbd0;border-radius:8px;padding:20px 14px;text-align:center;cursor:pointer;margin-bottom:8px}
+.pbox{background:#F5F0E8;border:1px solid #e0dbd0;border-radius:7px;padding:8px 10px;margin-top:8px;font-size:11px;max-height:140px;overflow-y:auto}
+.prow{display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px solid #e0dbd0;gap:6px}
+.prow:last-child{border-bottom:none}.pl{color:#999;flex-shrink:0}.pv{font-weight:600;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cbts{display:flex;gap:6px;margin-top:8px}
+.cbok{flex:1;padding:9px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:var(--gr);color:#fff;font-family:inherit}
+.cbcl{flex:1;padding:9px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid #e0dbd0;background:none;color:#666;font-family:inherit}
+.mbg{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:50;display:none;align-items:flex-end;justify-content:center;max-width:480px;margin:0 auto}
+.mbg.op{display:flex}
+.mo{background:#fff;border-radius:16px 16px 0 0;width:100%;max-height:90vh;overflow-y:auto;padding:0 0 24px}
+.mhnd{width:32px;height:3px;background:#e0dbd0;border-radius:2px;margin:10px auto 6px}
+.mhd{padding:6px 14px 12px;border-bottom:1px solid #e0dbd0;display:flex;align-items:center;justify-content:space-between}
+.mhd h3{font-size:15px;font-weight:600}.mcl{background:none;border:none;cursor:pointer;color:#999;font-size:22px;line-height:1;font-family:inherit}
+.fg{padding:10px 14px 0}.fl{font-size:11px;color:#999;margin-bottom:4px;display:block;font-weight:600}
+.fi{width:100%;border:1px solid #e0dbd0;border-radius:7px;padding:9px 10px;font-size:13px;background:#fff;color:#1a1a1a;outline:none;font-family:inherit}
+.fi:focus{border-color:var(--dk)}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 14px 0}
+.fac{padding:14px 14px 0;display:flex;gap:6px}
+.bcl{flex:1;padding:10px;border:1px solid #e0dbd0;border-radius:8px;background:none;color:#666;font-size:13px;cursor:pointer;font-family:inherit}
+.bsv{flex:2;padding:10px;border:none;border-radius:8px;background:var(--gr);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+select.fi{appearance:none}
+.lbtn{background:#fff;border:1px solid #e0dbd0;border-radius:8px;width:100%;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-family:inherit;margin-bottom:6px;text-align:left}
+.lbnm{font-size:13px;font-weight:600;color:#1a1a1a;flex:1}.lbcnt{font-size:10px;color:#999;margin-right:4px}
+.lbarr{font-size:14px;color:#999;transition:transform .2s;flex-shrink:0}
+.lbtn.op .lbarr{transform:rotate(90deg)}.lprds{display:none;margin-bottom:4px}
+.lbtn.op + .lprds{display:block}
+.eitem{display:flex;align-items:center;gap:6px;padding:7px 0;border-bottom:1px solid #f8f4ee}.eitem:last-child{border-bottom:none}
+.ei{flex:1;min-width:0}.einm{font-size:12px;font-weight:500}.eisb{font-size:10px;color:#999}
+.ctr{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.cb2{width:28px;height:28px;border-radius:6px;border:1px solid #e0dbd0;background:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#1a1a1a;font-family:inherit}
+.cv{width:28px;text-align:center;font-size:14px;font-weight:600}
+.cv.bx{color:var(--rd)}.cv.md{color:var(--am)}.cv.ok{color:var(--gr)}
+.pitem{display:flex;align-items:center;gap:6px;padding:7px 0;border-bottom:1px solid #f8f4ee}.pitem:last-child{border-bottom:none}
+.pi2{flex:1;min-width:0}.pins{display:flex;gap:4px;flex-shrink:0}
+.ps{width:46px;border:1px solid #e0dbd0;border-radius:5px;padding:5px 4px;font-size:11px;text-align:center;background:#fff;color:#1a1a1a;outline:none;font-family:inherit}
+.plb{font-size:9px;color:#999;text-align:center;margin-top:1px}
+.tog{width:40px;height:22px;border-radius:11px;background:#ccc;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
+.tog.on{background:var(--gr)}.tog::after{content:'';width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .2s}.tog.on::after{left:20px}
+.togr{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-top:1px solid #e0dbd0;border-bottom:1px solid #e0dbd0;margin-top:10px}
+.toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:8px 16px;border-radius:16px;font-size:12px;z-index:200;opacity:0;transition:opacity .3s;white-space:nowrap;pointer-events:none}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div><div class="ht" id="hdrt">PFS CRM</div><div class="hs" id="hdrs">Carregando...</div></div>
+  <div style="display:flex;gap:6px">
+    <button class="hbtn" id="hbk" onclick="voltar()" style="display:none">&#8592;</button>
+    <button class="hbtn" id="hhn" onclick="aNC()" style="display:none">+ Novo</button>
+  </div>
+</div>
+
+<div class="scr on" id="s-dash">
+  <div class="dbanner"><p>Bem-vindo de volta</p><h2 id="dtt">Carregando...</h2></div>
+  <div class="mets">
+    <div class="met b"><div class="mv" id="m0">-</div><div class="ml">Total clientes</div></div>
+    <div class="met g"><div class="mv" id="m1">-</div><div class="ml">Ativos</div></div>
+    <div class="met r"><div class="mv" id="m2">-</div><div class="ml">Visitas atrasadas</div></div>
+    <div class="met a"><div class="mv" id="m3">-</div><div class="ml">Pedidos</div></div>
+  </div>
+  <div class="mets" style="padding-top:0">
+    <div class="met g"><div class="mv" id="m4">R$0</div><div class="ml">Volume pedidos</div></div>
+    <div class="met b"><div class="mv" id="m5">0</div><div class="ml">Total visitas</div></div>
+  </div>
+  <div class="st">Visitas atrasadas</div><div id="dal"></div>
+  <div class="st">Ultimas visitas</div><div id="drl"></div>
+  <div style="height:20px"></div>
+</div>
+
+<div class="scr" id="s-cli">
+  <div style="position:sticky;top:0;z-index:5;background:#F5F0E8;border-bottom:1px solid #e0dbd0">
+    <div class="sw" style="border-bottom:none"><div class="si">&#128269;<input type="text" id="srch" placeholder="Buscar cliente..." oninput="rCli()"></div></div>
+    <div class="flt" style="position:static;border-bottom:none">
+      <button class="fc on" data-f="todos" onclick="setF(this)">Todos</button>
+      <button class="fc" data-f="Ativo" onclick="setF(this)">Ativos</button>
+      <button class="fc" data-f="Prospect" onclick="setF(this)">Prospects</button>
+      <button class="fc" data-f="Inativo" onclick="setF(this)">Inativos</button>
+      <button class="fc" data-f="Pet Shop" onclick="setF(this)">Pet Shop</button>
+      <button class="fc" data-f="Agropecuaria" onclick="setF(this)">Agro</button>
+      <button class="fc" data-f="Supermercado" onclick="setF(this)">Supermercado</button>
+    </div>
+  </div>
+  <div class="cl" id="cl"></div>
+  <button class="fab" onclick="aNC()">+</button>
+</div>
+
+<div class="scr" id="s-prod">
+  <div style="padding:8px 14px 6px;font-size:12px;color:#999">Toque em uma linha para ver os produtos</div>
+  <div style="padding:0 14px 70px" id="plinhas"></div>
+</div>
+
+<div class="scr" id="s-fat">
+  <div class="fhdrb"><div class="fat-t">Faturamento</div><div class="fat-s">Acompanhamento mensal</div></div>
+  <div class="msel" id="msel"></div>
+  <div class="fatm">
+    <div class="fatmet g"><div class="fatv" id="fv">R$0</div><div class="fatl">Faturado no mes</div></div>
+    <div class="fatmet b"><div class="fatv" id="fkg">0 kg</div><div class="fatl">Volume em kg</div></div>
+  </div>
+  <div class="mw">
+    <div class="mrow"><input type="number" class="minp" id="minp" placeholder="Meta do mes (R$)" step="100"><button class="mbtn" onclick="savMeta()">Salvar</button></div>
+    <div id="mprog" style="display:none"><div style="display:flex;justify-content:space-between;font-size:11px;color:#666;margin-bottom:4px"><span>Progresso</span><span id="mpct">0%</span></div><div class="mbar"><div class="mfill" id="mfill" style="width:0%"></div></div><div class="mtxt" id="mtxt"></div></div>
+  </div>
+  <div class="st">Ranking de clientes</div>
+  <div id="rklist"></div>
+  <div style="height:20px"></div>
+</div>
+
+<div class="scr" id="s-promo">
+
+  <!-- HEADER -->
+  <div style="background:var(--dk);color:#fff;padding:14px 16px;flex-shrink:0">
+    <div style="font-size:17px;font-weight:600;margin-bottom:2px">&#127381; Promocoes e Descontos</div>
+    <div style="font-size:11px;opacity:.7">Pet Food Solution 2026</div>
+  </div>
+
+  <!-- CONTEUDO ROLAVEL -->
+  <div style="flex:1;overflow-y:auto;padding-bottom:20px">
+
+    <!-- TABELA DE DESCONTOS -->
+    <div style="margin:12px 14px 0;background:#fff;border:1px solid #e0dbd0;border-radius:12px;overflow:hidden">
+      <div style="background:var(--dk);color:#fff;padding:10px 14px;font-size:13px;font-weight:600">&#128197; Politica de Desconto por Volume</div>
+      <div style="padding:0 14px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #e0dbd0;padding:8px 0">
+          <span style="font-size:11px;font-weight:600;color:#999">FAIXA DE PESO</span>
+          <span style="font-size:11px;font-weight:600;color:#999;text-align:right">DESCONTO</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;padding:10px 0;border-bottom:1px solid #f8f4ee">
+          <span style="font-size:13px">301 a 1.000 kg</span>
+          <span style="font-size:14px;font-weight:700;color:var(--gr);text-align:right">4%</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;padding:10px 0;border-bottom:1px solid #f8f4ee">
+          <span style="font-size:13px">1.001 a 3.000 kg</span>
+          <span style="font-size:14px;font-weight:700;color:var(--gr);text-align:right">6%</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;padding:10px 0;border-bottom:1px solid #f8f4ee">
+          <span style="font-size:13px">3.001 a 6.000 kg</span>
+          <span style="font-size:14px;font-weight:700;color:var(--gr);text-align:right">8%</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;padding:10px 0">
+          <span style="font-size:13px">Acima de 6.001 kg</span>
+          <span style="font-size:14px;font-weight:700;color:var(--gr);text-align:right">12%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMOCOES POR LINHA -->
+    <div style="margin:10px 14px 0;background:#fff;border:1px solid #e0dbd0;border-radius:12px;overflow:hidden">
+      <div style="background:var(--dk);color:#fff;padding:10px 14px;font-size:13px;font-weight:600">&#127942; Promocao PFS 2026 &#8212; Bonificacao por Linha</div>
+      <div style="padding:10px 14px;display:flex;flex-direction:column;gap:10px">
+
+        <div style="border-left:3px solid var(--gr);padding:8px 10px;background:#f0f7f4;border-radius:0 8px 8px 0">
+          <div style="font-size:13px;font-weight:600;color:var(--gr);margin-bottom:4px">Qualiday Gatos</div>
+          <div style="font-size:11px;color:#555">Embalagens: 10,1 kg e 20 kg</div>
+          <div style="font-size:12px;font-weight:600;color:var(--dk);margin-top:4px">&#127873; 10x1 &#8212; no mix</div>
+        </div>
+
+        <div style="border-left:3px solid var(--gr);padding:8px 10px;background:#f0f7f4;border-radius:0 8px 8px 0">
+          <div style="font-size:13px;font-weight:600;color:var(--gr);margin-bottom:4px">Allcanis</div>
+          <div style="font-size:11px;color:#555">Embalagens: 15 kg e 20 kg</div>
+          <div style="font-size:12px;font-weight:600;color:var(--dk);margin-top:4px">&#127873; 10x1 &#8212; no mix</div>
+        </div>
+
+        <div style="border-left:3px solid var(--gr);padding:8px 10px;background:#f0f7f4;border-radius:0 8px 8px 0">
+          <div style="font-size:13px;font-weight:600;color:var(--gr);margin-bottom:4px">Qualiday Sabores (Dog)</div>
+          <div style="font-size:11px;color:#555">Embalagens: 15 kg</div>
+          <div style="font-size:12px;font-weight:600;color:var(--dk);margin-top:4px">&#127873; 15x1 ou 7% de desconto</div>
+        </div>
+
+        <div style="border-left:3px solid var(--gr);padding:8px 10px;background:#f0f7f4;border-radius:0 8px 8px 0">
+          <div style="font-size:13px;font-weight:600;color:var(--gr);margin-bottom:4px">ProHealth e ProLife</div>
+          <div style="font-size:11px;color:#555">Embalagens: 10,1 kg e 15 kg</div>
+          <div style="font-size:12px;font-weight:600;color:var(--dk);margin-top:4px">&#127873; 10x1 &#8212; mix: bonificacao em ProLife</div>
+        </div>
+
+        <div style="border-left:3px solid var(--gr);padding:8px 10px;background:#f0f7f4;border-radius:0 8px 8px 0">
+          <div style="font-size:13px;font-weight:600;color:var(--gr);margin-bottom:4px">Special Croc</div>
+          <div style="font-size:11px;color:#555">Embalagens: 10,1 kg, 15 kg, 20 kg e 25 kg</div>
+          <div style="font-size:12px;font-weight:600;color:var(--dk);margin-top:4px">&#127873; 10x1 e 30x4 &#8212; no mix</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div style="height:20px"></div>
+  </div>
+</div>
+
+<div class="scr" id="s-imp">
+  <div style="background:var(--dk);color:#fff;padding:14px 16px;flex-shrink:0">
+    <div style="font-size:17px;font-weight:600;margin-bottom:2px">&#9729; Importar dados</div>
+    <div style="font-size:11px;opacity:.7">Pedidos via Drive e clientes via planilha</div>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding-bottom:20px">
+
+    <div class="ic">
+      <div class="ich"><div class="ichi">&#128194;</div><div><div class="ict">Importar pedidos</div><div class="ics">Prints da pasta Pedidos PFS no Drive</div></div></div>
+      <div class="icb">
+        <div class="iin">Salve prints na pasta <strong>Pedidos PFS</strong> do Drive. A IA le e extrai todos os dados do pedido automaticamente.</div>
+        <button class="ibtn" id="bdrive" onclick="bDrive()">&#128260; Verificar novos pedidos</button>
+        <div class="ist" id="dst"></div>
+        <div id="dfl"></div>
+        <div id="dpv"></div>
+      </div>
+    </div>
+
+    <div class="ic">
+      <div class="ich"><div class="ichi">&#128202;</div><div><div class="ict">Importar clientes</div><div class="ics">Via planilha Excel ou CSV</div></div></div>
+      <div class="icb">
+        <div class="iin">Faca upload da planilha da area. A IA cadastra os clientes automaticamente.</div>
+        <label for="fup" class="ua" style="display:block;cursor:pointer">
+          <div style="font-size:28px;margin-bottom:6px;color:#999">&#128203;</div>
+          <p style="font-size:12px;color:#666">Toque para selecionar</p>
+          <span style="font-size:10px;color:#999">.xlsx, .xls ou .csv</span>
+        </label>
+        <input type="file" id="fup" accept=".xlsx,.xls,.csv,.ods" style="display:none" onchange="lrPlanilha(event)">
+        <div class="ist" id="pst"></div>
+        <div id="ppv"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="scr" id="s-fic">
+  <div style="padding:10px 14px 0"><button onclick="go('cli')" style="background:none;border:none;color:#e85d04;font-size:15px;font-weight:600;padding:0;cursor:pointer;display:flex;align-items:center;gap:5px">&#8592; Clientes</button></div>
+  <div class="fhdr"><div class="fnm" id="fnm"></div><div class="ftp" id="ftp"></div><div class="fbg" id="fbg"></div></div>
+  <div class="arow">
+    <button class="abtn p" onclick="aVis()">&#128205; Nova visita</button>
+    <button class="abtn" onclick="aMix()">&#10003; Mix</button>
+    <button class="abtn" onclick="eCli()">&#9998; Editar</button>
+  </div>
+  <div class="fsec"><div class="fst">Informacoes</div><div id="finfo"></div></div>
+  <div class="fsec"><div class="fst">Mix ideal <a onclick="aMix()">Editar</a></div><div id="fmix"></div></div>
+  <div class="fsec" style="border-bottom:none"><div class="fst">Historico de visitas</div><div id="fvis"></div></div>
+  <div style="height:20px"></div>
+</div>
+
+<div class="nav">
+  <button class="nb on" id="nb0" onclick="go('dash')"><span class="ni">&#128202;</span>Dash</button>
+  <button class="nb" id="nb1" onclick="go('cli')"><span class="ni">&#127978;</span>Clientes</button>
+  <button class="nb" id="nb2" onclick="go('prod')"><span class="ni">&#128230;</span>Produtos</button>
+  <button class="nb" id="nb3" onclick="go('fat')"><span class="ni">&#128176;</span>Fatura.</button>
+  <button class="nb" id="nb4" onclick="go('promo')"><span class="ni">&#127381;</span>Promos</button>
+  <button class="nb" id="nb5" onclick="go('imp')"><span class="ni">&#9729;</span>Importar</button>
+</div>
+
+<div class="mbg" id="m-cli"><div class="mo">
+  <div class="mhnd"></div>
+  <div class="mhd"><h3 id="mct">Novo cliente</h3><button class="mcl" onclick="fM('m-cli')">&#215;</button></div>
+  <div class="fg"><label class="fl">Nome da loja *</label><input type="text" class="fi" id="f-nm"></div>
+  <div class="fg"><label class="fl">Responsavel</label><input type="text" class="fi" id="f-rp"></div>
+  <div class="fr">
+    <div><label class="fl">Telefone</label><input type="text" class="fi" id="f-tl"></div>
+    <div><label class="fl">Tipo *</label><select class="fi" id="f-tp"><option value="">Selecionar</option><option>Pet Shop</option><option>Agropecuaria</option><option>Supermercado</option><option>Veterinaria</option><option>Distribuidora</option><option>Outro</option></select></div>
+  </div>
+  <div class="fg"><label class="fl">Endereco</label><input type="text" class="fi" id="f-en"></div>
+  <div class="fr">
+    <div><label class="fl">Status</label><select class="fi" id="f-st"><option value="Prospect">Prospect</option><option value="Ativo">Ativo</option><option value="Inativo">Inativo</option></select></div>
+    <div><label class="fl">Prox. visita</label><input type="date" class="fi" id="f-pv"></div>
+  </div>
+  <div class="fg"><label class="fl">Observacoes</label><textarea class="fi" id="f-ob" rows="2"></textarea></div>
+  <div class="fac"><button class="bcl" onclick="fM('m-cli')">Cancelar</button><button class="bsv" onclick="savCli()">Salvar</button></div>
+</div></div>
+
+<div class="mbg" id="m-mix"><div class="mo">
+  <div class="mhnd"></div>
+  <div class="mhd"><h3>Mix ideal</h3><button class="mcl" onclick="fM('m-mix')">&#215;</button></div>
+  <div style="padding:6px 14px 4px;font-size:11px;color:#999">Selecione os produtos que esta loja deve manter</div>
+  <div id="mmixc"></div>
+  <div class="fac"><button class="bcl" onclick="fM('m-mix')">Cancelar</button><button class="bsv" onclick="savMix()">Salvar mix</button></div>
+</div></div>
+
+<div class="mbg" id="m-vis"><div class="mo">
+  <div class="mhnd"></div>
+  <div class="mhd"><h3>Registrar visita</h3><button class="mcl" onclick="fM('m-vis')">&#215;</button></div>
+  <div class="fr"><div><label class="fl">Data *</label><input type="date" class="fi" id="v-dt"></div><div><label class="fl">Prox. visita</label><input type="date" class="fi" id="v-pv"></div></div>
+  <div class="fg"><label class="fl">Observacoes</label><textarea class="fi" id="v-ob" rows="2"></textarea></div>
+  <div class="fg" style="padding-top:12px"><div style="font-size:11px;font-weight:600;color:#999;text-transform:uppercase;margin-bottom:8px">Estoque na gondola</div><div id="ef"></div></div>
+  <div class="togr"><div><div style="font-size:13px;font-weight:600">Houve pedido?</div><div style="font-size:11px;color:#999">Registrar produtos pedidos</div></div><div class="tog" id="pt" onclick="tgPed()"></div></div>
+  <div id="ps2" style="display:none">
+    <div class="fg"><label class="fl">Numero do pedido</label><input type="text" class="fi" id="v-np"></div>
+    <div class="fg"><label class="fl">Cond. pagamento</label><input type="text" class="fi" id="v-cp" placeholder="Ex: 28/35/42 dias"></div>
+    <div style="padding:8px 14px 4px;font-size:11px;color:#999">Produtos pedidos</div>
+    <div style="padding:0 14px" id="pf"></div>
+    <div class="fg"><label class="fl">Valor total (R$)</label><input type="number" class="fi" id="v-vl" placeholder="0.00" step="0.01"></div>
+  </div>
+  <div class="fac"><button class="bcl" onclick="fM('m-vis')">Cancelar</button><button class="bsv" onclick="savVis()">Salvar visita</button></div>
+</div></div>
+
+<div class="mbg" id="m-ped"><div class="mo">
+  <div class="mhnd"></div>
+  <div class="mhd"><h3>Confirmar pedido importado</h3><button class="mcl" onclick="fM('m-ped')">&#215;</button></div>
+  <div id="mpedc"></div>
+  <div class="fac"><button class="bcl" onclick="fM('m-ped')">Cancelar</button><button class="bsv" onclick="confPed()">Confirmar</button></div>
+</div></div>
+
+<div class="mbg" id="m-delvis"><div class="mo" style="padding-bottom:20px">
+  <div class="mhnd"></div>
+  <div class="mhd"><h3>Confirmar exclusao</h3><button class="mcl" onclick="fM('m-delvis')">&#215;</button></div>
+  <div style="padding:16px 16px 0;font-size:14px;color:#1a1a1a" id="del-vis-msg">Excluir esta visita?</div>
+  <div style="padding:8px 16px 0;font-size:12px;color:#999">Esta acao nao pode ser desfeita.</div>
+  <div class="fac">
+    <button class="bcl" onclick="fM('m-delvis')">Cancelar</button>
+    <button style="flex:2;padding:12px;border:none;border-radius:8px;background:var(--rd);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit" onclick="dVisConf()">Excluir visita</button>
+  </div>
+</div></div>
+
+<div class="mbg" id="m-evis"><div class="mo">
+  <div class="mhnd"></div>
+  <div class="mhd"><h3>Editar visita</h3><button class="mcl" onclick="fM('m-evis')">&#215;</button></div>
+  <div class="fr">
+    <div><label class="fl">Data *</label><input type="date" class="fi" id="ev-dt"></div>
+    <div><label class="fl">Prox. visita</label><input type="date" class="fi" id="ev-pv"></div>
+  </div>
+  <div class="fg"><label class="fl">Observacoes</label><textarea class="fi" id="ev-ob" rows="2"></textarea></div>
+  <div class="fg" style="padding-top:12px">
+    <div style="font-size:11px;font-weight:600;color:#999;text-transform:uppercase;margin-bottom:8px">Estoque na gondola</div>
+    <div id="ev-ef"></div>
+  </div>
+  <div class="togr">
+    <div><div style="font-size:13px;font-weight:600">Houve pedido?</div><div style="font-size:11px;color:#999">Registrar produtos pedidos</div></div>
+    <div class="tog" id="ev-pt" onclick="tgEPed()"></div>
+  </div>
+  <div id="ev-ped-sec" style="display:none">
+    <div class="fg"><label class="fl">Numero do pedido</label><input type="text" class="fi" id="ev-np"></div>
+    <div class="fg"><label class="fl">Cond. pagamento</label><input type="text" class="fi" id="ev-cp" placeholder="Ex: 28/35/42 dias"></div>
+    <div style="padding:8px 14px 4px;font-size:11px;color:#999">Produtos pedidos</div>
+    <div style="padding:0 14px" id="ev-pf"></div>
+    <div class="fg"><label class="fl">Valor total (R$)</label><input type="number" class="fi" id="ev-vl" placeholder="0.00" step="0.01"></div>
+  </div>
+  <div class="fac"><button class="bcl" onclick="fM('m-evis')">Cancelar</button><button class="bsv" onclick="savEVis()">Salvar alteracoes</button></div>
+</div></div>
+
+<div class="mbg" id="m-fp"><div class="mo" style="padding-bottom:20px">
+  <div class="mhnd"></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 14px 10px;border-bottom:1px solid #e0dbd0">
+    <button onclick="fM('m-fp')" style="display:flex;align-items:center;gap:6px;background:none;border:none;cursor:pointer;font-size:14px;color:var(--dk);font-weight:600;font-family:inherit;padding:0">
+      &#8592; Voltar
+    </button>
+    <button class="mcl" onclick="fM('m-fp')">&#215;</button>
+  </div>
+  <div id="fp-body"></div>
+</div></div>
+
+<div class="toast" id="tst"></div>
+
+<script>
+// ── STORAGE (localStorage) ───────────────────────────────────
+function dbSave() {
+  try {
+    localStorage.setItem('pfs_clientes', JSON.stringify(clientes));
+    localStorage.setItem('pfs_meta', JSON.stringify(fatMeta));
+  } catch(e) { console.error('Save error:', e); }
+}
+function dbLoad() {
+  try {
+    var c = localStorage.getItem('pfs_clientes');
+    if (c) clientes = JSON.parse(c);
+    var m = localStorage.getItem('pfs_meta');
+    if (m) fatMeta = JSON.parse(m);
+  } catch(e) { console.error('Load error:', e); }
+}
+
+// ── PRODUTOS ─────────────────────────────────────────────────
+var P=[
+  {cod:'PA0335',l:'ProHealth',e:'dog',n:'ProHealth Caes RP Adulto',s:'Frango, Abobora e Curcuma',kg:1,u:'kg',f:8,pu:33.5,puImp:39.7203,pdv:61.9,marg:55.8},
+  {cod:'PA0336',l:'ProHealth',e:'dog',n:'ProHealth Caes RP Adulto',s:'Frango, Abobora e Curcuma',kg:2.5,u:'kg',f:5,pu:67.0,puImp:79.4407,pdv:121.9,marg:53.4},
+  {cod:'PA0337',l:'ProHealth',e:'dog',n:'ProHealth Caes RP Adulto',s:'Frango, Abobora e Curcuma',kg:10.1,u:'kg',f:1,pu:191.0,puImp:210.545,pdv:319.9,marg:51.9},
+  {cod:'PA0300',l:'ProHealth',e:'dog',n:'ProHealth Caes RP Filhote',s:'Frango e Batata Doce',kg:1,u:'kg',f:8,pu:35.1125,puImp:41.6322,pdv:64.9,marg:55.9},
+  {cod:'PA0301',l:'ProHealth',e:'dog',n:'ProHealth Caes RP Filhote',s:'Frango e Batata Doce',kg:2.5,u:'kg',f:5,pu:69.2,puImp:82.0492,pdv:126.9,marg:54.7},
+  {cod:'PA0302',l:'ProHealth',e:'dog',n:'ProHealth Caes RP Filhote',s:'Frango e Batata Doce',kg:10.1,u:'kg',f:1,pu:195.9,puImp:215.9464,pdv:322.9,marg:49.5},
+  {cod:'PA0370',l:'ProHealth',e:'dog',n:'ProHealth Caes RP Light',s:'Frango, Gengibre e Damasco',kg:1,u:'kg',f:8,pu:33.375,puImp:39.5721,pdv:62.9,marg:59.0},
+  {cod:'PA0371',l:'ProHealth',e:'dog',n:'ProHealth Caes RP Light',s:'Frango, Gengibre e Damasco',kg:2.5,u:'kg',f:5,pu:70.2,puImp:83.2348,pdv:126.9,marg:52.5},
+  {cod:'PA0373',l:'ProHealth',e:'dog',n:'ProHealth Caes RP Light',s:'Frango, Gengibre e Damasco',kg:10.1,u:'kg',f:1,pu:196.0,puImp:216.0567,pdv:323.9,marg:49.9},
+  {cod:'PA0403',l:'ProHealth',e:'dog',n:'ProHealth Caes RP Senior',s:'Frango, Erva Doce e Maracuja',kg:1,u:'kg',f:8,pu:33.5,puImp:39.7203,pdv:61.9,marg:55.8},
+  {cod:'PA0404',l:'ProHealth',e:'dog',n:'ProHealth Caes RP Senior',s:'Frango, Erva Doce e Maracuja',kg:2.5,u:'kg',f:5,pu:70.38,puImp:83.4483,pdv:125.9,marg:50.9},
+  {cod:'PA0406',l:'ProHealth',e:'dog',n:'ProHealth Caes RP Senior',s:'Frango, Erva Doce e Maracuja',kg:10.1,u:'kg',f:1,pu:195.0,puImp:214.9544,pdv:329.9,marg:53.5},
+  {cod:'PA0318',l:'ProHealth',e:'dog',n:'ProHealth Caes RM Filhote',s:'Frango e Batata Doce',kg:2.5,u:'kg',f:5,pu:70.0,puImp:82.9977,pdv:127.9,marg:54.1},
+  {cod:'PA0319',l:'ProHealth',e:'dog',n:'ProHealth Caes RM Filhote',s:'Frango e Batata Doce',kg:10.1,u:'kg',f:1,pu:195.0,puImp:214.9544,pdv:315.9,marg:47.0},
+  {cod:'PA0353',l:'ProHealth',e:'dog',n:'ProHealth Caes RM Adulto',s:'Frango, Abobora e Curcuma',kg:2.5,u:'kg',f:5,pu:67.0,puImp:79.4407,pdv:121.9,marg:53.4},
+  {cod:'PA0354',l:'ProHealth',e:'dog',n:'ProHealth Caes RM Adulto',s:'Frango, Abobora e Curcuma',kg:10.1,u:'kg',f:1,pu:184.0,puImp:202.8287,pdv:299.9,marg:47.9},
+  {cod:'PA0386',l:'ProHealth',e:'dog',n:'ProHealth Caes RM Light',s:'Frango, Gengibre e Damasco',kg:2.5,u:'kg',f:5,pu:70.2,puImp:83.2348,pdv:126.9,marg:52.5},
+  {cod:'PA0387',l:'ProHealth',e:'dog',n:'ProHealth Caes RM Light',s:'Frango, Gengibre e Damasco',kg:10.1,u:'kg',f:1,pu:193.0,puImp:212.7497,pdv:314.9,marg:48.0},
+  {cod:'PA0419',l:'ProHealth',e:'dog',n:'ProHealth Caes RM Senior',s:'Frango, Erva Doce e Maracuja',kg:2.5,u:'kg',f:5,pu:69.78,puImp:82.7369,pdv:125.9,marg:52.2},
+  {cod:'PA0420',l:'ProHealth',e:'dog',n:'ProHealth Caes RM Senior',s:'Frango, Erva Doce e Maracuja',kg:10.1,u:'kg',f:1,pu:194.0,puImp:213.852,pdv:316.9,marg:48.2},
+  {cod:'PA0437',l:'ProHealth',e:'cat',n:'ProHealth Gato Filhote',s:'Frango',kg:1,u:'kg',f:8,pu:42.75,puImp:50.6879,pdv:73.9,marg:45.8},
+  {cod:'PA0438',l:'ProHealth',e:'cat',n:'ProHealth Gato Filhote',s:'Frango',kg:5,u:'kg',f:1,pu:120.0,puImp:142.2818,pdv:217.9,marg:53.1},
+  {cod:'PA0455',l:'ProHealth',e:'cat',n:'ProHealth Gato Castrado',s:'Frango e Cranberry',kg:1,u:'kg',f:8,pu:41.75,puImp:49.5022,pdv:71.9,marg:45.2},
+  {cod:'PA0456',l:'ProHealth',e:'cat',n:'ProHealth Gato Castrado',s:'Frango e Cranberry',kg:5,u:'kg',f:1,pu:120.0,puImp:142.2818,pdv:211.9,marg:48.9},
+  {cod:'PA0472',l:'ProHealth',e:'cat',n:'ProHealth Gato Castrado',s:'Salmao e Damasco',kg:1,u:'kg',f:8,pu:42.375,puImp:50.2433,pdv:71.9,marg:43.1},
+  {cod:'PA0473',l:'ProHealth',e:'cat',n:'ProHealth Gato Castrado',s:'Salmao e Damasco',kg:5,u:'kg',f:1,pu:120.0,puImp:142.2818,pdv:216.9,marg:52.4},
+  {cod:'PA0830',l:'Qualiday ProLife',e:'dog',n:'QualiDay ProLife RP Adulto',s:'Frango e Arroz',kg:1,u:'kg',f:8,pu:23.875,puImp:28.3081,pdv:40.9,marg:44.5},
+  {cod:'PA0831',l:'Qualiday ProLife',e:'dog',n:'QualiDay ProLife RP Adulto',s:'Frango e Arroz',kg:2.5,u:'kg',f:5,pu:49.0,puImp:58.0984,pdv:88.5,marg:52.3},
+  {cod:'PA0833',l:'Qualiday ProLife',e:'dog',n:'QualiDay ProLife RP Adulto',s:'Frango e Arroz',kg:15,u:'kg',f:1,pu:159.6,puImp:175.9319,pdv:247.9,marg:40.9},
+  {cod:'PA0800',l:'Qualiday ProLife',e:'dog',n:'QualiDay ProLife RP Filhote',s:'Frango e Batata Doce',kg:1,u:'kg',f:8,pu:24.5,puImp:29.0492,pdv:43.9,marg:51.1},
+  {cod:'PA0801',l:'Qualiday ProLife',e:'dog',n:'QualiDay ProLife RP Filhote',s:'Frango e Batata Doce',kg:2.5,u:'kg',f:5,pu:52.0,puImp:61.6554,pdv:92.9,marg:50.7},
+  {cod:'PA0802',l:'Qualiday ProLife',e:'dog',n:'QualiDay ProLife RP Filhote',s:'Frango e Batata Doce',kg:10.1,u:'kg',f:1,pu:129.0,puImp:142.2006,pdv:206.9,marg:45.5},
+  {cod:'PA0900',l:'Qualiday ProLife',e:'dog',n:'QualiDay ProLife RP Light',s:'Frango e Vegetais',kg:1,u:'kg',f:8,pu:24.5,puImp:29.0492,pdv:43.9,marg:51.1},
+  {cod:'PA0901',l:'Qualiday ProLife',e:'dog',n:'QualiDay ProLife RP Light',s:'Frango e Vegetais',kg:2.5,u:'kg',f:5,pu:52.4,puImp:62.1297,pdv:91.9,marg:47.9},
+  {cod:'PA0903',l:'Qualiday ProLife',e:'dog',n:'QualiDay ProLife RP Light',s:'Frango e Vegetais',kg:15,u:'kg',f:1,pu:159.6,puImp:175.9319,pdv:249.9,marg:42.0},
+  {cod:'PA0845',l:'Qualiday ProLife',e:'dog',n:'QualiDay ProLife RM Adulto',s:'Frango e Arroz',kg:2.5,u:'kg',f:5,pu:49.8,puImp:59.0469,pdv:88.9,marg:50.6},
+  {cod:'PA0847',l:'Qualiday ProLife',e:'dog',n:'QualiDay ProLife RM Adulto',s:'Frango e Arroz',kg:15,u:'kg',f:1,pu:159.6,puImp:175.9319,pdv:248.9,marg:41.5},
+  {cod:'PA0815',l:'Qualiday ProLife',e:'dog',n:'QualiDay ProLife RM Filhote',s:'Frango e Batata Doce',kg:2.5,u:'kg',f:5,pu:52.0,puImp:61.6554,pdv:92.9,marg:50.7},
+  {cod:'PA0816',l:'Qualiday ProLife',e:'dog',n:'QualiDay ProLife RM Filhote',s:'Frango e Batata Doce',kg:10.1,u:'kg',f:1,pu:130.0,puImp:143.3029,pdv:208.9,marg:45.8},
+  {cod:'PA0915',l:'Qualiday ProLife',e:'dog',n:'QualiDay ProLife RM Light',s:'Frango e Vegetais',kg:2.5,u:'kg',f:5,pu:52.0,puImp:61.6554,pdv:92.9,marg:50.7},
+  {cod:'PA0917',l:'Qualiday ProLife',e:'dog',n:'QualiDay ProLife RM Light',s:'Frango e Vegetais',kg:15,u:'kg',f:1,pu:159.6,puImp:175.9319,pdv:250.9,marg:42.6},
+  {cod:'PA0930',l:'Qualiday ProLife',e:'dog',n:'QualiDay ProLife RP Senior',s:'Frango e Vegetais',kg:1,u:'kg',f:8,pu:27.625,puImp:32.7545,pdv:48.9,marg:49.3},
+  {cod:'PA0931',l:'Qualiday ProLife',e:'dog',n:'QualiDay ProLife RP Senior',s:'Frango e Vegetais',kg:2.5,u:'kg',f:5,pu:51.8,puImp:61.4183,pdv:91.9,marg:49.6},
+  {cod:'PA0933',l:'Qualiday ProLife',e:'dog',n:'QualiDay ProLife RP Senior',s:'Frango e Vegetais',kg:15,u:'kg',f:1,pu:185.0,puImp:203.931,pdv:299.9,marg:47.1},
+  {cod:'PA0945',l:'Qualiday ProLife',e:'dog',n:'QualiDay ProLife RM Senior',s:'Frango e Vegetais',kg:2.5,u:'kg',f:5,pu:53.0,puImp:62.8411,pdv:99.9,marg:59.0},
+  {cod:'PA0947',l:'Qualiday ProLife',e:'dog',n:'QualiDay ProLife RM Senior',s:'Frango e Vegetais',kg:15,u:'kg',f:1,pu:183.0,puImp:201.7264,pdv:299.9,marg:48.7},
+  {cod:'PA1100',l:'Qualiday Umido',e:'dog',n:'QualiDay Umido Caes',s:'Frango e Vegetais',kg:170,u:'g',f:12,pu:10.5833,puImp:10.5833,pdv:17.9,marg:69.1},
+  {cod:'PA1101',l:'Qualiday Umido',e:'dog',n:'QualiDay Umido Caes',s:'Frango e Vegetais',kg:370,u:'g',f:12,pu:15.9167,puImp:15.9167,pdv:26.9,marg:69.0},
+  {cod:'PA1102',l:'Qualiday Umido',e:'dog',n:'QualiDay Umido Caes',s:'Peru e Vegetais',kg:170,u:'g',f:12,pu:11.1667,puImp:11.1667,pdv:18.9,marg:69.3},
+  {cod:'PA1103',l:'Qualiday Umido',e:'dog',n:'QualiDay Umido Caes',s:'Peru e Vegetais',kg:370,u:'g',f:12,pu:15.9167,puImp:15.9167,pdv:26.9,marg:69.0},
+  {cod:'PA1104',l:'Qualiday Umido',e:'cat',n:'QualiDay Umido Gatos',s:'Atum',kg:85,u:'g',f:24,pu:7.7083,puImp:7.7083,pdv:12.9,marg:67.4},
+  {cod:'PA1105',l:'Qualiday Umido',e:'cat',n:'QualiDay Umido Gatos',s:'Atum',kg:156,u:'g',f:24,pu:9.2083,puImp:9.2083,pdv:15.6,marg:69.4},
+  {cod:'PA1106',l:'Qualiday Umido',e:'cat',n:'QualiDay Umido Gatos',s:'Atum e Frango',kg:85,u:'g',f:24,pu:7.7083,puImp:7.7083,pdv:12.9,marg:67.4},
+  {cod:'PA1107',l:'Qualiday Umido',e:'cat',n:'QualiDay Umido Gatos',s:'Atum e Frango',kg:156,u:'g',f:24,pu:9.375,puImp:9.375,pdv:15.9,marg:69.6},
+  {cod:'PA1108',l:'Qualiday Umido',e:'cat',n:'QualiDay Umido Gatos',s:'Atum e Frutos do Mar',kg:85,u:'g',f:24,pu:8.0417,puImp:8.0417,pdv:13.5,marg:67.9},
+  {cod:'PA1109',l:'Qualiday Umido',e:'cat',n:'QualiDay Umido Gatos',s:'Atum e Frutos do Mar',kg:156,u:'g',f:24,pu:9.4583,puImp:9.4583,pdv:16.0,marg:69.2},
+  {cod:'PA1110',l:'Qualiday Umido',e:'cat',n:'QualiDay Umido Gatos',s:'Atum e Sardinha',kg:85,u:'g',f:24,pu:7.7083,puImp:7.7083,pdv:12.9,marg:67.4},
+  {cod:'PA1111',l:'Qualiday Umido',e:'cat',n:'QualiDay Umido Gatos',s:'Atum e Sardinha',kg:156,u:'g',f:24,pu:9.2083,puImp:9.2083,pdv:15.6,marg:69.4},
+  {cod:'PA0021',l:'Allcanis',e:'dog',n:'Allcanis Adulto',s:'Frango, Carne e Arroz',kg:10.1,u:'kg',f:1,pu:85.0,puImp:93.6981,pdv:131.9,marg:40.8},
+  {cod:'PA0029',l:'Allcanis',e:'dog',n:'Allcanis Adulto',s:'Frango, Carne e Arroz',kg:15,u:'kg',f:1,pu:100.8,puImp:111.1149,pdv:153.9,marg:38.5},
+  {cod:'PA0028',l:'Allcanis',e:'dog',n:'Allcanis Adulto',s:'Frango, Carne e Arroz',kg:20,u:'kg',f:1,pu:129.0,puImp:142.2006,pdv:195.9,marg:37.8},
+  {cod:'PA0043',l:'Allcanis',e:'dog',n:'Allcanis Adulto RP',s:'Frango, Carne e Arroz',kg:10.1,u:'kg',f:1,pu:84.0,puImp:92.5957,pdv:129.9,marg:40.3},
+  {cod:'PA0044',l:'Allcanis',e:'dog',n:'Allcanis Adulto RP',s:'Frango, Carne e Arroz',kg:15,u:'kg',f:1,pu:100.8,puImp:111.1149,pdv:153.9,marg:38.5},
+  {cod:'PA0050',l:'Allcanis',e:'dog',n:'Allcanis Adulto RP',s:'Frango, Carne e Arroz',kg:20,u:'kg',f:1,pu:129.0,puImp:142.2006,pdv:201.9,marg:42.0},
+  {cod:'PA0002',l:'Allcanis',e:'dog',n:'Allcanis Filhote',s:'Frango, Carne e Arroz',kg:10.1,u:'kg',f:1,pu:86.5,puImp:95.3515,pdv:132.9,marg:39.4},
+  {cod:'PA0003',l:'Allcanis',e:'dog',n:'Allcanis Filhote',s:'Frango, Carne e Arroz',kg:15,u:'kg',f:1,pu:118.0,puImp:130.0749,pdv:169.9,marg:30.6},
+  {cod:'PA0006',l:'Allcanis',e:'dog',n:'Allcanis Filhote',s:'Frango, Carne e Arroz',kg:2.5,u:'kg',f:5,pu:29.4,puImp:34.859,pdv:56.9,marg:63.2},
+  {cod:'PA0070',l:'Allcanis',e:'dog',n:'Allcanis Light RP',s:'Frango, Carne e Arroz',kg:2.5,u:'kg',f:5,pu:30.8,puImp:36.519,pdv:50.9,marg:39.4},
+  {cod:'PA0071',l:'Allcanis',e:'dog',n:'Allcanis Light RP',s:'Frango, Carne e Arroz',kg:10.1,u:'kg',f:1,pu:94.0,puImp:103.619,pdv:141.9,marg:36.9},
+  {cod:'PA0072',l:'Allcanis',e:'dog',n:'Allcanis Light RP',s:'Frango, Carne e Arroz',kg:15,u:'kg',f:1,pu:121.0,puImp:133.3819,pdv:179.9,marg:34.9},
+  {cod:'PA0073',l:'Allcanis',e:'dog',n:'Allcanis Light RP',s:'Frango, Carne e Arroz',kg:20,u:'kg',f:1,pu:148.5,puImp:163.696,pdv:226.9,marg:38.6},
+  {cod:'PA0075',l:'Allcanis',e:'dog',n:'Allcanis Light RMG',s:'Frango, Carne e Arroz',kg:2.5,u:'kg',f:5,pu:30.8,puImp:36.519,pdv:50.9,marg:39.4},
+  {cod:'PA0076',l:'Allcanis',e:'dog',n:'Allcanis Light RMG',s:'Frango, Carne e Arroz',kg:15,u:'kg',f:1,pu:121.9,puImp:134.374,pdv:179.9,marg:33.9},
+  {cod:'PA0077',l:'Allcanis',e:'dog',n:'Allcanis Light RMG',s:'Frango, Carne e Arroz',kg:20,u:'kg',f:1,pu:148.5,puImp:163.696,pdv:223.9,marg:36.8},
+  {cod:'PA0079',l:'Allcanis',e:'dog',n:'Allcanis Senior RP',s:'Frango, Carne e Arroz',kg:2.5,u:'kg',f:5,pu:36.2,puImp:42.9217,pdv:59.9,marg:39.6},
+  {cod:'PA0080',l:'Allcanis',e:'dog',n:'Allcanis Senior RP',s:'Frango, Carne e Arroz',kg:10.1,u:'kg',f:1,pu:110.5,puImp:121.8075,pdv:166.6,marg:36.8},
+  {cod:'PA0081',l:'Allcanis',e:'dog',n:'Allcanis Senior RP',s:'Frango, Carne e Arroz',kg:15,u:'kg',f:1,pu:133.0,puImp:146.6099,pdv:199.9,marg:36.3},
+  {cod:'PA0082',l:'Allcanis',e:'dog',n:'Allcanis Senior RP',s:'Frango, Carne e Arroz',kg:20,u:'kg',f:1,pu:168.0,puImp:185.1914,pdv:253.8,marg:37.0},
+  {cod:'PA0084',l:'Allcanis',e:'dog',n:'Allcanis Senior RMG',s:'Frango, Carne e Arroz',kg:2.5,u:'kg',f:5,pu:36.2,puImp:42.9217,pdv:59.9,marg:39.6},
+  {cod:'PA0085',l:'Allcanis',e:'dog',n:'Allcanis Senior RMG',s:'Frango, Carne e Arroz',kg:15,u:'kg',f:1,pu:133.0,puImp:146.6099,pdv:199.9,marg:36.3},
+  {cod:'PA0086',l:'Allcanis',e:'dog',n:'Allcanis Senior RMG',s:'Frango, Carne e Arroz',kg:20,u:'kg',f:1,pu:168.0,puImp:185.1914,pdv:253.8,marg:37.0},
+  {cod:'PA0062',l:'Allcats',e:'cat',n:'Allcats Mix Adulto',s:'Frango, Carne e Salmao',kg:10.1,u:'kg',f:1,pu:96.0,puImp:105.8237,pdv:146.99,marg:38.9},
+  {cod:'PA0063',l:'Allcats',e:'cat',n:'Allcats Mix Adulto',s:'Frango, Carne e Salmao',kg:20,u:'kg',f:1,pu:182.5,puImp:201.1752,pdv:275.99,marg:37.2},
+  {cod:'PA0065',l:'Allcats',e:'cat',n:'Allcats Castrado Mix',s:'Frango, Carne e Salmao',kg:10.1,u:'kg',f:1,pu:100.0,puImp:110.233,pdv:153.9,marg:39.6},
+  {cod:'PA0066',l:'Allcats',e:'cat',n:'Allcats Castrado Mix',s:'Frango, Carne e Salmao',kg:20,u:'kg',f:1,pu:186.0,puImp:205.0334,pdv:287.0,marg:40.0},
+  {cod:'PA0234',l:'Qualiday Cat',e:'cat',n:'Qualiday Gato Adulto',s:'Frango e Arroz',kg:1,u:'kg',f:8,pu:17.25,puImp:20.453,pdv:28.9,marg:41.3},
+  {cod:'PA0239',l:'Qualiday Cat',e:'cat',n:'Qualiday Gato Adulto',s:'Frango e Arroz',kg:2.5,u:'kg',f:5,pu:33.6,puImp:39.8389,pdv:55.7,marg:39.8},
+  {cod:'PA0236',l:'Qualiday Cat',e:'cat',n:'Qualiday Gato Adulto',s:'Frango e Arroz',kg:10.1,u:'kg',f:1,pu:112.9,puImp:124.4531,pdv:155.5,marg:24.9},
+  {cod:'PA0204',l:'Qualiday Cat',e:'cat',n:'Qualiday Gato Adulto',s:'Carne e Arroz',kg:1,u:'kg',f:8,pu:17.25,puImp:20.453,pdv:28.5,marg:39.3},
+  {cod:'PA0209',l:'Qualiday Cat',e:'cat',n:'Qualiday Gato Adulto',s:'Carne e Arroz',kg:2.5,u:'kg',f:5,pu:33.6,puImp:39.8389,pdv:55.7,marg:39.8},
+  {cod:'PA0206',l:'Qualiday Cat',e:'cat',n:'Qualiday Gato Adulto',s:'Carne e Arroz',kg:10.1,u:'kg',f:1,pu:112.9,puImp:124.4531,pdv:156.9,marg:26.1},
+  {cod:'PA0263',l:'Qualiday Cat',e:'cat',n:'Qualiday Gato Adulto',s:'Salmao e Arroz',kg:1,u:'kg',f:8,pu:18.125,puImp:21.4905,pdv:29.9,marg:39.1},
+  {cod:'PA0268',l:'Qualiday Cat',e:'cat',n:'Qualiday Gato Adulto',s:'Salmao e Arroz',kg:2.5,u:'kg',f:5,pu:35.6,puImp:42.2103,pdv:59.0,marg:39.8},
+  {cod:'PA0265',l:'Qualiday Cat',e:'cat',n:'Qualiday Gato Adulto',s:'Salmao e Arroz',kg:10.1,u:'kg',f:1,pu:120.9,puImp:133.2717,pdv:169.9,marg:27.5},
+  {cod:'PA0248',l:'Qualiday Cat',e:'cat',n:'Qualiday Gato Castrado',s:'Frango e Vegetais',kg:1,u:'kg',f:8,pu:18.625,puImp:22.0833,pdv:30.9,marg:39.9},
+  {cod:'PA0255',l:'Qualiday Cat',e:'cat',n:'Qualiday Gato Castrado',s:'Frango e Vegetais',kg:2.5,u:'kg',f:5,pu:36.2,puImp:42.9217,pdv:59.9,marg:39.6},
+  {cod:'PA0250',l:'Qualiday Cat',e:'cat',n:'Qualiday Gato Castrado',s:'Frango e Vegetais',kg:10.1,u:'kg',f:1,pu:122.9,puImp:135.4764,pdv:170.9,marg:26.1},
+  {cod:'PA0253',l:'Qualiday Cat',e:'cat',n:'Qualiday Gato Castrado',s:'Frango e Vegetais',kg:20,u:'kg',f:1,pu:206.0,puImp:227.08,pdv:317.0,marg:39.6},
+  {cod:'PA0218',l:'Qualiday Cat',e:'cat',n:'Qualiday Gato Castrado',s:'Carne e Vegetais',kg:1,u:'kg',f:8,pu:18.625,puImp:22.0833,pdv:30.9,marg:39.9},
+  {cod:'PA0225',l:'Qualiday Cat',e:'cat',n:'Qualiday Gato Castrado',s:'Carne e Vegetais',kg:2.5,u:'kg',f:5,pu:36.2,puImp:42.9217,pdv:59.8,marg:39.3},
+  {cod:'PA0220',l:'Qualiday Cat',e:'cat',n:'Qualiday Gato Castrado',s:'Carne e Vegetais',kg:10.1,u:'kg',f:1,pu:122.9,puImp:135.4764,pdv:171.9,marg:26.9},
+  {cod:'PA0277',l:'Qualiday Cat',e:'cat',n:'Qualiday Gato Castrado',s:'Salmao e Vegetais',kg:1,u:'kg',f:8,pu:19.25,puImp:22.8244,pdv:31.9,marg:39.8},
+  {cod:'PA0284',l:'Qualiday Cat',e:'cat',n:'Qualiday Gato Castrado',s:'Salmao e Vegetais',kg:2.5,u:'kg',f:5,pu:37.0,puImp:43.8702,pdv:61.1,marg:39.3},
+  {cod:'PA0279',l:'Qualiday Cat',e:'cat',n:'Qualiday Gato Castrado',s:'Salmao e Vegetais',kg:10.1,u:'kg',f:1,pu:128.0,puImp:141.0982,pdv:180.9,marg:28.2},
+  {cod:'PA0192',l:'Qualiday Cat',e:'cat',n:'Qualiday Gato Filhote',s:'Frango e Arroz',kg:1,u:'kg',f:8,pu:18.125,puImp:21.4905,pdv:29.9,marg:39.1},
+  {cod:'PA0196',l:'Qualiday Cat',e:'cat',n:'Qualiday Gato Filhote',s:'Frango e Arroz',kg:2.5,u:'kg',f:5,pu:35.0,puImp:41.4989,pdv:57.9,marg:39.5},
+  {cod:'PA0193',l:'Qualiday Cat',e:'cat',n:'Qualiday Gato Filhote',s:'Frango e Arroz',kg:10.1,u:'kg',f:1,pu:121.5,puImp:133.9331,pdv:169.9,marg:26.9},
+  {cod:'PA1000',l:'Special Croc',e:'dog',n:'Special Croc Dog Adulto',s:'Carne',kg:3,u:'kg',f:5,pu:24.58,puImp:24.58,pdv:33.9,marg:37.9},
+  {cod:'PA1001',l:'Special Croc',e:'dog',n:'Special Croc Dog Adulto',s:'Carne',kg:15,u:'kg',f:1,pu:83.5,puImp:83.5,pdv:114.9,marg:37.6},
+  {cod:'PA1002',l:'Special Croc',e:'dog',n:'Special Croc Dog Adulto',s:'Carne',kg:25,u:'kg',f:1,pu:132.5,puImp:132.5,pdv:181.9,marg:37.3},
+  {cod:'PA1003',l:'Special Croc',e:'dog',n:'Special Croc Dog Filhote',s:'Carne',kg:3,u:'kg',f:5,pu:29.0,puImp:29.0,pdv:39.9,marg:37.6},
+  {cod:'PA1004',l:'Special Croc',e:'dog',n:'Special Croc Dog Filhote',s:'Carne',kg:15,u:'kg',f:1,pu:92.5,puImp:92.5,pdv:127.9,marg:38.3},
+  {cod:'PA1005',l:'Special Croc',e:'dog',n:'Special Croc Dog Filhote',s:'Carne',kg:25,u:'kg',f:1,pu:147.0,puImp:147.0,pdv:202.9,marg:38.0},
+  {cod:'PA1006',l:'Special Croc',e:'cat',n:'Special Croc Cat Castrado',s:'Frango',kg:3,u:'kg',f:5,pu:31.2,puImp:31.2,pdv:43.9,marg:40.7},
+  {cod:'PA1007',l:'Special Croc',e:'cat',n:'Special Croc Cat Castrado',s:'Frango',kg:10.1,u:'kg',f:1,pu:91.9,puImp:91.9,pdv:129.9,marg:41.3},
+  {cod:'PA1008',l:'Special Croc',e:'cat',n:'Special Croc Cat Castrado',s:'Frango',kg:20,u:'kg',f:1,pu:165.9,puImp:165.9,pdv:229.9,marg:38.6},
+  {cod:'PA0700',l:'PetCare Solution',e:'supl',n:'PetCare Idosos',s:'Suplemento para caes idosos',kg:1,u:'un',f:6,pu:46.84,puImp:46.84,pdv:77.9,marg:66.3},
+  {cod:'PA0701',l:'PetCare Solution',e:'supl',n:'PetCare Skin Care',s:'Suplemento pele e pelagem',kg:1,u:'un',f:6,pu:35.84,puImp:35.84,pdv:59.5,marg:66.0},
+  {cod:'PA0702',l:'PetCare Solution',e:'supl',n:'PetCare Articular',s:'Suplemento articular para caes',kg:1,u:'un',f:6,pu:45.0,puImp:45.0,pdv:74.9,marg:66.4},
+  {cod:'PA1112',l:'Zooe Churitos',e:'snack',n:'Zooe Churitos',s:'Figado de Frango',kg:56,u:'g',f:25,pu:13.48,puImp:13.48,pdv:22.1,marg:63.9},
+  {cod:'PA1113',l:'Zooe Churitos',e:'snack',n:'Zooe Churitos',s:'Frango',kg:56,u:'g',f:25,pu:13.48,puImp:13.48,pdv:22.1,marg:63.9},
+  {cod:'PA1114',l:'Zooe Churitos',e:'snack',n:'Zooe Churitos',s:'Peixe',kg:56,u:'g',f:25,pu:13.48,puImp:13.48,pdv:22.1,marg:63.9},
+  {cod:'PA0113',l:'Qualiday Sabores',e:'dog',n:'Qualiday Caes Adulto Sabores',s:'3kg',kg:3,u:'kg',f:5,pu:33.6,puImp:39.84,pdv:55.9,marg:40.3},
+  {cod:'PA0114',l:'Qualiday Sabores',e:'dog',n:'Qualiday Caes Adulto Sabores',s:'15kg',kg:15,u:'kg',f:1,pu:129.0,puImp:142.2,pdv:186.9,marg:31.4},
+  {cod:'PA0222',l:'Qualiday Cat',e:'cat',n:'Qualiday Gato Castrado Carne',s:'20kg',kg:20,u:'kg',f:1,pu:204.0,puImp:241.77,pdv:314.0,marg:29.9},
+  {cod:'PA0282',l:'Qualiday Cat',e:'cat',n:'Qualiday Gato Castrado Salmao',s:'20kg',kg:20,u:'kg',f:1,pu:219.0,puImp:259.55,pdv:336.0,marg:29.5},
+  {cod:'PA0049',l:'Allcanis',e:'dog',n:'Allcanis Adulto RP Mini Bits',s:'2,5kg',kg:2.5,u:'kg',f:6,pu:27.4,puImp:32.46,pdv:45.8,marg:41.1},
+  {cod:'PA0027',l:'Allcanis',e:'dog',n:'Allcanis Adulto',s:'2,5kg',kg:2.5,u:'kg',f:6,pu:27.0,puImp:32.0,pdv:44.9,marg:40.3}
+];
+
+var LINHAS=[]; var _ls={};
+P.forEach(function(p){if(!_ls[p.l]){_ls[p.l]=true;LINHAS.push(p.l);}});
+LINHAS.sort();
+var ICO={'ProHealth':'&#127942;','Qualiday ProLife':'&#11088;','Qualiday Sabores':'&#11088;','Qualiday Umido':'&#128167;','Allcanis':'&#128062;','Allcats':'&#128008;','Qualiday Cat':'&#128008;','Special Croc':'&#128014;','PetCare Solution':'&#128138;','Zooe Churitos':'&#129361;'};
+var FOLDER_ID='1pe0ScWu5n0-17x3RA41dqmAytHOsyaWz';
+
+var clientes=[],cidx=null,fatMes=null,fatMeta={},mixTmp=[],editId=null,pedOn=false,filtro='todos',hist=[],pedTmp=null;
+
+// ── INIT ─────────────────────────────────────────────────────
+var CLIENTES_BASE = [{"id": "pfs_00017601", "nome": "Aires Galhardi Me", "resp": "", "tel": "11999305660", "tipo": "Pet Shop", "end": "RUA JOAO BATISTA MONTE 17 - VILA RE - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00431602", "nome": "Amalia Jussara Dos S", "resp": "", "tel": "37746818", "tipo": "Pet Shop", "end": "PC VIEIRA DO COUTO 34 - JD VILA FORMOSA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00068601", "nome": "Avicultura Casarao", "resp": "", "tel": "11983090192", "tipo": "Pet Shop", "end": "AV CANGAIBA 2559 - CANGAIBA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00429801", "nome": "Avicultura Nsa Sra A", "resp": "", "tel": "976229401", "tipo": "Agropecuaria", "end": "AV DO ORATORIO 2591 - PQ SAO LUCAS - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 4%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00098401", "nome": "Bill E Bull I Pet Sh", "resp": "", "tel": "11940130999", "tipo": "Pet Shop", "end": "R SERRA DE JUREIA 688 - CIDADE MAE DO CEU - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00064806", "nome": "Breeds", "resp": "", "tel": "11984661331", "tipo": "Pet Shop", "end": "R SANTA CRUZ 1801 - VL MARIANA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 12% não recebe sexta", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00064804", "nome": "Breeds", "resp": "", "tel": "11984661331", "tipo": "Pet Shop", "end": "R PAUMARI S/N - VL IPOJUCA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 12% não recebe sexta", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00064801", "nome": "Breeds", "resp": "", "tel": "11984661331", "tipo": "Pet Shop", "end": "AV JOSE MARIA WHITAKER 600 - PLANALTO PAULISTA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 12% não recebe sexta", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00064805", "nome": "Breeds", "resp": "", "tel": "11984661331", "tipo": "Pet Shop", "end": "AV DOM PEDRO II 1861 - CAMPESTRE - SANTO ANDRE", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 12% não recebe sexta", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00064807", "nome": "Breeds", "resp": "", "tel": "11984661331", "tipo": "Pet Shop", "end": "AV CORONEL SEZEFREDO FAGUNDES 512 - TUCURUVI - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 12% não recebe sexta", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00089801", "nome": "Bruta Avicultura", "resp": "", "tel": "11986361358", "tipo": "Pet Shop", "end": "R PASTORIL DE ITAPETINGA 540 - JARDIM DANFER - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 12%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00092601", "nome": "Cao Mania Pet Shop", "resp": "", "tel": "11947778802", "tipo": "Pet Shop", "end": "AVENIDA AMADOR BUENO DA VEIGA 815 - PENHA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 8%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00002701", "nome": "Casa De Agua Branca", "resp": "", "tel": "", "tipo": "Pet Shop", "end": "RUA JOAO RAMALHO 693 - PERDIZES - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00000901", "nome": "Casa De S Caetano", "resp": "", "tel": "11974173939", "tipo": "Pet Shop", "end": "RUA VISCONDE DE INHAUMA 65 - VILA GERTI - SAO CAETANO DO SUL", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 12%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00017502", "nome": "Casa De Sao Caetano", "resp": "", "tel": "11968619614", "tipo": "Pet Shop", "end": "AV DO RIO PEQUENO 1385 - RIO PEQUENO - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 12%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00019403", "nome": "Casa De Sao Caetano", "resp": "", "tel": "11986611000", "tipo": "Pet Shop", "end": "ESTRADA VELHA DE COTIA 740 - JARDIM PASSARGADA I - COTIA", "status": "Ativo", "proxVisita": "", "obs": "agendar entrega", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00285501", "nome": "Casa Pet Feliz", "resp": "", "tel": "", "tipo": "Pet Shop", "end": "AV GUILHERME GIORGE 710 - VL CARRAO - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 2%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00337901", "nome": "Central Pet Care", "resp": "", "tel": "964430149", "tipo": "Pet Shop", "end": "R BRACO DA CRUZ 380 - JD TRIANA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00367201", "nome": "Clinica Veterinaria", "resp": "", "tel": "955567509", "tipo": "Veterinaria", "end": "AV GUILHERME GIORGI 315 - VL CARRAO - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00062802", "nome": "Colibri Pet Shop", "resp": "", "tel": "1124527137", "tipo": "Pet Shop", "end": "AVENIDA EMILIO RIBAS 2850 - JARDIM VILA GALVAO - GUARULHOS", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00362501", "nome": "Cuida Do Pet", "resp": "", "tel": "23715253", "tipo": "Pet Shop", "end": "AV CONS CARRAO 2644 - VL CARRAO - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 2%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00064301", "nome": "Dog Boy", "resp": "", "tel": "11986361358", "tipo": "Pet Shop", "end": "RUA PASTORIL DE ITAPETINGA 540 - JARDIM DANFER - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 4%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00000802", "nome": "Dogs Day", "resp": "", "tel": "1198603068", "tipo": "Pet Shop", "end": "R DOMINGOS DE MORAIS 1996 - VL MARIANA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00357204", "nome": "Dogs Day", "resp": "", "tel": "42325522", "tipo": "Pet Shop", "end": "AV DOUTOR TIMOTEO PENTEADO 1232 - VL HULDA - GUARULHOS", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00000801", "nome": "Dogs Day Racoes", "resp": "", "tel": "11986030068", "tipo": "Pet Shop", "end": "RUA ACURUI 255 - VILA FORMOSA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 12% conforme política do cliente. LOGÍSTICA agendar entrega Emerson 011970727774", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00386002", "nome": "Dogs Day Racoes", "resp": "", "tel": "23654147", "tipo": "Pet Shop", "end": "AV AGUIA DE HAIA 228 - PQ PAINEIRAS - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00377803", "nome": "Dogs Day Racoes Ltda", "resp": "", "tel": "26716399", "tipo": "Pet Shop", "end": "R IPIRANGA 136 - CENTRO - SAO VICENTE", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00061201", "nome": "Ecoloja Avicultura", "resp": "", "tel": "11989389080", "tipo": "Pet Shop", "end": "AVENIDA AMADOR BUENO DA VEIGA 886 - PENHA DA FRANCA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00068401", "nome": "Elena Lavisio", "resp": "", "tel": "11961874563", "tipo": "Pet Shop", "end": "R ANTONIO DE BARROS 2234 - VILA CARRAO - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 2% entregar após 11:00hrs", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00369901", "nome": "Fa Pets", "resp": "", "tel": "27810079", "tipo": "Pet Shop", "end": "R FRANCISCA DE PAULA 106 - VL CARRAO - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00074101", "nome": "Felbor Ltda", "resp": "", "tel": "11976068020", "tipo": "Pet Shop", "end": "AV COSTA BARROS 399 - VL BELA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00098201", "nome": "Formosao", "resp": "", "tel": "11940167338", "tipo": "Pet Shop", "end": "PC DOUTOR SAMPAIO VIDAL 08 - VILA FORMOSA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00062801", "nome": "Funchal", "resp": "", "tel": "11987965505", "tipo": "Pet Shop", "end": "TRAVESSA NOVA JERUSALEM 941 - CHACARA SANTO ANTONIO - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder 5%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00084701", "nome": "Gislaine De Assuncao", "resp": "", "tel": "11961874563", "tipo": "Pet Shop", "end": "R ANTONIO DE BARROS 2234 - VILA CARRAO - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 2%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00021905", "nome": "Good Comercio", "resp": "", "tel": "11973367165", "tipo": "Pet Shop", "end": "AV SAO MIGUEL 4895 - PQ BUTURUSSU - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 8+2%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00021904", "nome": "Good Comercio", "resp": "", "tel": "11973367165", "tipo": "Pet Shop", "end": "AV MATEO BEI 2484 - SAO MATEUS - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 8+2%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00021907", "nome": "Good Comercio De Rac", "resp": "", "tel": "32070647", "tipo": "Pet Shop", "end": "R ALMEIDA TORRES 229 LOJA 01 - ACLIMACAO - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 8+2%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00393206", "nome": "Good Comercio De Rac", "resp": "", "tel": "28334408", "tipo": "Pet Shop", "end": "AV RAGUEB CHOHFI 5199 - JD MARILU - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 8+2%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00021901", "nome": "Good De Racoes", "resp": "", "tel": "11973367165", "tipo": "Pet Shop", "end": "EST SANTA ISABEL 2260 - JARDIM LIMOEIRO - ARUJA", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 8+2%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00021903", "nome": "Good De Racoes", "resp": "", "tel": "11973367165", "tipo": "Pet Shop", "end": "AV NAZARE 220 - IPIRANGA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 8+2%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00427301", "nome": "Jo Casa De Racoes", "resp": "", "tel": "952430200", "tipo": "Pet Shop", "end": "R OLGA ARTACHO 49 - JD PIRATININGA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 3%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00480701", "nome": "Jucimara Farina Rocc", "resp": "", "tel": "11932738003", "tipo": "Pet Shop", "end": "AV PARAGUASSU PAULISTA 626 - VL STA TERESA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00461701", "nome": "Kaue Kauan Comercio", "resp": "", "tel": "916622931", "tipo": "Pet Shop", "end": "R PADRE JOAO 31 - PENHA DE FRANCA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00064802", "nome": "Ki Cao", "resp": "", "tel": "11984661331", "tipo": "Pet Shop", "end": "RUA TROCARI 131 - VL PRUDENTE - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 12% não recebe sexta", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00064803", "nome": "Ki-Cao S.A.", "resp": "", "tel": "11984661331", "tipo": "Pet Shop", "end": "R BERNARDINO FANGANIELLO 349 - CASA VERDE - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 12% não recebe sexta", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00405001", "nome": "Le Petit", "resp": "", "tel": "20964702", "tipo": "Pet Shop", "end": "R FRANCISCA DE PAULA 514 - VL CARRAO - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 3%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00056101", "nome": "Lotus Utilidades", "resp": "", "tel": "11999001501", "tipo": "Pet Shop", "end": "AV SAPOPEMBA 4148 - MOOCA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00083901", "nome": "Luis Henrique De Campos", "resp": "", "tel": "11976068020", "tipo": "Pet Shop", "end": "AV COSTA BARROS 399 - VL BELA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 4%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00429401", "nome": "Lumina Animal Care", "resp": "", "tel": "964036757", "tipo": "Veterinaria", "end": "R CIRINO DE ABREU 266 - GUAIAUNA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00082401", "nome": "M Amigos Pet Shop", "resp": "", "tel": "11965877135", "tipo": "Pet Shop", "end": "R JOSE ZAPPI 100 - VILA PRUDENTE - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 2%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00384501", "nome": "Mundo Filo Pet Store", "resp": "", "tel": "975850420", "tipo": "Pet Shop", "end": "R MANDIORE 481 - VL FORMOSA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 2%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00099601", "nome": "Nariz Molhado", "resp": "", "tel": "11917891680", "tipo": "Pet Shop", "end": "R CESARIO ALVIM 105 - BELENZINHO - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00304901", "nome": "Oriente Pet Shop", "resp": "", "tel": "", "tipo": "Pet Shop", "end": "R ANTONIO DE BARROS 322 - TATUAPE - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 4%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00063001", "nome": "Pata Shop", "resp": "", "tel": "11959336127", "tipo": "Pet Shop", "end": "AV CANGAIBA 1766 - CANGAIBA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00318201", "nome": "Patalipatala Petshop", "resp": "", "tel": "55580947", "tipo": "Pet Shop", "end": "R JABOTICABAL 677 - VILA BERTIOGA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00208901", "nome": "Pet Arca", "resp": "", "tel": "", "tipo": "Pet Shop", "end": "AV GABRIELA MISTRAL 980 - PENHA DE FRANCA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00083301", "nome": "Pet Canine", "resp": "", "tel": "11964448005", "tipo": "Pet Shop", "end": "RUA DOMINGOS AFONSO 574A - SANTA CLARA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00069801", "nome": "Pet Center Express", "resp": "", "tel": "11982057670", "tipo": "Pet Shop", "end": "RUA SIQUEIRA BUENO 1973 - BELENZINHO - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00058201", "nome": "Pet Center Pessego", "resp": "", "tel": "11996851671", "tipo": "Pet Shop", "end": "ESTRADA DO PESSEGO 1495 - COLONIA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 12+2% não enviar vencimento menor 6 meses", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00080801", "nome": "Pet Feliz Petshop", "resp": "", "tel": "11968622304", "tipo": "Pet Shop", "end": "R JOSE MACEDO 606 - VL MACEDOPOLIS - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00482001", "nome": "Pet Shop Aqualandia", "resp": "", "tel": "968514982", "tipo": "Pet Shop", "end": "AV DO ORATORIO 3058 ANEXO 3066 - JD GUAIRACA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 4%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00088701", "nome": "Pet Shop Brazil", "resp": "", "tel": "11953289851", "tipo": "Pet Shop", "end": "R ABEL TAVARES 342 ANEXO A LOJA 02 - JARDIM BELEM - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00005101", "nome": "Pet Shop Felix E", "resp": "", "tel": "11981790663", "tipo": "Pet Shop", "end": "RUA OLIMPIO DE CAMPOS 571 - JD VILA FORMOSA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 4%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00321301", "nome": "Pet Shop K-Petinha", "resp": "", "tel": "22960511", "tipo": "Pet Shop", "end": "R DOM JOAQUIM DE MELO 214 - MOOCA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "entrega a partir das 9:30", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00447701", "nome": "Pet Shop Magalhaes", "resp": "", "tel": "940038308", "tipo": "Pet Shop", "end": "R ENTRE RIOS 969 - VL BUENOS AIRES - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00097001", "nome": "Pet Shop Rebelo", "resp": "", "tel": "11942251720", "tipo": "Pet Shop", "end": "RUA FRANCISCO REBELO 435 - VILA CALIFORNIA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00275101", "nome": "Pet Shop Santo Elias", "resp": "", "tel": "1169145970", "tipo": "Pet Shop", "end": "R SANTO ELIAS 448 - PQ SAO JORGE - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00092701", "nome": "Pet Shop Tutucao Ii", "resp": "", "tel": "11947773992", "tipo": "Pet Shop", "end": "AV SAPOPEMBA 2625 - VL REGENTE FEIJO - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00097501", "nome": "Pet Shop Vila Carrao", "resp": "", "tel": "11940420361", "tipo": "Pet Shop", "end": "AV CONSELHEIRO CARRAO 3393 - VILA CARRAO - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 8%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00065101", "nome": "Pet Show Mar", "resp": "", "tel": "11985844260", "tipo": "Pet Shop", "end": "AVENIDA JOAO XXIII 300 - VILA FORMOSA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 8%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00089401", "nome": "Petforvet Pet Shop", "resp": "", "tel": "11952715781", "tipo": "Pet Shop", "end": "AV VILA EMA 3620 - VILA EMA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00283201", "nome": "Petmogi", "resp": "", "tel": "", "tipo": "Pet Shop", "end": "R IPIRANGA 174 - CENTRO - MOGI DAS CRUZES", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00065801", "nome": "Praca Do Pet", "resp": "", "tel": "11985149550", "tipo": "Pet Shop", "end": "RUA NILZA 249 - VILA ESPERANCA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 10% não recebe sexta", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00065802", "nome": "Praca Do Pet", "resp": "", "tel": "27983390", "tipo": "Pet Shop", "end": "R COSTA REGO 49 - VL GUILHERMINA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 10% não recebe sexta", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00065803", "nome": "Praca Do Pet Comerci", "resp": "", "tel": "27983390", "tipo": "Pet Shop", "end": "R CACAQUERA 21 - VL ANTONINA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00065804", "nome": "Praca Do Pet Comerci", "resp": "", "tel": "957971237", "tipo": "Pet Shop", "end": "AV SAPOPEMBA 2996 - VL REGENTE FEIJO - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 10% não recebe sexta", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00094601", "nome": "Princesa Pet", "resp": "", "tel": "11947327114", "tipo": "Pet Shop", "end": "AV DA JUSTICA 22 - VL RUI BARBOSA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00092901", "nome": "R Giunti Costa", "resp": "", "tel": "11947730123", "tipo": "Pet Shop", "end": "RUA TAMAINDE 935 - VILA NOVA MANCHESTER - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00478501", "nome": "S M Pet Shop", "resp": "", "tel": "953289851", "tipo": "Pet Shop", "end": "AV AMADOR BUENO DA VEIGA 4544 - PENHA DE FRANCA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00465501", "nome": "Supermercado Dos Pet", "resp": "", "tel": "", "tipo": "Supermercado", "end": "R IACRI 104 - VL CARRAO - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 4%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00058801", "nome": "Tatuape Pet Center", "resp": "", "tel": "11996238200", "tipo": "Pet Shop", "end": "R NOVA JERUSALEM 516 - CHACARA SANTO ANTONIO - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00275001", "nome": "Titan Pet Shop", "resp": "", "tel": "1143057618", "tipo": "Pet Shop", "end": "AV RENATA 379 - CH BELENZINHO - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 2%", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00099901", "nome": "Vet We Log", "resp": "", "tel": "11910697023", "tipo": "Pet Shop", "end": "R ALPONT 234 - CAPUAVA - MAUA", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00461001", "nome": "Veterinaria Popular", "resp": "", "tel": "942851444", "tipo": "Veterinaria", "end": "R JULIO DE CASTILHOS 310 - BELENZINHO - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00351201", "nome": "Vila Esperanca", "resp": "", "tel": "91292510", "tipo": "Pet Shop", "end": "AV PDES OLIVETANOS 827 - VILA ESPERANCA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00057301", "nome": "Vila Formosa Pet Cen", "resp": "", "tel": "11997367581", "tipo": "Pet Shop", "end": "R ARACE 204 - VILA FORMOSA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00362401", "nome": "Vila Pet Mania", "resp": "", "tel": "96338-6405", "tipo": "Pet Shop", "end": "R GUAXUPE 880 - VL FORMOSA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00021902", "nome": "Yes Pet Store", "resp": "", "tel": "11973367165", "tipo": "Pet Shop", "end": "R PEDRO 583 - VL ALBERTINA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 8+2% não recebe sexta", "mix": [], "visitas": [], "pedidos": 0}, {"id": "pfs_00076101", "nome": "Yes Pet Store", "resp": "", "tel": "11973367165", "tipo": "Pet Shop", "end": "R PEDRO 583 - VL ALBERTINA - SAO PAULO", "status": "Ativo", "proxVisita": "", "obs": "conceder desc 8+2%", "mix": [], "visitas": [], "pedidos": 0}];
+
+function init() {
+  // Carrega dados salvos do localStorage
+  var salvo = null;
+  try { salvo = JSON.parse(localStorage.getItem('pfs_clientes') || 'null'); } catch(e){}
+  // Sempre parte da base oficial (89 clientes limpos)
+  clientes = CLIENTES_BASE.map(function(c){return Object.assign({},c);});
+  // Reaplica visitas/mix/dados de campo salvos, identificando por id
+  if(salvo && Array.isArray(salvo)){
+    salvo.forEach(function(cs){
+      var encontrado = clientes.find(function(cb){return cb.id===cs.id;});
+      if(encontrado){
+        if(cs.visitas && cs.visitas.length) encontrado.visitas = cs.visitas;
+        if(cs.mix && cs.mix.length) encontrado.mix = cs.mix;
+        if(cs.resp) encontrado.resp = cs.resp;
+        if(cs.tel) encontrado.tel = cs.tel;
+        if(cs.obs) encontrado.obs = cs.obs;
+        if(cs.proxVisita) encontrado.proxVisita = cs.proxVisita;
+        if(cs.status && cs.status!=='Ativo') encontrado.status = cs.status;
+      }
+    });
+  }
+  dbSave();
+  var m = null;
+  try { m = JSON.parse(localStorage.getItem('pfs_meta') || 'null'); } catch(e){}
+  if(m) fatMeta = m;
+  rDash(); rCli(); rProd(); rFat(); rSub();
+}
+
+function sav(c) {
+  dbSave();
+  return Promise.resolve();
+}
+function savM2() {
+  dbSave();
+}
+
+// ── HELPERS ──────────────────────────────────────────────────
+function fmtD(d){if(!d)return'--';var p=d.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
+function fmtR(v){return'R$ '+Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function dAte(d){if(!d)return null;return Math.floor((new Date(d)-new Date())/864e5);}
+function dDe(d){if(!d)return null;return Math.floor((new Date()-new Date(d))/864e5);}
+function svCor(c){if(!c.proxVisita)return'c';var d=dAte(c.proxVisita);if(d<0)return'r';if(d<=7)return'a';return'v';}
+function dLbl(c){if(!c.visitas||!c.visitas.length)return{t:'Sem visita',c:'dn'};var d=dDe(c.visitas[c.visitas.length-1].data);if(d===0)return{t:'Hoje',c:'dok'};if(d===1)return{t:'Ontem',c:'dok'};if(d<=14)return{t:d+'d atras',c:'dok'};if(d<=30)return{t:d+'d atras',c:'dw'};return{t:d+'d atras',c:'dl'};}
+function fmtP(p){if(p.u==='kg')return p.kg+'kg';if(p.u==='g')return p.kg+'g';if(p.u==='un')return'cx c/6';return p.kg+p.u;}
+function toast(m){var t=document.getElementById('tst');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2500);}
+function fM(id){document.getElementById(id).classList.remove('op');}
+function oM(id){document.getElementById(id).classList.add('op');}
+
+function go(s,push){
+  if(push===undefined)push=true;
+  document.querySelectorAll('.scr').forEach(function(e){e.classList.remove('on');});
+  document.querySelectorAll('.nb').forEach(function(e){e.classList.remove('on');});
+  var tabs=['dash','cli','prod','fat','promo','imp'];
+  var ti=tabs.indexOf(s);
+  if(ti>=0){document.getElementById('s-'+s).classList.add('on');document.getElementById('nb'+ti).classList.add('on');}
+  else{document.getElementById('s-'+s).classList.add('on');}
+  document.getElementById('hbk').style.display=s==='fic'?'block':'none';
+  document.getElementById('hhn').style.display=s==='cli'?'block':'none';
+  if(s==='fic'){document.getElementById('hdrt').textContent=clientes[cidx]?clientes[cidx].nome:'Cliente';document.getElementById('hdrs').textContent='Ficha do cliente';}
+  else{document.getElementById('hdrt').textContent='PFS CRM';rSub();}
+  if(push)hist.push(s);
+}
+function voltar(){hist.pop();var prev=hist.length?hist[hist.length-1]:'dash';hist.pop();go(prev);}
+function rSub(){var a=clientes.filter(function(c){return c.status==='Ativo';}).length;document.getElementById('hdrs').textContent=clientes.length+' clientes / '+a+' ativos';}
+
+function rDash(){
+  var at=clientes.filter(function(c){return c.status==='Ativo';});
+  var atr=clientes.filter(function(c){return svCor(c)==='r';});
+  var tp=clientes.reduce(function(s,c){return s+(c.pedidos||0);},0);
+  var tv=clientes.reduce(function(s,c){return s+(c.visitas||[]).reduce(function(ss,v){return ss+(v.valorTotal||0);},0);},0);
+  var tvis=clientes.reduce(function(s,c){return s+(c.visitas||[]).length;},0);
+  document.getElementById('m0').textContent=clientes.length;
+  document.getElementById('m1').textContent=at.length;
+  document.getElementById('m2').textContent=atr.length;
+  document.getElementById('m3').textContent=tp;
+  document.getElementById('m4').textContent=tv>0?'R$'+Math.round(tv/1000)+'k':'R$0';
+  document.getElementById('m5').textContent=tvis;
+  document.getElementById('dtt').textContent=clientes.length+' cliente'+(clientes.length!==1?'s':'')+' na carteira';
+  var al=document.getElementById('dal');
+  var atrl=clientes.filter(function(c){return svCor(c)==='r';}).slice(0,3);
+  al.innerHTML=atrl.length?atrl.map(function(c){var d=Math.abs(dAte(c.proxVisita));var i=clientes.indexOf(c);return'<div class="rc" onclick="aFicha('+i+')"><div class="rt"><span class="rn">'+c.nome+'</span></div><div class="rs" style="color:var(--rd)">'+d+'d atrasado</div></div>';}).join(''):'<div style="padding:4px 14px 6px;font-size:12px;color:#999">Nenhuma visita atrasada</div>';
+  var rl=document.getElementById('drl');
+  var cv=clientes.filter(function(c){return c.visitas&&c.visitas.length;}).sort(function(a,b){return new Date(b.visitas[b.visitas.length-1].data)-new Date(a.visitas[a.visitas.length-1].data);}).slice(0,3);
+  rl.innerHTML=cv.length?cv.map(function(c){var v=c.visitas[c.visitas.length-1];var i=clientes.indexOf(c);return'<div class="rc" onclick="aFicha('+i+')"><div class="rt"><span class="rn">'+c.nome+'</span><span class="rd2">'+fmtD(v.data)+'</span></div><div class="rs">'+(v.pedido?'<span style="color:var(--gr);font-weight:600">Pedido</span> / ':'')+v.obs+'</div></div>';}).join(''):'<div style="padding:4px 14px 6px;font-size:12px;color:#999">Nenhuma visita registrada</div>';
+}
+
+function rCli(){
+  var q=(document.getElementById('srch')?document.getElementById('srch').value||'':'').toLowerCase();
+  var lista=clientes.filter(function(c){
+    var mq=!q||(c.nome||'').toLowerCase().includes(q)||(c.resp||'').toLowerCase().includes(q);
+    var mf=filtro==='todos'||c.status===filtro||c.tipo===filtro;
+    return mq&&mf;
+  });
+  var el=document.getElementById('cl');
+  if(!lista.length){el.innerHTML='<div class="emp">Nenhum cliente encontrado</div>';return;}
+  el.innerHTML=lista.map(function(c){
+    var i=clientes.indexOf(c);var sv=svCor(c);var dl=dLbl(c);
+    var bc=c.status==='Ativo'?'ba':c.status==='Prospect'?'bp':'bi';
+    return'<div class="cc" onclick="aFicha('+i+')"><div class="sb '+sv+'"></div><div class="cb"><div class="ct"><div class="cn">'+c.nome+'</div><div class="cbg '+bc+'">'+c.status+'</div></div><div class="ctp">'+(c.tipo||'--')+(c.resp?' / '+c.resp:'')+'</div><div class="cbt"><div class="cla">'+(!c.visitas||!c.visitas.length?'Sem visitas':'Ultima: '+fmtD(c.visitas[c.visitas.length-1].data))+'</div><div class="cdy '+dl.c+'">'+dl.t+'</div></div></div></div>';
+  }).join('');
+}
+function setF(el){document.querySelectorAll('.fc').forEach(function(e){e.classList.remove('on');});el.classList.add('on');filtro=el.dataset.f;rCli();}
+
+
+var ARGS={'ProHealth':['Formula Super Premium com ingredientes funcionais: frango, batata doce, blueberry, curcuma e roma. Resultado visivel em 2-3 semanas.','DHA e EPA de microalgas — desenvolvimento cerebral e visual para filhotes, suporte cognitivo para seniors.','5 cepas de probioticos certificados — flora intestinal equilibrada, fezes mais firmes e menos gases.','Condroitina e Glicosamina ja inclusos — equivale a um suplemento articular separado sem custo adicional.',],'Qualiday ProLife':['Super Premium com custo-beneficio estrategico — ticket maior que economy, margem maior que basico.','Sistema digestivo completo: prebiotico + probiotico + polpa de beterraba. Menos reclamacoes de digestao.','Linha completa Filhote/Adulto/Light/Senior — o cliente nao precisa trocar de marca na vida do pet.',],'Qualiday Umido':['Hidratacao essencial: pets em dieta seca ficam subhidratados. Previne problemas renais e urinarios.','Produto de impulso: embalagem pequena, preco acessivel, animal adora. Perfeito para o caixa da loja.','Variedade de sabores garante palatabilidade mesmo para animais seletivos.',],'Allcanis':['Premium Especial com extrato de Yucca — reduz amonia nas fezes, menos odor. Tutor nota em 1 semana.','Linha completa RP e RMG, Filhote a Senior, embalagens 2,5kg a 20kg. Cobre toda a vida do pet.','Alga Schizochytrium — DHA natural de origem controlada, sem contaminantes de farinha de peixe.',],'Allcats':['Mix de proteinas Frango+Carne+Salmao — maxima palatabilidade para gatos exigentes.','Mais de 90% dos gatos domesticos sao castrados — segmento dominante do mercado felino.','Disponivel em 20kg — ideal para revendas com alto volume e criadores.',],'Qualiday Cat':['3 sabores de adulto (Frango, Carne, Salmao) x 3 tamanhos — solucao para qualquer perfil de tutor.','Castrado disponivel em ate 20kg — diferencial frente a marcas que param no 10kg.','Filhote/Lactacao: primeira compra do tutor de pet novo. Quem fideliza no filhote fica por anos.',],'Special Croc':['Economy premium — melhor que economy convencional com preco competitivo. Alto giro na loja.','Embalagem 25kg — menor custo por kg, argumento de economia que fecha venda rapido.','Linha para caes e gatos — lojista negocia uma linha e cobre as duas especies.',],'PetCare Solution':['Suplementos em caixa c/6 — margem por unidade muito maior que racoes. Upsell natural apos venda.','Idosos: tutor com pet idoso tem alta disposicao de gasto e apelo emocional forte.','Articular: frequentemente recomendado por veterinarios — parceria com clinicas gera indicacao constante.','Skin Care: resultado visivel em 4-6 semanas. Tutor que ve resultado volta e indica.',],'Qualiday Sabores':['Sabores variados Frango, Carne e Salmao — palatabilidade superior para caes adultos exigentes.','Disponivel em 3kg e 15kg — atende tanto o tutor urbano quanto o volume do lojista.','Preco competitivo com margens atrativas — excelente para reposicao rapida.',],'Zooe Churitos':['Petisco de impulso — 56g, preco baixo, animal adora. Posicione no caixa para aumentar ticket medio.','3 sabores expostos juntos criam volume visual e aumentam conversao.','Fardo de 25 unidades — custo por unidade baixo, margem preservada, reposicao rapida.',]};
+
+function abrirFP(cod){
+  var p=P.find(function(x){return x.cod===cod;});
+  if(!p)return;
+  var mesmos=P.filter(function(x){return x.n===p.n&&x.s===p.s;});
+  var args=ARGS[p.l]||[];
+  var FAIXAS=[[301,1000,4],[1001,3000,6],[3001,6000,8],[6001,999999,12]];
+  var PROMOS={
+    'ProHealth':{emb:['10.1kg','15kg'],promo:'10x1 — mix: bonificacao em ProLife'},
+    'Qualiday ProLife':{emb:['10.1kg','15kg'],promo:'10x1 — mix: bonificacao em ProLife'},
+    'Qualiday Cat':{emb:['10.1kg','20kg'],promo:'10x1 — no mix'},
+    'Allcanis':{emb:['15kg','20kg'],promo:'10x1 — no mix'},
+    'Qualiday Dog':{emb:['15kg'],promo:'15x1 ou 7% de desconto'},
+    'Special Croc':{emb:['10.1kg','15kg','20kg','25kg'],promo:'10x1 e 30x4 — no mix'}
+  };
+  var prInfo=PROMOS[p.l];
+  var h='';
+  // Header
+  h+='<div style="background:var(--dk);color:#fff;padding:12px 14px">';
+  h+='<div style="font-size:16px;font-weight:600;margin-bottom:2px">'+p.n+'</div>';
+  h+='<div style="font-size:11px;opacity:.7">'+p.s+'</div>';
+  h+='<div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap">';
+  h+='<span style="font-size:10px;padding:2px 8px;border-radius:8px;background:rgba(255,255,255,.18)">'+p.l+'</span>';
+  h+='<span style="font-size:10px;padding:2px 8px;border-radius:8px;background:rgba(255,255,255,.18)">'+(p.e==='dog'?'Caes':p.e==='cat'?'Gatos':p.e==='supl'?'Suplemento':'Snack')+'</span>';
+  h+='</div></div>';
+  // Promo banner
+  if(prInfo){
+    h+='<div style="background:#1a4a2e;color:#fff;padding:8px 14px;display:flex;align-items:center;gap:8px">';
+    h+='<span style="font-size:16px">&#127873;</span>';
+    h+='<div><div style="font-size:11px;font-weight:600">PROMOCAO 2026</div>';
+    h+='<div style="font-size:12px;opacity:.9">'+prInfo.promo+'</div>';
+    h+='<div style="font-size:10px;opacity:.7;margin-top:1px">Valido: '+prInfo.emb.join(', ')+'</div></div>';
+    h+='</div>';
+  }
+  // Sizes + prices table with discounts
+  h+='<div style="padding:10px 14px;border-bottom:1px solid #f0ebe0">';
+  h+='<div style="font-size:10px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Apresentacoes, precos e descontos</div>';
+  mesmos.forEach(function(x){
+    var pesoLabel=fmtP(x);
+    var temPromo=prInfo&&prInfo.emb.indexOf(pesoLabel)>=0;
+    var puBase=x.puImp||x.pu;
+    h+='<div style="padding:8px 0;border-bottom:1px solid #f8f4ee">';
+    // Header: tamanho + promo tag
+    h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">';
+    h+='<span style="font-size:15px;font-weight:700">'+pesoLabel+'</span>';
+    if(temPromo)h+='<span style="font-size:9px;background:#1a4a2e;color:#fff;padding:2px 6px;border-radius:6px">&#127873; PROMO</span>';
+    h+='</div>';
+    // Tabela de precos por faixa
+    h+='<div style="background:#f8f8f8;border-radius:8px;overflow:hidden;font-size:10px">';
+    // Cabecalho da tabela
+    h+='<div style="display:grid;grid-template-columns:1.6fr 70px 70px 64px 46px;background:var(--dk);color:#fff;font-weight:600;font-size:9px;padding:6px 8px;text-align:center">';
+    h+='<span style="text-align:left">FAIXA</span><span>C/IMP.</span><span>C/DESC.</span><span>PDV</span><span>MARG.</span></div>';
+    // Linha sem desconto
+    var m0=puBase&&x.pdv?Math.round((x.pdv-puBase)/puBase*100):0;
+    h+='<div style="display:grid;grid-template-columns:1.6fr 70px 70px 64px 46px;padding:6px 8px;background:#fff;border-bottom:2px solid #ddd;text-align:center;align-items:center">';
+    h+='<span style="text-align:left;font-weight:600;color:#333">Sem desconto</span>';
+    h+='<span style="font-weight:700;color:var(--dk)">'+fmtR(puBase)+'</span>';
+    h+='<span style="color:#bbb">—</span>';
+    h+='<span style="font-weight:700;color:var(--gr)">'+fmtR(x.pdv)+'</span>';
+    h+='<span style="font-weight:700;color:#7B5E3A">'+m0+'%</span>';
+    h+='</div>';
+    // Linhas por faixa (PetCare Solution nao tem faixa de desconto por volume)
+    var temFaixa = x.l !== 'PetCare Solution';
+    if(temFaixa) FAIXAS.forEach(function(fx,fi){
+      var fmin=fx[0],fmax=fx[1],fpct=fx[2];
+      var cd=Math.round(puBase*(1-fpct/100)*100)/100;
+      var mg=x.pdv&&cd?Math.round((x.pdv-cd)/cd*100):0;
+      var lbl=fmin===6001?'Acima 6.001kg (12%)':(fmin+'-'+fmax+'kg ('+fpct+'%)');
+      var bg=fi%2===0?'#fff':'#fafafa';
+      h+='<div style="display:grid;grid-template-columns:1.6fr 70px 70px 64px 46px;padding:6px 8px;background:'+bg+';border-bottom:1px solid #f0ebe0;text-align:center;align-items:center">';
+      h+='<span style="text-align:left;color:#555">'+lbl+'</span>';
+      h+='<span style="color:#888">'+fmtR(puBase)+'</span>';
+      h+='<span style="font-weight:700;color:var(--rd)">'+fmtR(cd)+'</span>';
+      h+='<span style="font-weight:700;color:var(--gr)">'+fmtR(x.pdv)+'</span>';
+      h+='<span style="font-weight:700;color:var(--am)">'+mg+'%</span>';
+      h+='</div>';
+    });
+    h+='</div>';
+    h+='</div>';
+  });
+  h+='</div>';
+  // Sales arguments
+  if(args.length){
+    h+='<div style="padding:10px 14px">';
+    h+='<div style="font-size:10px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Argumentos de venda</div>';
+    args.forEach(function(a){
+      var parts=a.split(' — ');
+      var titulo=parts[0];var desc=parts.slice(1).join(' — ');
+      h+='<div style="background:#f0f7f4;border-left:3px solid var(--gr);border-radius:0 8px 8px 0;padding:8px 10px;margin-bottom:6px">';
+      h+='<div style="font-size:12px;font-weight:600;color:var(--gr);margin-bottom:2px">'+titulo+'</div>';
+      if(desc)h+='<div style="font-size:11px;color:#555;line-height:1.4">'+desc+'</div>';
+      h+='</div>';
+    });
+    h+='</div>';
+  }
+  document.getElementById('fp-body').innerHTML=h;
+  oM('m-fp');
+}
+
+
+function rProd(){
+  var el=document.getElementById('plinhas');
+  var grupos={};
+  P.forEach(function(p){
+    var k=p.l+'||'+p.n+'||'+p.s;
+    if(!grupos[p.l])grupos[p.l]={};
+    if(!grupos[p.l][k])grupos[p.l][k]=[];
+    grupos[p.l][k].push(p);
+  });
+  var h='';
+  LINHAS.forEach(function(l){
+    if(!grupos[l])return;
+    var gs=grupos[l];
+    var cnt=Object.keys(gs).length;
+    var ico=ICO[l]||'';
+    var lid='pl_'+l.replace(/[^a-z0-9]/gi,'_');
+    h+='<div class="plinha" id="'+lid+'">';
+    h+='<div class="plhdr" onclick="tgL(this.parentElement)">';
+    h+='<div class="plico">'+ico+'</div>';
+    h+='<div style="flex:1"><div class="plnm">'+l+'</div><div class="plcnt">'+cnt+' produto'+(cnt!==1?'s':'')+'</div></div>';
+    h+='<div class="plarr">&#8250;</div></div>';
+    h+='<div class="plbody">';
+    var gsKeys=Object.keys(gs).sort();gsKeys.forEach(function(key){var plist=gs[key];
+      var p0=plist[0];
+      var sizeTags=plist.map(function(p){
+        return '<span class="tpes tpes-link" data-cod="'+p.cod+'" style="cursor:pointer">'+fmtP(p)+' <b style="color:var(--gr)">'+fmtR(p.pdv)+'</b></span>';
+      }).join('');
+      h+='<div class="pi pcard" data-cod="'+p0.cod+'">';
+      h+='<div class="pinm">'+p0.n+'</div>';
+      h+='<div class="pisb">'+p0.s+'</div>';
+      h+='<div class="pitgs"><span class="tcod">'+p0.cod+'</span>'+sizeTags+'</div>';
+      h+='</div>';
+    });
+    h+='</div></div>';
+  });
+  el.innerHTML=h;
+  // Attach click handlers after DOM is built
+  document.querySelectorAll('.pcard').forEach(function(el){
+    el.addEventListener('click', function(){abrirFP(this.dataset.cod);});
+  });
+  document.querySelectorAll('.tpes-link').forEach(function(el){
+    el.addEventListener('click', function(e){e.stopPropagation();abrirFP(this.dataset.cod);});
+  });
+}
+
+
+function tgL(el){if(typeof el==='string'){el=document.getElementById(el);}if(el)el.classList.toggle('open');}
+
+function aFicha(idx){
+  cidx=idx;var c=clientes[idx];
+  document.getElementById('fnm').textContent=c.nome;
+  document.getElementById('ftp').textContent=(c.tipo||'')+(c.end?' / '+c.end:'');
+  document.getElementById('fbg').innerHTML='<div class="fbdg">'+c.status+'</div>'+(c.proxVisita?'<div class="fbdg">Prox: '+fmtD(c.proxVisita)+'</div>':'')+(c.pedidos?'<div class="fbdg">'+c.pedidos+' pedido'+(c.pedidos!==1?'s':'')+'</div>':'');
+  document.getElementById('finfo').innerHTML='<div class="ir"><span class="il">Responsavel</span><span class="iv">'+(c.resp||'--')+'</span></div><div class="ir"><span class="il">Telefone</span><span class="iv">'+(c.tel||'--')+'</span></div><div class="ir"><span class="il">Endereco</span><span class="iv">'+(c.end||'--')+'</span></div><div class="ir"><span class="il">Total pedidos</span><span class="iv">'+(c.pedidos||0)+'</span></div><div class="ir"><span class="il">Prox. visita</span><span class="iv">'+fmtD(c.proxVisita)+'</span></div>'+(c.obs?'<div class="ir"><span class="il">Obs.</span><span class="iv">'+c.obs+'</span></div>':'');
+  rMix(c);rVis(c);hist.push('cli');go('fic');
+}
+
+function rMix(c){
+  var el=document.getElementById('fmix');
+  if(!c.mix||!c.mix.length){el.innerHTML='<div style="font-size:12px;color:#999;padding:4px 0">Nenhum produto. <span style="color:var(--dk);cursor:pointer" onclick="aMix()">Definir</span></div>';return;}
+  var visto={};
+  el.innerHTML=c.mix.map(function(cod){var p=P.find(function(x){return x.cod===cod;});if(!p)return'';var k=p.n+'|'+p.s;if(visto[k])return'';visto[k]=true;return'<div class="mxi"><div class="mxt on">&#10003;</div><div><div style="font-size:12px;font-weight:600">'+p.n+'</div><div style="font-size:10px;color:#999">'+p.s+'</div></div></div>';}).join('');
+}
+
+function rVis(c){
+  var el=document.getElementById('fvis');
+  if(!c.visitas||!c.visitas.length){el.innerHTML='<div class="nv">Nenhuma visita registrada</div>';return;}
+  el.innerHTML=[].concat(c.visitas).reverse().map(function(v,ri){
+    var oi=c.visitas.length-1-ri;
+    // Build pedido summary
+    var pH='';
+    if(v.pedido&&v.produtos&&v.produtos.length){
+      var pp=v.produtos.filter(function(p){return p.qtd>0;}).map(function(p){var pr=P.find(function(x){return x.cod===p.cod;});return pr?(pr.n+' x'+p.qtd):'';}).filter(Boolean).join(', ');
+      if(pp)pH='<div style="font-size:10px;color:#666;margin-top:2px">'+pp+'</div>';
+      if(v.valorTotal)pH+='<div style="font-size:11px;color:var(--gr);font-weight:600;margin-top:1px">'+fmtR(v.valorTotal)+'</div>';
+      if(v.condPag)pH+='<div style="font-size:10px;color:#999">'+v.condPag+'</div>';
+    }
+    // Build estoque + vendido + total table
+    var evTable='';
+    var temEst=v.estoque&&v.estoque.filter(function(e){return e.qtd>0;}).length>0;
+    var pedMap={};
+    if(v.pedido&&v.produtos){v.produtos.forEach(function(p){if(p.qtd>0)pedMap[p.cod]=(pedMap[p.cod]||0)+p.qtd;});}
+    var hasPed=Object.keys(pedMap).length>0;
+    if(temEst||hasPed){
+      evTable='<div class="vest">';
+      // Header
+      if(hasPed){
+        evTable+='<div style="display:grid;grid-template-columns:1fr 34px 34px 38px;gap:2px;font-size:9px;color:#999;font-weight:600;padding-bottom:3px;border-bottom:1px solid #f0ebe0;margin-bottom:2px">';
+        evTable+='<span>PRODUTO</span><span style="text-align:center">EST</span><span style="text-align:center;color:var(--gr)">VEN</span><span style="text-align:center;color:var(--dk)">TOT</span></div>';
+      } else {
+        evTable+='<div style="font-size:9px;color:#999;font-weight:600;margin-bottom:3px">ESTOQUE ENCONTRADO</div>';
+      }
+      // Collect all cods
+      var allCods={};
+      if(v.estoque)v.estoque.forEach(function(e){if(e.qtd>0)allCods[e.cod]=true;});
+      Object.keys(pedMap).forEach(function(cod){allCods[cod]=true;});
+      Object.keys(allCods).forEach(function(cod){
+        var p=P.find(function(x){return x.cod===cod;});if(!p)return;
+        var est=(v.estoque||[]).reduce(function(s,e){return e.cod===cod?s+e.qtd:s;},0);
+        var ven=pedMap[cod]||0;
+        var tot=est+ven;
+        var cls=est<=2&&est>0?'bx':est>=6?'ok':'';
+        if(hasPed){
+          evTable+='<div style="display:grid;grid-template-columns:1fr 34px 34px 38px;gap:2px;padding:2px 0;border-bottom:1px solid #f8f4ee;align-items:center">';
+          evTable+='<span class="en">'+p.n+' '+fmtP(p)+'</span>';
+          evTable+='<span class="ev '+cls+'" style="text-align:center;font-size:11px">'+est+'</span>';
+          evTable+='<span style="text-align:center;font-weight:600;font-size:11px;color:var(--gr)">'+ven+'</span>';
+          evTable+='<span style="text-align:center;font-weight:700;font-size:11px;color:var(--dk)">'+tot+'</span>';
+          evTable+='</div>';
+        } else {
+          evTable+='<div class="er"><span class="en">'+p.n+' '+fmtP(p)+'</span><span class="ev '+cls+'">'+est+' un.</span></div>';
+        }
+      });
+      evTable+='</div>';
+    }
+    return '<div class="vc">'
+      +'<div class="vt"><span class="vd">'+fmtD(v.data)+'</span>'
+      +'<div style="display:flex;align-items:center;gap:4px">'
+      +(v.pedido?'<span class="vp">&#128722;'+(v.numPedido?' #'+v.numPedido:'')+'</span>':'')
+      +'<button class="vdel" onclick="event.stopPropagation();eVis('+oi+')" style="color:var(--dk);font-size:14px" title="Editar">&#9998;</button>'
+      +'<button class="vdel" onclick="event.stopPropagation();dVis('+oi+')" title="Excluir">&#128465;</button>'
+      +'</div></div>'
+      +(v.obs?'<div class="vo">'+v.obs+'</div>':'')
+      +pH+evTable
+      +'</div>';
+  }).join('');
+}
+
+
+function eVis(idx){
+  var c=clientes[cidx];
+  var v=c.visitas[idx];
+  editVisIdx=idx;
+  editPedOn=!!(v.pedido);
+  // Abre o modal PRIMEIRO
+  oM('m-evis');
+  // Agora preenche tudo (elementos ja existem e estao visiveis)
+  document.getElementById('ev-dt').value=v.data||'';
+  document.getElementById('ev-pv').value=c.proxVisita||'';
+  document.getElementById('ev-ob').value=v.obs||'';
+  document.getElementById('ev-np').value=v.numPedido||'';
+  document.getElementById('ev-cp').value=v.condPag||'';
+  document.getElementById('ev-vl').value=v.valorTotal||'';
+  // Toggle pedido
+  document.getElementById('ev-pt').classList.toggle('on',editPedOn);
+  document.getElementById('ev-ped-sec').style.display=editPedOn?'block':'none';
+  // Monta forms de estoque e pedido
+  document.getElementById('ev-ef').innerHTML=bLinha('est');
+  document.getElementById('ev-pf').innerHTML=bLinha('ped');
+  // Pre-preenche contadores de estoque
+  (v.estoque||[]).forEach(function(e){
+    if(!e.qtd)return;
+    var el=document.getElementById('ec_'+e.cod);
+    if(el){
+      el.textContent=e.qtd;
+      el.className='cv'+(e.qtd<=2?' bx':e.qtd<=5?' md':' ok');
+    }
+  });
+  // Pre-preenche produtos do pedido
+  (v.produtos||[]).forEach(function(p){
+    if(!p.qtd)return;
+    var q=document.getElementById('pq_'+p.cod);
+    var v2=document.getElementById('pv_'+p.cod);
+    if(q)q.value=p.qtd;
+    if(v2&&p.preco)v2.value=p.preco;
+  });
+}
+
+
+var editVisIdx=null;
+var editPedOn=false;
+
+function tgEPed(){
+  editPedOn=!editPedOn;
+  document.getElementById('ev-pt').classList.toggle('on',editPedOn);
+  document.getElementById('ev-ped-sec').style.display=editPedOn?'block':'none';
+}
+
+function savEVis(){
+  var data=document.getElementById('ev-dt').value;
+  if(!data){alert('Informe a data.');return;}
+  var c=clientes[cidx];
+  var v=c.visitas[editVisIdx];
+  // Atualiza dados basicos
+  v.data=data;
+  v.obs=document.getElementById('ev-ob').value.trim();
+  var pv=document.getElementById('ev-pv').value;
+  if(pv)c.proxVisita=pv;
+  // Atualiza estoque
+  v.estoque=P.map(function(p){
+    var el=document.getElementById('ec_'+p.cod);
+    return{cod:p.cod,qtd:el?parseInt(el.textContent||0):0};
+  }).filter(function(e){return e.qtd>0;});
+  // Atualiza pedido
+  v.pedido=editPedOn;
+  if(editPedOn){
+    v.numPedido=document.getElementById('ev-np').value.trim();
+    v.condPag=document.getElementById('ev-cp').value.trim();
+    v.produtos=P.map(function(p){
+      var q=document.getElementById('pq_'+p.cod);
+      var v2=document.getElementById('pv_'+p.cod);
+      return{cod:p.cod,qtd:parseInt(q?q.value||0:0),preco:parseFloat(v2&&v2.value?v2.value:p.pu)};
+    }).filter(function(p){return p.qtd>0;});
+    var vt=parseFloat(document.getElementById('ev-vl').value||0);
+    if(!vt&&v.produtos.length)vt=v.produtos.reduce(function(s,p){return s+p.preco*p.qtd;},0);
+    v.valorTotal=vt;
+  }
+  sav(c).then(function(){fM('m-evis');rDash();rCli();rVis(c);rFat();toast('Visita atualizada!');});
+}
+
+
+var _delVisIdx=null;
+function dVis(idx){
+  _delVisIdx=idx;
+  document.getElementById('del-vis-msg').textContent='Excluir visita de '+fmtD(clientes[cidx].visitas[idx].data)+'?';
+  oM('m-delvis');
+}
+function dVisConf(){
+  var idx=_delVisIdx;
+  fM('m-delvis');
+  var c=clientes[cidx];
+  var v=c.visitas[idx];
+  if(v.pedido&&v.produtos&&v.produtos.length)c.pedidos=Math.max(0,(c.pedidos||1)-1);
+  c.visitas.splice(idx,1);
+  sav(c).then(function(){rDash();rCli();rVis(c);rFat();toast('Visita excluida.');});
+}
+
+function aMix(){
+  var c=clientes[cidx];mixTmp=(c.mix||[]).slice();
+  var visto={};var h='';
+  LINHAS.forEach(function(l){
+    var ps=P.filter(function(p){if(p.l!==l)return false;var k=p.n+'|'+p.s;if(visto[k])return false;visto[k]=true;return true;});
+    if(!ps.length)return;
+    h+='<div style="padding:6px 14px 2px"><div style="font-size:10px;color:#999;font-weight:600;text-transform:uppercase;margin-bottom:4px">'+l+'</div>';
+    ps.forEach(function(p){var on=mixTmp.indexOf(p.cod)>=0;h+='<div class="mxi"><div class="mxt'+(on?' on':'')+'" id="mx_'+p.cod+'" onclick="tgMix(\''+p.cod+'\')">'+(on?'&#10003;':'')+'</div><div><div style="font-size:12px;font-weight:600">'+p.n+'</div><div style="font-size:10px;color:#999">'+p.s+'</div></div></div>';});
+    h+='</div>';
+  });
+  document.getElementById('mmixc').innerHTML=h;oM('m-mix');
+}
+function tgMix(cod){var el=document.getElementById('mx_'+cod);var i=mixTmp.indexOf(cod);if(i>=0){mixTmp.splice(i,1);el.classList.remove('on');el.innerHTML='';}else{mixTmp.push(cod);el.classList.add('on');el.innerHTML='&#10003;';}}
+function savMix(){clientes[cidx].mix=mixTmp.slice();sav(clientes[cidx]).then(function(){fM('m-mix');rMix(clientes[cidx]);toast('Mix salvo!');});}
+
+function bLinha(tipo){
+  var c=clientes[cidx];var mx=c.mix&&c.mix.length?c.mix:null;var h='';
+  LINHAS.forEach(function(l){
+    var prods=P.filter(function(p){if(p.l!==l)return false;if(!mx)return true;return mx.some(function(cod){var pm=P.find(function(x){return x.cod===cod;});return pm&&pm.n===p.n&&pm.s===p.s;});});
+    if(!prods.length)return;
+    var uid=tipo+'_'+l.replace(/[^a-z0-9]/gi,'_');
+    h+='<button class="lbtn" id="lb_'+uid+'" onclick="tgLF(\''+uid+'\')">';
+    h+='<span class="lbnm">'+l+'</span><span class="lbcnt">'+prods.length+' produtos</span><span class="lbarr">&#8250;</span></button>';
+    h+='<div class="lprds" id="lp_'+uid+'">';
+    prods.forEach(function(p){
+      if(tipo==='est'){h+='<div class="eitem"><div class="ei"><div class="einm">'+p.n+'</div><div class="eisb">'+p.s+' / '+fmtP(p)+'</div></div><div class="ctr"><button class="cb2" onclick="chg(\'ec_'+p.cod+'\',-1)">-</button><div class="cv" id="ec_'+p.cod+'">0</div><button class="cb2" onclick="chg(\'ec_'+p.cod+'\',1)">+</button></div></div>';}
+      else{h+='<div class="pitem"><div class="pi2"><div class="einm">'+p.n+'</div><div class="eisb">'+p.s+' / '+fmtP(p)+' PDV:'+fmtR(p.pdv)+'</div></div><div class="pins"><div><input type="number" class="ps" id="pq_'+p.cod+'" value="0" min="0"><div class="plb">Qtd</div></div><div><input type="number" class="ps" id="pv_'+p.cod+'" placeholder="'+p.pu.toFixed(2)+'" step="0.01"><div class="plb">Preco</div></div></div></div>';}
+    });
+    h+='</div>';
+  });
+  return h;
+}
+function tgLF(uid){var b=document.getElementById('lb_'+uid);var d=document.getElementById('lp_'+uid);if(!b||!d)return;b.classList.toggle('op');d.style.display=b.classList.contains('op')?'block':'none';}
+function chg(id,d){var el=document.getElementById(id);var v=Math.max(0,parseInt(el.textContent||0)+d);el.textContent=v;el.className='cv'+(v===0?'':v<=2?' bx':v<=5?' md':' ok');}
+function tgPed(){pedOn=!pedOn;document.getElementById('pt').classList.toggle('on',pedOn);document.getElementById('ps2').style.display=pedOn?'block':'none';}
+
+function aVis(){
+  var hoje=new Date().toISOString().split('T')[0];
+  document.getElementById('v-dt').value=hoje;
+  ['v-pv','v-ob','v-np','v-cp','v-vl'].forEach(function(id){document.getElementById(id).value='';});
+  pedOn=false;document.getElementById('pt').classList.remove('on');document.getElementById('ps2').style.display='none';
+  document.getElementById('ef').innerHTML=bLinha('est');
+  document.getElementById('pf').innerHTML=bLinha('ped');
+  oM('m-vis');
+}
+
+function savVis(){
+  var data=document.getElementById('v-dt').value;
+  if(!data){alert('Informe a data.');return;}
+  var c=clientes[cidx];
+  var est=P.map(function(p){var el=document.getElementById('ec_'+p.cod);return{cod:p.cod,qtd:el?parseInt(el.textContent||0):0};}).filter(function(e){return e.qtd>0;});
+  var prods=[],vt=0,np='',cp='';
+  if(pedOn){
+    np=document.getElementById('v-np').value.trim();
+    cp=document.getElementById('v-cp').value.trim();
+    if(np){var dup=clientes.some(function(cl){return cl.visitas&&cl.visitas.some(function(v){return v.numPedido===np;});});if(dup){alert('Pedido '+np+' ja cadastrado!');return;}}
+    prods=P.map(function(p){var q=document.getElementById('pq_'+p.cod);var v2=document.getElementById('pv_'+p.cod);return{cod:p.cod,qtd:parseInt(q?q.value||0:0),preco:parseFloat(v2&&v2.value?v2.value:p.pu)};}).filter(function(p){return p.qtd>0;});
+    vt=parseFloat(document.getElementById('v-vl').value||0);
+    if(!vt&&prods.length)vt=prods.reduce(function(s,p){return s+p.preco*p.qtd;},0);
+  }
+  var pv=document.getElementById('v-pv').value;
+  if(!c.visitas)c.visitas=[];
+  c.visitas.push({data:data,pedido:pedOn,numPedido:np,condPag:cp,produtos:prods,valorTotal:vt,estoque:est,obs:document.getElementById('v-ob').value.trim()});
+  if(pedOn&&prods.length)c.pedidos=(c.pedidos||0)+1;
+  if(pv)c.proxVisita=pv;c.status='Ativo';
+  sav(c).then(function(){fM('m-vis');rDash();rCli();rVis(c);rFat();toast('Visita salva!');});
+}
+
+function aNC(){
+  editId=null;document.getElementById('mct').textContent='Novo cliente';
+  ['nm','rp','tl','en','ob'].forEach(function(f){document.getElementById('f-'+f).value='';});
+  document.getElementById('f-tp').value='';document.getElementById('f-st').value='Prospect';document.getElementById('f-pv').value='';
+  oM('m-cli');
+}
+function eCli(){
+  var c=clientes[cidx];editId=c.id;document.getElementById('mct').textContent='Editar cliente';
+  document.getElementById('f-nm').value=c.nome||'';document.getElementById('f-rp').value=c.resp||'';
+  document.getElementById('f-tl').value=c.tel||'';document.getElementById('f-tp').value=c.tipo||'';
+  document.getElementById('f-en').value=c.end||'';document.getElementById('f-st').value=c.status||'Prospect';
+  document.getElementById('f-pv').value=c.proxVisita||'';document.getElementById('f-ob').value=c.obs||'';
+  oM('m-cli');
+}
+function savCli(){
+  var nome=document.getElementById('f-nm').value.trim();var tipo=document.getElementById('f-tp').value;
+  if(!nome||!tipo){alert('Preencha nome e tipo.');return;}
+  var d={nome:nome,resp:document.getElementById('f-rp').value.trim(),tel:document.getElementById('f-tl').value.trim(),tipo:tipo,end:document.getElementById('f-en').value.trim(),status:document.getElementById('f-st').value,proxVisita:document.getElementById('f-pv').value,obs:document.getElementById('f-ob').value.trim()};
+  if(editId){var i=clientes.findIndex(function(c){return c.id===editId;});if(i>=0){Object.assign(clientes[i],d);sav(clientes[i]).then(function(){fM('m-cli');rDash();rCli();rSub();aFicha(i);toast('Cliente salvo!');});}}
+  else{var id=Date.now().toString();var n=Object.assign({id:id,mix:[],visitas:[],pedidos:0},d);clientes.push(n);clientes.sort(function(a,b){return(a.nome||'').localeCompare(b.nome||'');});sav(n).then(function(){fM('m-cli');rDash();rCli();rSub();toast('Cliente salvo!');});}
+}
+
+function rFat(){
+  var meses=[];var ms={};
+  clientes.forEach(function(c){(c.visitas||[]).forEach(function(v){if(v.pedido&&v.valorTotal>0){var p=v.data.split('-');var k=p[0]+'-'+p[1];if(!ms[k]){ms[k]=true;meses.push(k);}}});});
+  var am=new Date().getFullYear()+'-'+String(new Date().getMonth()+1).padStart(2,'0');
+  if(!ms[am])meses.push(am);meses.sort().reverse();meses=meses.slice(0,12);
+  if(!fatMes||meses.indexOf(fatMes)<0)fatMes=meses[0];
+  var nm=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  document.getElementById('msel').innerHTML=meses.map(function(m){var p=m.split('-');var n=nm[parseInt(p[1])-1]+'/'+p[0].slice(2);return'<button class="mchip'+(m===fatMes?' on':'')+'" onclick="sMes(\''+m+'\')">'+n+'</button>';}).join('');
+  var pM=[];clientes.forEach(function(c){(c.visitas||[]).forEach(function(v){if(v.pedido&&v.valorTotal>0&&v.data.indexOf(fatMes)===0)pM.push({c:c,v:v});});});
+  var tR=pM.reduce(function(s,x){return s+(x.v.valorTotal||0);},0);
+  var tKg=pM.reduce(function(s,x){return s+(x.v.produtos||[]).reduce(function(ss,p){var pr=P.find(function(x){return x.cod===p.cod;});if(!pr||pr.u!=='kg')return ss;return ss+p.qtd*pr.kg;},0);},0);
+  document.getElementById('fv').textContent=fmtR(tR);
+  document.getElementById('fkg').textContent=tKg>0?tKg.toFixed(1)+' kg':'0 kg';
+  var meta=fatMeta[fatMes];var mi=document.getElementById('minp');if(mi)mi.value=meta||'';
+  var mp=document.getElementById('mprog');
+  if(meta&&meta>0){mp.style.display='block';var pct=Math.min(100,Math.round((tR/meta)*100));document.getElementById('mpct').textContent=pct+'%';document.getElementById('mfill').style.width=pct+'%';document.getElementById('mtxt').textContent=pct>=100?'Meta atingida!':'Faltam '+fmtR(meta-tR);}else{mp.style.display='none';}
+  var pC={};clientes.forEach(function(c){var ps=(c.visitas||[]).filter(function(v){return v.pedido&&v.valorTotal>0&&v.data.indexOf(fatMes)===0;});if(!ps.length)return;pC[c.id]={nome:c.nome,valor:ps.reduce(function(s,v){return s+(v.valorTotal||0);},0),idx:clientes.indexOf(c)};});
+  var rank=Object.values(pC).sort(function(a,b){return b.valor-a.valor;});var mxV=rank.length?rank[0].valor:1;
+  var rl=document.getElementById('rklist');
+  rl.innerHTML=rank.length?rank.slice(0,10).map(function(r,i){var pc=i<3?'p'+(i+1):'';return'<div class="rkc" onclick="aFicha('+r.idx+')"><div class="rkt"><div class="rkp '+pc+'">'+(i+1)+'</div><div class="rkn">'+r.nome+'</div><div class="rkv">'+fmtR(r.valor)+'</div></div><div class="rkb"><div class="rkbf" style="width:'+Math.round(r.valor/mxV*100)+'%"></div></div></div>';}).join(''):'<div style="padding:4px 14px 6px;font-size:12px;color:#999">Nenhum pedido neste mes</div>';
+}
+function sMes(m){fatMes=m;rFat();}
+function savMeta(){var v=parseFloat(document.getElementById('minp').value||0);fatMeta[fatMes]=v;savM2();rFat();toast('Meta salva!');}
+
+function bDrive(){
+  var btn=document.getElementById('bdrive');var st=document.getElementById('dst');var fl=document.getElementById('dfl');
+  btn.disabled=true;st.className='ist ld';st.textContent='Verificando pasta Pedidos PFS...';fl.innerHTML='';
+  fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,mcp_servers:[{type:'url',url:'https://drivemcp.googleapis.com/mcp/v1',name:'gdrive'}],messages:[{role:'user',content:'Liste arquivos de imagem PNG JPG JPEG na pasta Google Drive ID '+FOLDER_ID+'. Retorne SOMENTE array JSON sem markdown: [{"id":"file_id","name":"filename","createdTime":"ISO"}]. Se nao houver, retorne [].'}]})})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    var txt=d.content.filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('');
+    var arqs=[];try{var m=txt.match(/\[[\s\S]*\]/);if(m)arqs=JSON.parse(m[0]);}catch(ex){}
+    if(!arqs.length){st.className='ist ok';st.textContent='Nenhum print novo. Tudo em dia!';}
+    else{st.className='ist ok';st.textContent=arqs.length+' arquivo'+(arqs.length!==1?'s':'')+' encontrado'+(arqs.length!==1?'s':'');fl.innerHTML='<div class="flist">'+arqs.map(function(f){return'<div class="fitem" onclick="procDrive(\''+f.id+'\',\''+f.name+'\')"><span>&#128444;</span><div class="fnm2">'+f.name+'</div><span>&#8250;</span></div>';}).join('')+'</div>';}
+    btn.disabled=false;
+  }).catch(function(ex){st.className='ist er';st.textContent='Erro ao acessar o Drive.';btn.disabled=false;});
+}
+
+function procDrive(fid,fnm){
+  var st=document.getElementById('dst');var pv=document.getElementById('dpv');
+  st.className='ist ld';st.textContent='Lendo '+fnm+' com IA...';pv.innerHTML='';
+  fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:2000,mcp_servers:[{type:'url',url:'https://drivemcp.googleapis.com/mcp/v1',name:'gdrive'}],messages:[{role:'user',content:'Leia a imagem do Google Drive ID '+fid+'. Extraia os dados do pedido. Retorne SOMENTE objeto JSON sem markdown: {"numeroPedido":"","cliente":"","data":"DD/MM/AAAA","condPag":"","produtos":[{"codigo":"","nome":"","peso":"","quantidade":0,"precoUnit":0}],"valorTotal":0,"observacoes":""}'}]})})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    var txt=d.content.filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('');
+    var ped={};try{var m=txt.match(/\{[\s\S]*\}/);if(m)ped=JSON.parse(m[0]);}catch(ex){}
+    if(!ped.numeroPedido&&!ped.cliente){st.className='ist er';st.textContent='Nao foi possivel extrair os dados.';return;}
+    var dup=clientes.some(function(c){return c.visitas&&c.visitas.some(function(v){return v.numPedido&&v.numPedido===ped.numeroPedido;});});
+    if(dup){st.className='ist er';st.textContent='Pedido '+ped.numeroPedido+' ja cadastrado!';return;}
+    pedTmp=Object.assign({},ped,{fid:fid,fnm:fnm});
+    var cm=clientes.find(function(c){return c.nome.toLowerCase().indexOf((ped.cliente||'').toLowerCase().split(' ')[0])>=0;})||clientes[0];
+    pedTmp.cidxSel=clientes.indexOf(cm);
+    var opts=clientes.map(function(c,i){return'<option value="'+i+'"'+(i===pedTmp.cidxSel?' selected':'')+'>'+c.nome+'</option>';}).join('');
+    var prods=ped.produtos&&ped.produtos.length?ped.produtos.map(function(p){return'<div class="prow"><span class="pl">'+p.nome+'</span><span class="pv">x'+p.quantidade+'</span></div>';}).join(''):'Nenhum produto extraido';
+    var pedBox=document.createElement('div');
+    pedBox.innerHTML='<div class="fg"><label class="fl">Cliente *</label><select class="fi" id="imp-cli">'+opts+'</select></div>'
+      +'<div class="fg"><div class="pbox">'
+      +'<div class="prow"><span class="pl">N. Pedido</span><span class="pv">'+(ped.numeroPedido||'--')+'</span></div>'
+      +'<div class="prow"><span class="pl">Data</span><span class="pv">'+(ped.data||'--')+'</span></div>'
+      +'<div class="prow"><span class="pl">Pagamento</span><span class="pv">'+(ped.condPag||'--')+'</span></div>'
+      +'<div class="prow"><span class="pl">Total</span><span class="pv">'+(ped.valorTotal?fmtR(ped.valorTotal):'--')+'</span></div>'
+      +'</div></div>'
+      +'<div class="fg"><label class="fl">Produtos</label><div class="pbox">'+prods+'</div></div>';
+    document.getElementById('mpedc').innerHTML='';
+    document.getElementById('mpedc').appendChild(pedBox);
+    st.className='ist ok';st.textContent='Dados extraidos. Confirme abaixo.';oM('m-ped');
+  }).catch(function(ex){st.className='ist er';st.textContent='Erro ao processar.';});
+}
+
+function confPed(){
+  if(!pedTmp)return;
+  var si=parseInt(document.getElementById('imp-cli').value);
+  if(isNaN(si)||si<0){alert('Selecione o cliente.');return;}
+  var c=clientes[si];if(!c.visitas)c.visitas=[];
+  var hoje=new Date().toISOString().split('T')[0];
+  var prods=(pedTmp.produtos||[]).map(function(p){var match=P.find(function(x){return x.cod===p.codigo||x.n.toLowerCase().indexOf((p.nome||'').toLowerCase().split(' ')[0])>=0;});return{cod:match?match.cod:'',qtd:p.quantidade||0,preco:p.precoUnit||0};}).filter(function(p){return p.qtd>0;});
+  c.visitas.push({data:hoje,pedido:true,numPedido:pedTmp.numeroPedido||'',condPag:pedTmp.condPag||'',produtos:prods,valorTotal:pedTmp.valorTotal||0,estoque:[],obs:'Importado via Drive ('+pedTmp.fnm+')'});
+  c.pedidos=(c.pedidos||0)+1;c.status='Ativo';
+  sav(c).then(function(){fM('m-ped');rDash();rCli();rFat();toast('Pedido salvo para '+c.nome+'!');pedTmp=null;document.getElementById('dst').className='ist ok';document.getElementById('dst').textContent='Importado com sucesso!';document.getElementById('dfl').innerHTML='';});
+}
+
+function lrPlanilha(e){
+  var file=e.target.files[0];if(!file)return;
+  var st=document.getElementById('pst');var pv=document.getElementById('ppv');
+  st.className='ist ld';st.textContent='Lendo '+file.name+'...';pv.innerHTML='';
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    var bytes=new Uint8Array(ev.target.result);
+    var b64=btoa(bytes.reduce(function(s,b){return s+String.fromCharCode(b);},''));
+    fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4000,messages:[{role:'user',content:[{type:'document',source:{type:'base64',media_type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',data:b64}},{type:'text',text:'Extraia todos os clientes desta planilha. Retorne SOMENTE array JSON sem markdown: [{"nome":"","responsavel":"","telefone":"","tipo":"","endereco":"","status":"Ativo","observacoes":""}]. Tipo: Pet Shop, Agropecuaria, Supermercado, Veterinaria, Distribuidora, Outro.'}]}]})})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var txt=d.content.filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('');
+      var lista=[];try{var m=txt.match(/\[[\s\S]*\]/);if(m)lista=JSON.parse(m[0]);}catch(ex){}
+      if(!lista.length){st.className='ist er';st.textContent='Nao foi possivel extrair clientes.';return;}
+      var novos=lista.filter(function(c){return !clientes.some(function(ex){return ex.nome.toLowerCase().trim()===c.nome.toLowerCase().trim();});});
+      st.className='ist ok';st.textContent=lista.length+' clientes / '+novos.length+' novos';
+      if(novos.length){
+        var todos=lista; // usa a lista completa para upsert
+        var box=document.createElement('div');
+        var pb=document.createElement('div');pb.className='pbox';
+        var novosNames=novos.map(function(c){return c.nome;});
+        lista.slice(0,8).forEach(function(c){
+          var isNovo=novosNames.indexOf(c.nome)>=0;
+          var r=document.createElement('div');r.className='prow';
+          r.innerHTML='<span class="pl">'+c.nome+'</span><span class="pv" style="color:'+(isNovo?'var(--gr)':'var(--am)')+'">'+(isNovo?'NOVO':'ATUALIZAR')+'</span>';
+          pb.appendChild(r);
+        });
+        if(lista.length>8){var more=document.createElement('div');more.style.cssText='font-size:10px;color:#999;padding-top:4px';more.textContent='+'+(lista.length-8)+' mais...';pb.appendChild(more);}
+        box.appendChild(pb);
+        var info=document.createElement('div');info.style.cssText='font-size:11px;color:#666;padding:6px 0 2px';
+        info.textContent=novos.length+' novos + '+(lista.length-novos.length)+' ja existentes';
+        box.appendChild(info);
+        var btns=document.createElement('div');btns.className='cbts';
+        var bcl=document.createElement('button');bcl.className='cbcl';bcl.textContent='Cancelar';bcl.onclick=function(){pv.innerHTML='';};
+        var bok=document.createElement('button');bok.className='cbok';bok.textContent='Adicionar '+novos.length+' novos';bok.onclick=function(){impCli(novos,'novo');};
+        btns.appendChild(bcl);btns.appendChild(bok);
+        if(lista.length-novos.length>0){
+          var bup=document.createElement('button');bup.className='cbok';bup.style.cssText='background:var(--am);margin-top:6px;width:100%';
+          bup.textContent='Atualizar todos ('+lista.length+')';bup.onclick=function(){impCli(lista,'atualizar');};
+          box.appendChild(btns);box.appendChild(bup);
+        } else {
+          box.appendChild(btns);
+        }
+        pv.innerHTML='';pv.appendChild(box);
+      }
+    }).catch(function(){st.className='ist er';st.textContent='Erro ao processar.';});
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function impCli(lista, modo){
+  // modo: 'novo' = só adiciona novos | 'atualizar' = atualiza existentes + adiciona novos
+  var novos=0, atualizados=0;
+  lista.forEach(function(c){
+    var nomeNorm=(c.nome||c.responsavel||'').toLowerCase().trim();
+    var idx=clientes.findIndex(function(ex){return ex.nome.toLowerCase().trim()===nomeNorm;});
+    if(idx>=0 && modo==='atualizar'){
+      // Atualiza dados cadastrais mas preserva visitas, mix e pedidos
+      var old=clientes[idx];
+      Object.assign(old,{
+        nome:c.nome||old.nome,
+        resp:c.responsavel||old.resp||'',
+        tel:c.telefone||old.tel||'',
+        tipo:c.tipo||old.tipo||'Outro',
+        end:c.endereco||old.end||'',
+        obs:c.observacoes||old.obs||''
+      });
+      sav(old); atualizados++;
+    } else if(idx<0){
+      var id=Date.now().toString()+Math.random().toString(36).slice(2);
+      var n={id:id,nome:c.nome,resp:c.responsavel||'',tel:c.telefone||'',tipo:c.tipo||'Prospect',end:c.endereco||'',status:c.status||'Prospect',proxVisita:'',obs:c.observacoes||'',mix:[],visitas:[],pedidos:0};
+      clientes.push(n); sav(n); novos++;
+    }
+  });
+  clientes.sort(function(a,b){return(a.nome||'').localeCompare(b.nome||'');});
+  dbSave(); rDash(); rCli(); rSub();
+  var msg=novos+' adicionados';
+  if(atualizados>0) msg+=', '+atualizados+' atualizados';
+  document.getElementById('pst').className='ist ok';
+  document.getElementById('pst').textContent=msg+'!';
+  document.getElementById('ppv').innerHTML='';
+  toast(msg+'!');
+}
+
+
+
+// ── INICIAR ──────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
