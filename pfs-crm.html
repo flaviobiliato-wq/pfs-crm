@@ -370,6 +370,11 @@ select.fi{appearance:none}
 
 <div class="scr" id="s-rot">
   <div class="fhdrb"><div class="fat-t">Roteiro</div><div class="fat-s">Planejamento semanal de visitas</div></div>
+  <!-- Botão geocodificação -->
+  <div style="padding:8px 14px 0">
+    <button onclick="geocodificarClientes()" style="width:100%;background:#f0ebe0;border:1px solid #e0dbd0;border-radius:8px;padding:8px;font-size:11px;color:#555;cursor:pointer;font-family:inherit">&#128205; Melhorar precisão das rotas (geocodificar endereços)</button>
+    <div id="rot-geo-status" style="display:none;font-size:11px;color:var(--am);padding:6px 0;text-align:center"></div>
+  </div>
   <!-- Seletor de semana -->
   <div style="display:flex;gap:8px;padding:10px 14px 0;overflow-x:auto;scrollbar-width:none" id="rot-semanas"></div>
   <!-- Seletor de dia — mais visível -->
@@ -759,6 +764,7 @@ function init() {
   if(m) fatMeta = m;
   document.getElementById('hdrt').textContent='Controle de Vendas/Estoque';
   rDash(); rCli(); rProd(); rFat(); rSub();
+  carregarCoordsReais();
   go('menu',false);
 }
 
@@ -809,7 +815,7 @@ function go(s,push){
     document.getElementById('hdrt').textContent='Controle de Vendas/Estoque';
     rSub();
   }
-  if(s==='rot'){rotGrupos=null;rRot();}
+  if(s==='rot'){rotGrupos=null;rotSemAtual=-1;rotDiaAtual=0;document.getElementById('rot-resumo-btn')&&document.getElementById('rot-resumo-btn').remove();rRot();}
   if(s==='rel'){rRelatorio('vendas');}
   if(s==='menu'){
     var a=clientes.filter(function(c){return statusReal(c)==='Ativo';}).length;
@@ -1829,49 +1835,116 @@ function rRelatorio(tipo){
   }
 }
 
-// ── INICIAR ──────────────────────────────────────────────────
+function rRotResumo(gruposSem,dias){
+  var diaCompleto=['Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira'];
+  var cores=['#e63946','#2a9d8f','#e9c46a','#264653','#f4a261'];
+  // Mostrar resumo sobrepondo o conteúdo atual
+  var el=document.getElementById('rot-lista');
+  var mapa=document.getElementById('rot-map');
+  var info=document.getElementById('rot-info');
+  var gmaps=document.getElementById('rot-gmaps');
+  mapa.style.display='none';
+  gmaps.style.display='none';
+  info.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;font-weight:600;color:var(--dk)">Resumo da Semana '+(rotSemAtual+1)+'</span><button onclick="fecharResumo()" style="background:none;border:1px solid #e0dbd0;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:inherit">← Voltar</button></div>';
+  el.innerHTML=gruposSem.map(function(g,di){
+    return '<div style="margin:0 14px 14px;background:#fff;border:1px solid #e0dbd0;border-radius:10px;overflow:hidden">'+
+      '<div style="background:var(--dk);color:#fff;padding:8px 12px;font-size:12px;font-weight:600">'+diaCompleto[di]+' — '+g.length+' visitas</div>'+
+      g.map(function(c,i){
+        var st=statusReal(c);
+        var stCor=st==='Ativo'?'var(--gr)':st==='Prospect'?'var(--am)':'var(--rd)';
+        var idx=clientes.indexOf(c);
+        return '<div style="display:grid;grid-template-columns:24px 1fr;gap:8px;align-items:center;padding:8px 12px;border-bottom:1px solid #f0ebe0;cursor:pointer" onclick="fecharResumo();aFicha('+idx+')">'+
+          '<div style="background:'+cores[di%cores.length]+';color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">'+(i+1)+'</div>'+
+          '<div><div style="font-size:12px;font-weight:500;display:flex;gap:6px;align-items:center">'+c.nome+'<span style="font-size:9px;font-weight:700;color:'+stCor+'">'+st.toUpperCase()+'</span></div>'+
+          '<div style="font-size:10px;color:#999">'+c.end+'</div></div>'+
+          '</div>';
+      }).join('')+
+      '</div>';
+  }).join('');
+}
+function fecharResumo(){
+  document.getElementById('rot-map').style.display='block';
+  document.getElementById('rot-gmaps').style.display='block';
+  rRot();
+}
 // ── ROTEIRO ──────────────────────────────────────────────────
 var COORDS_MAP={"pfs_00017601": {"lat": -23.5435, "lng": -46.5045}, "pfs_00431602": {"lat": -23.5478, "lng": -46.5512}, "pfs_00068601": {"lat": -23.504, "lng": -46.512}, "pfs_00429801": {"lat": -23.572, "lng": -46.543}, "pfs_00098401": {"lat": -23.5195, "lng": -46.605}, "pfs_00064806": {"lat": -23.583, "lng": -46.619}, "pfs_00064804": {"lat": -23.562, "lng": -46.625}, "pfs_00064801": {"lat": -23.61, "lng": -46.628}, "pfs_00064805": {"lat": -23.643, "lng": -46.537}, "pfs_00064807": {"lat": -23.476, "lng": -46.581}, "pfs_00089801": {"lat": -23.573, "lng": -46.551}, "pfs_00092601": {"lat": -23.52, "lng": -46.536}, "pfs_00002701": {"lat": -23.537, "lng": -46.655}, "pfs_00000901": {"lat": -23.617, "lng": -46.573}, "pfs_00017502": {"lat": -23.54, "lng": -46.751}, "pfs_00019403": {"lat": -23.603, "lng": -46.892}, "pfs_00285501": {"lat": -23.549, "lng": -46.544}, "pfs_00337901": {"lat": -23.564, "lng": -46.552}, "pfs_00367201": {"lat": -23.549, "lng": -46.544}, "pfs_00062802": {"lat": -23.431, "lng": -46.517}, "pfs_00362501": {"lat": -23.549, "lng": -46.544}, "pfs_00064301": {"lat": -23.573, "lng": -46.551}, "pfs_00000802": {"lat": -23.583, "lng": -46.619}, "pfs_00357204": {"lat": -23.428, "lng": -46.502}, "pfs_00000801": {"lat": -23.547, "lng": -46.555}, "pfs_00386002": {"lat": -23.53, "lng": -46.505}, "pfs_00377803": {"lat": -23.963, "lng": -46.389}, "pfs_00061201": {"lat": -23.519, "lng": -46.535}, "pfs_00068401": {"lat": -23.549, "lng": -46.544}, "pfs_00369901": {"lat": -23.549, "lng": -46.544}, "pfs_00074101": {"lat": -23.554, "lng": -46.558}, "pfs_00098201": {"lat": -23.547, "lng": -46.555}, "pfs_00062801": {"lat": -23.545, "lng": -46.562}, "pfs_00084701": {"lat": -23.549, "lng": -46.544}, "pfs_00021905": {"lat": -23.497, "lng": -46.495}, "pfs_00021904": {"lat": -23.613, "lng": -46.499}, "pfs_00021907": {"lat": -23.567, "lng": -46.626}, "pfs_00393206": {"lat": -23.525, "lng": -46.471}, "pfs_00021901": {"lat": -23.386, "lng": -46.335}, "pfs_00021903": {"lat": -23.587, "lng": -46.6}, "pfs_00427301": {"lat": -23.57, "lng": -46.53}, "pfs_00480701": {"lat": -23.578, "lng": -46.557}, "pfs_00461701": {"lat": -23.516, "lng": -46.53}, "pfs_00064802": {"lat": -23.565, "lng": -46.561}, "pfs_00064803": {"lat": -23.493, "lng": -46.641}, "pfs_00405001": {"lat": -23.549, "lng": -46.544}, "pfs_00056101": {"lat": -23.549, "lng": -46.587}, "pfs_00083901": {"lat": -23.554, "lng": -46.558}, "pfs_00429401": {"lat": -23.527, "lng": -46.519}, "pfs_00082401": {"lat": -23.565, "lng": -46.561}, "pfs_00384501": {"lat": -23.547, "lng": -46.555}, "pfs_00099601": {"lat": -23.541, "lng": -46.578}, "pfs_00304901": {"lat": -23.543, "lng": -46.568}, "pfs_00063001": {"lat": -23.504, "lng": -46.512}, "pfs_00318201": {"lat": -23.552, "lng": -46.554}, "pfs_00208901": {"lat": -23.516, "lng": -46.53}, "pfs_00083301": {"lat": -23.543, "lng": -46.572}, "pfs_00069801": {"lat": -23.541, "lng": -46.578}, "pfs_00058201": {"lat": -23.568, "lng": -46.412}, "pfs_00080801": {"lat": -23.556, "lng": -46.554}, "pfs_00482001": {"lat": -23.567, "lng": -46.54}, "pfs_00088701": {"lat": -23.546, "lng": -46.538}, "pfs_00005101": {"lat": -23.5478, "lng": -46.5512}, "pfs_00321301": {"lat": -23.549, "lng": -46.587}, "pfs_00447701": {"lat": -23.572, "lng": -46.523}, "pfs_00097001": {"lat": -23.546, "lng": -46.57}, "pfs_00275101": {"lat": -23.511, "lng": -46.603}, "pfs_00092701": {"lat": -23.578, "lng": -46.555}, "pfs_00097501": {"lat": -23.549, "lng": -46.544}, "pfs_00065101": {"lat": -23.547, "lng": -46.555}, "pfs_00089401": {"lat": -23.561, "lng": -46.545}, "pfs_00283201": {"lat": -23.522, "lng": -46.185}, "pfs_00065801": {"lat": -23.572, "lng": -46.548}, "pfs_00065802": {"lat": -23.571, "lng": -46.559}, "pfs_00065803": {"lat": -23.567, "lng": -46.557}, "pfs_00065804": {"lat": -23.578, "lng": -46.555}, "pfs_00094601": {"lat": -23.56, "lng": -46.509}, "pfs_00092901": {"lat": -23.543, "lng": -46.549}, "pfs_00478501": {"lat": -23.516, "lng": -46.53}, "pfs_00465501": {"lat": -23.549, "lng": -46.544}, "pfs_00058801": {"lat": -23.545, "lng": -46.562}, "pfs_00275001": {"lat": -23.5395, "lng": -46.565}, "pfs_00099901": {"lat": -23.666, "lng": -46.46}, "pfs_00461001": {"lat": -23.541, "lng": -46.578}, "pfs_00351201": {"lat": -23.572, "lng": -46.548}, "pfs_00057301": {"lat": -23.547, "lng": -46.555}, "pfs_00362401": {"lat": -23.547, "lng": -46.555}, "pfs_00021902": {"lat": -23.534, "lng": -46.582}, "pfs_00076101": {"lat": -23.534, "lng": -46.582}};
-var rotMap=null, rotSemAtual=0, rotDiaAtual=0, rotGrupos=null;
+var rotMap=null, rotSemAtual=-1, rotDiaAtual=0, rotGrupos=null;
 
 function distGeo(a,b){
   return Math.sqrt(Math.pow(a.lat-b.lat,2)+Math.pow(a.lng-b.lng,2));
 }
 
+// Geocodifica endereços via Nominatim (OSM) - roda no navegador com internet
+async function geocodificarClientes(){
+  var semCoords=clientes.filter(function(c){return !c.latReal;});
+  if(!semCoords.length)return;
+  var status=document.getElementById('rot-geo-status');
+  if(status)status.style.display='block';
+
+  for(var i=0;i<semCoords.length;i++){
+    var c=semCoords[i];
+    if(status)status.textContent='Geocodificando '+( i+1)+'/'+semCoords.length+': '+c.nome+'...';
+    try{
+      var q=encodeURIComponent(c.end+', São Paulo, Brasil');
+      var r=await fetch('https://nominatim.openstreetmap.org/search?q='+q+'&format=json&limit=1',{headers:{'Accept-Language':'pt-BR'}});
+      var d=await r.json();
+      if(d&&d[0]){
+        c.latReal=parseFloat(d[0].lat);
+        c.lngReal=parseFloat(d[0].lon);
+      }
+    }catch(e){}
+    // Respeitar limite de 1 req/seg do Nominatim
+    await new Promise(function(res){setTimeout(res,1100);});
+  }
+
+  // Salvar coordenadas reais no localStorage
+  var coordsSalvas={};
+  clientes.forEach(function(c){if(c.latReal)coordsSalvas[c.id]={lat:c.latReal,lng:c.lngReal};});
+  try{localStorage.setItem('pfs_coords',JSON.stringify(coordsSalvas));}catch(e){}
+  if(status)status.style.display='none';
+  rotGrupos=null;
+  rRot();
+}
+
+function carregarCoordsReais(){
+  // Carrega coords precisas salvas do localStorage (se houver)
+  try{
+    var salvo=JSON.parse(localStorage.getItem('pfs_coords')||'{}');
+    clientes.forEach(function(c){
+      if(salvo[c.id]){c.latReal=salvo[c.id].lat;c.lngReal=salvo[c.id].lng;}
+    });
+  }catch(e){}
+}
+
+function getLatLng(c){
+  // Usa coordenada real (geocodificada) se disponível, senão usa a aproximada por bairro
+  return{lat:c.latReal||c.lat,lng:c.lngReal||c.lng};
+}
+
 function gerarGrupos(){
-  // Pega clientes ativos com coordenadas
   var ORIGEM={lat:-23.5342,lng:-46.4530};
-  var ativos=clientes.filter(function(c){return !!COORDS_MAP[c.id];}).map(function(c){
-    var co=COORDS_MAP[c.id];
-    return Object.assign({},c,{lat:co.lat,lng:co.lng});
-  });
-
-  // Algoritmo greedy: nearest-neighbor clustering, grupos de 6-7
-  var remaining=ativos.slice();
+  var todos=clientes.filter(function(c){var ll=getLatLng(c);return ll.lat&&ll.lng;});
+  function distPonto(c,p){var ll=getLatLng(c);return Math.sqrt(Math.pow(ll.lat-p.lat,2)+Math.pow(ll.lng-p.lng,2));}
+  function distO(c){return distPonto(c,ORIGEM);}
+  function centroide(g){var la=g.reduce(function(s,c){return s+getLatLng(c).lat;},0)/g.length;var lo=g.reduce(function(s,c){return s+getLatLng(c).lng;},0)/g.length;return{lat:la,lng:lo};}
+  var remaining=todos.slice();
   var grupos=[];
-
   while(remaining.length){
     if(remaining.length<=7){grupos.push(remaining.slice());break;}
-
-    // Ancora pelo mais próximo da origem (1o grupo) ou centroide do ultimo grupo
     var ancora;
     if(!grupos.length){
-      ancora=remaining.reduce(function(m,c){return distGeo(c,ORIGEM)<distGeo(m,ORIGEM)?c:m;});
+      ancora=remaining.reduce(function(m,c){return distO(c)<distO(m)?c:m;});
     } else {
-      var ult=grupos[grupos.length-1];
-      var cx=ult.reduce(function(s,c){return s+c.lat;},0)/ult.length;
-      var cy=ult.reduce(function(s,c){return s+c.lng;},0)/ult.length;
-      ancora=remaining.reduce(function(m,c){return distGeo(c,{lat:cx,lng:cy})<distGeo(m,{lat:cx,lng:cy})?c:m;});
+      var ct=centroide(grupos[grupos.length-1]);
+      ancora=remaining.reduce(function(m,c){return distPonto(c,ct)<distPonto(m,ct)?c:m;});
     }
     var grupo=[ancora];
     remaining.splice(remaining.indexOf(ancora),1);
-
-    // Adiciona 5 mais próximos do centroide
     var alvo=Math.min(6,remaining.length+1);
     while(grupo.length<alvo&&remaining.length){
-      var cx2=grupo.reduce(function(s,c){return s+c.lat;},0)/grupo.length;
-      var cy2=grupo.reduce(function(s,c){return s+c.lng;},0)/grupo.length;
-      var prox=remaining.reduce(function(m,c){return distGeo(c,{lat:cx2,lng:cy2})<distGeo(m,{lat:cx2,lng:cy2})?c:m;});
+      var ct2=centroide(grupo);
+      var prox=remaining.reduce(function(m,c){return distPonto(c,ct2)<distPonto(m,ct2)?c:m;});
       grupo.push(prox);
       remaining.splice(remaining.indexOf(prox),1);
     }
@@ -1880,11 +1953,23 @@ function gerarGrupos(){
   return grupos;
 }
 
+function semanaDoMes(){
+  // Calcula qual semana do mês estamos (1-4), retorna índice 0-2 (máx 3 semanas)
+  var hoje=new Date();
+  var dia=hoje.getDate();
+  var sem=Math.min(Math.floor((dia-1)/7),2); // semanas 0,1,2
+  return sem;
+}
+
 function rRot(){
   if(!rotGrupos)rotGrupos=gerarGrupos();
   var grupos=rotGrupos;
   var dias=['Seg','Ter','Qua','Qui','Sex'];
   var totalSem=Math.ceil(grupos.length/5);
+  var nmMes=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+  // Rotação automática: define semana atual pelo calendário
+  if(rotSemAtual===-1){rotSemAtual=semanaDoMes()%totalSem;}
 
   // Renderiza botoes de semana
   var semEl=document.getElementById('rot-semanas');
@@ -1892,7 +1977,7 @@ function rRot(){
   for(var s=0;s<totalSem;s++){
     (function(si){
       var btn=document.createElement('button');
-      btn.textContent='Semana '+(si+1);
+      btn.textContent='Semana '+(si+1)+(si===semanaDoMes()%totalSem?' ★':'');
       btn.className='mchip'+(si===rotSemAtual?' on':'');
       btn.addEventListener('click',function(){rotSemAtual=si;rotDiaAtual=0;rRot();});
       semEl.appendChild(btn);
@@ -1912,7 +1997,6 @@ function rRot(){
     btn.style.cssText='border:none;border-radius:8px;padding:8px 4px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;'+(di===rotDiaAtual?'background:var(--dk);color:#fff':'background:#f0ebe0;color:#555');
     btn.addEventListener('click',function(){
       rotDiaAtual=di;
-      // Atualiza visual dos botoes
       diaEl.querySelectorAll('button').forEach(function(b,bi){
         b.style.background=bi===di?'var(--dk)':'#f0ebe0';
         b.style.color=bi===di?'#fff':'#555';
@@ -1921,6 +2005,18 @@ function rRot(){
     });
     diaEl.appendChild(btn);
   });
+
+  // Botão resumo da semana
+  var resumoBtn=document.getElementById('rot-resumo-btn');
+  if(!resumoBtn){
+    var rEl=document.getElementById('rot-info');
+    var rb=document.createElement('button');
+    rb.id='rot-resumo-btn';
+    rb.style.cssText='background:#f0ebe0;border:1px solid #e0dbd0;border-radius:8px;padding:6px 12px;font-size:11px;color:#555;cursor:pointer;font-family:inherit;margin:0 14px 6px;width:calc(100% - 28px)';
+    rb.textContent='📋 Ver resumo da semana';
+    rb.addEventListener('click',function(){rRotResumo(gruposSem,dias);});
+    rEl.parentNode.insertBefore(rb,rEl);
+  }
 
   rRotDia(gruposSem);
 }
@@ -1955,12 +2051,13 @@ function rRotDia(gruposSem){
   grupo.forEach(function(c,i){
     var cor=cores[i%cores.length];
     var icon=L.divIcon({className:'',html:'<div style="background:'+cor+';color:#fff;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3)">'+(i+1)+'</div>',iconSize:[26,26],iconAnchor:[13,13]});
-    L.marker([c.lat,c.lng],{icon:icon}).addTo(rotMap).bindPopup('<b>'+(i+1)+'. '+c.nome+'</b><br>'+c.end);
-    bounds.push([c.lat,c.lng]);
+    var ll=getLatLng(c);
+    L.marker([ll.lat,ll.lng],{icon:icon}).addTo(rotMap).bindPopup('<b>'+(i+1)+'. '+c.nome+'</b><br>'+c.end+(c.latReal?' ✓':''));
+    bounds.push([ll.lat,ll.lng]);
   });
 
   // Linha de rota aproximada (origem → clientes em ordem)
-  var pts=[[-23.5342,-46.4530]].concat(grupo.map(function(c){return[c.lat,c.lng];}));
+  var pts=[[-23.5342,-46.4530]].concat(grupo.map(function(c){var ll=getLatLng(c);return[ll.lat,ll.lng];}));
   L.polyline(pts,{color:'#e85d04',weight:2,opacity:0.6,dashArray:'5,5'}).addTo(rotMap);
 
   rotMap.fitBounds(bounds,{padding:[20,20]});
