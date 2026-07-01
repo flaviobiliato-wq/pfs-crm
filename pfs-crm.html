@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <title>PFS CRM</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -310,6 +312,24 @@ select.fi{appearance:none}
   </div>
 </div>
 
+<div class="scr" id="s-rot">
+  <div class="fhdrb"><div class="fat-t">Roteiro</div><div class="fat-s">Planejamento semanal de visitas</div></div>
+  <!-- Seletor de semana -->
+  <div style="display:flex;gap:8px;padding:10px 14px 0;overflow-x:auto;scrollbar-width:none" id="rot-semanas"></div>
+  <!-- Seletor de dia -->
+  <div style="display:flex;gap:6px;padding:8px 14px 6px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid #e0dbd0" id="rot-dias"></div>
+  <!-- Info do dia -->
+  <div id="rot-info" style="padding:10px 14px 6px"></div>
+  <!-- Mapa -->
+  <div id="rot-map" style="height:240px;margin:0 14px 8px;border-radius:10px;overflow:hidden;border:1px solid #e0dbd0"></div>
+  <!-- Lista de clientes do dia -->
+  <div id="rot-lista"></div>
+  <!-- Link rota Google Maps -->
+  <div style="padding:6px 14px 12px">
+    <a id="rot-gmaps" href="#" target="_blank" style="display:block;background:var(--dk);color:#fff;text-align:center;padding:10px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none">&#128205; Abrir Rota no Google Maps</a>
+  </div>
+</div>
+
 <div class="scr" id="s-imp">
   <div style="background:var(--dk);color:#fff;padding:14px 16px;flex-shrink:0">
     <div style="font-size:17px;font-weight:600;margin-bottom:2px">&#9729; Importar dados</div>
@@ -366,7 +386,7 @@ select.fi{appearance:none}
   <button class="nb" id="nb2" onclick="go('prod')"><span class="ni">&#128230;</span>Produtos</button>
   <button class="nb" id="nb3" onclick="go('fat')"><span class="ni">&#128176;</span>Fatura.</button>
   <button class="nb" id="nb4" onclick="go('promo')"><span class="ni">&#127381;</span>Promos</button>
-  <button class="nb" id="nb5" onclick="go('imp')"><span class="ni">&#9729;</span>Importar</button>
+  <button class="nb" id="nb5" onclick="go('rot')"><span class="ni">&#128205;</span>Roteiro</button>
 </div>
 
 <div class="mbg" id="m-cli"><div class="mo">
@@ -407,6 +427,15 @@ select.fi{appearance:none}
     <div class="fg"><label class="fl">Cond. pagamento</label><input type="text" class="fi" id="v-cp" placeholder="Ex: 28/35/42 dias"></div>
     <div style="padding:8px 14px 4px;font-size:11px;color:#999">Produtos pedidos</div>
     <div style="padding:0 14px" id="pf"></div>
+    <div id="desc-bloco" style="margin:8px 14px;background:#f8f4ee;border:1px solid #e0dbd0;border-radius:10px;padding:12px">
+      <div id="desc-aviso" style="font-size:11px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid #e0dbd0;display:none"></div>
+      <div id="desc-faixa" style="font-size:11px;color:#666;margin-bottom:8px"></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <label style="font-size:12px;color:#666;white-space:nowrap">Desconto (%)</label>
+        <input type="number" class="fi" id="v-desc" value="0" min="0" max="100" step="0.5" oninput="calcDesconto()" style="max-width:80px">
+      </div>
+      <div id="desc-resumo" style="font-size:12px;color:#666"></div>
+    </div>
     <div class="fg"><label class="fl">Valor total (R$)</label><input type="number" class="fi" id="v-vl" placeholder="0.00" step="0.01"></div>
   </div>
   <div class="fac"><button class="bcl" onclick="fM('m-vis')">Cancelar</button><button class="bsv" onclick="savVis()">Salvar visita</button></div>
@@ -710,7 +739,7 @@ function go(s,push){
   if(push===undefined)push=true;
   document.querySelectorAll('.scr').forEach(function(e){e.classList.remove('on');});
   document.querySelectorAll('.nb').forEach(function(e){e.classList.remove('on');});
-  var tabs=['dash','cli','prod','fat','promo','imp'];
+  var tabs=['dash','cli','prod','fat','promo','rot'];
   var ti=tabs.indexOf(s);
   if(ti>=0){document.getElementById('s-'+s).classList.add('on');document.getElementById('nb'+ti).classList.add('on');}
   else{document.getElementById('s-'+s).classList.add('on');}
@@ -718,6 +747,7 @@ function go(s,push){
   document.getElementById('hhn').style.display=s==='cli'?'block':'none';
   if(s==='fic'){document.getElementById('hdrt').textContent=clientes[cidx]?clientes[cidx].nome:'Cliente';document.getElementById('hdrs').textContent='Ficha do cliente';}
   else{document.getElementById('hdrt').textContent='Controle de Vendas/Estoque';rSub();}
+  if(s==='rot'){rotGrupos=null;rRot();}
   if(push)hist.push(s);
 }
 function voltar(){hist.pop();var prev=hist.length?hist[hist.length-1]:'dash';hist.pop();go(prev);}
@@ -1299,15 +1329,83 @@ function bLinha(tipo,pfx){
 }
 function tgLF(uid){var b=document.getElementById('lb_'+uid);var d=document.getElementById('lp_'+uid);if(!b||!d)return;b.classList.toggle('op');d.style.display=b.classList.contains('op')?'block':'none';}
 function chg(id,d){var el=document.getElementById(id);var v=Math.max(0,parseInt(el.textContent||0)+d);el.textContent=v;el.className='cv'+(v===0?'':v<=2?' bx':v<=5?' md':' ok');}
-function tgPed(){pedOn=!pedOn;document.getElementById('pt').classList.toggle('on',pedOn);document.getElementById('ps2').style.display=pedOn?'block':'none';}
+function extrairDescObs(obs){
+  // Tenta extrair percentual de desconto do campo obs, ex: "conceder desc 12%" -> 12
+  if(!obs)return null;
+  var m=obs.match(/desc\s+([\d]+(?:[.,][\d]+)?)\s*%/i);
+  if(m)return parseFloat(m[1].replace(',','.'));
+  // formato "conceder 5%" sem "desc"
+  var m2=obs.match(/conceder\s+([\d]+(?:[.,][\d]+)?)\s*%/i);
+  if(m2)return parseFloat(m2[1].replace(',','.'));
+  return null;
+}
+function faixaDesconto(kgTotal){
+  if(kgTotal>=6001)return{pct:12,label:'12% (acima de 6.001kg)'};
+  if(kgTotal>=3001)return{pct:8,label:'8% (3.001 a 6.000kg)'};
+  if(kgTotal>=1001)return{pct:6,label:'6% (1.001 a 3.000kg)'};
+  if(kgTotal>=301)return{pct:4,label:'4% (301 a 1.000kg)'};
+  return{pct:0,label:'Sem faixa (abaixo de 301kg)'};
+}
+function atualizarDesconto(){
+  var c=clientes[cidx];
+  // Calcular bruto e kg atual a partir dos produtos selecionados
+  var prods=P.map(function(p){var q=document.getElementById('pq_'+p.cod);var v2=document.getElementById('pv_'+p.cod);return{p:p,qtd:parseInt(q?q.value||0:0),preco:parseFloat(v2&&v2.value?v2.value:p.puImp)};}).filter(function(x){return x.qtd>0;});
+  var bruto=prods.reduce(function(s,x){return s+x.qtd*x.preco;},0);
+  var kgTotal=prods.reduce(function(s,x){return s+(x.p.u==='kg'?x.qtd*x.p.kg:0);},0);
+
+  // Aviso do desconto do cliente
+  var descObs=extrairDescObs(c.obs||'');
+  var avisoEl=document.getElementById('desc-aviso');
+  if(descObs!==null){
+    avisoEl.style.display='block';
+    avisoEl.innerHTML='<span style="color:var(--am);font-weight:600">&#9888; Cliente: desc '+descObs+'%</span><span style="color:#999"> — conforme observações</span>';
+  } else {
+    avisoEl.style.display='none';
+  }
+
+  // Faixa sugerida por peso
+  var faixa=faixaDesconto(kgTotal);
+  var faixaEl=document.getElementById('desc-faixa');
+  faixaEl.innerHTML='<b>Pedido atual: '+kgTotal.toFixed(1)+'kg</b> — Faixa: '+(faixa.pct>0?faixa.pct+'% ('+faixa.label+')':'Sem desconto por volume ('+faixa.label+')');
+
+  // Sugerir desconto automaticamente se campo estiver zerado
+  var descEl=document.getElementById('v-desc');
+  if(parseFloat(descEl.value||0)===0&&(descObs!==null||faixa.pct>0)){
+    descEl.value=descObs!==null?descObs:faixa.pct;
+  }
+
+  calcDesconto();
+}
+function calcDesconto(){
+  var prods=P.map(function(p){var q=document.getElementById('pq_'+p.cod);var v2=document.getElementById('pv_'+p.cod);return{qtd:parseInt(q?q.value||0:0),preco:parseFloat(v2&&v2.value?v2.value:p.puImp)};}).filter(function(x){return x.qtd>0;});
+  var bruto=prods.reduce(function(s,x){return s+x.qtd*x.preco;},0);
+  var pct=parseFloat(document.getElementById('v-desc').value||0);
+  var descR=bruto*pct/100;
+  var final=bruto-descR;
+  var resumoEl=document.getElementById('desc-resumo');
+  if(bruto>0){
+    resumoEl.innerHTML=(pct>0?
+      '<div style="color:#666">Valor bruto: <b>'+fmtR(bruto)+'</b></div>'+
+      '<div style="color:var(--rd)">Desconto '+pct+'%: <b>-'+fmtR(descR)+'</b></div>'+
+      '<div style="color:var(--gr);font-size:13px;font-weight:700;margin-top:4px">Total: '+fmtR(final)+'</div>'
+      :'<div style="color:#666">Valor bruto: <b>'+fmtR(bruto)+'</b></div><div style="color:#999;font-size:10px">Nenhum desconto aplicado</div>');
+    document.getElementById('v-vl').value=final.toFixed(2);
+  } else {
+    resumoEl.innerHTML='';
+  }
+}
+function tgPed(){pedOn=!pedOn;document.getElementById('pt').classList.toggle('on',pedOn);document.getElementById('ps2').style.display=pedOn?'block':'none';if(pedOn)atualizarDesconto();}
 
 function aVis(){
   var hoje=new Date().toISOString().split('T')[0];
   document.getElementById('v-dt').value=hoje;
   ['v-pv','v-ob','v-np','v-cp','v-vl'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('v-desc').value='0';document.getElementById('desc-resumo').innerHTML='';document.getElementById('desc-aviso').style.display='none';
   pedOn=false;document.getElementById('pt').classList.remove('on');document.getElementById('ps2').style.display='none';
   document.getElementById('ef').innerHTML=bLinha('est');
   document.getElementById('pf').innerHTML=bLinha('ped');
+  // Recalcula desconto ao mudar qualquer quantidade de produto
+  document.getElementById('pf').addEventListener('input',function(){atualizarDesconto();});
   oM('m-vis');
 }
 
@@ -1538,6 +1636,147 @@ function impCli(lista, modo){
 
 
 // ── INICIAR ──────────────────────────────────────────────────
+// ── ROTEIRO ──────────────────────────────────────────────────
+var rotMap=null, rotSemAtual=0, rotDiaAtual=0, rotGrupos=null;
+
+function distGeo(a,b){
+  return Math.sqrt(Math.pow(a.lat-b.lat,2)+Math.pow(a.lng-b.lng,2));
+}
+
+function gerarGrupos(){
+  // Pega clientes ativos com coordenadas
+  var ORIGEM={lat:-23.5342,lng:-46.4530};
+  var ativos=clientes.filter(function(c){return c.lat&&c.lng;});
+
+  // Algoritmo greedy: nearest-neighbor clustering, grupos de 6-7
+  var remaining=ativos.slice();
+  var grupos=[];
+
+  while(remaining.length){
+    if(remaining.length<=7){grupos.push(remaining.slice());break;}
+
+    // Ancora pelo mais próximo da origem (1o grupo) ou centroide do ultimo grupo
+    var ancora;
+    if(!grupos.length){
+      ancora=remaining.reduce(function(m,c){return distGeo(c,ORIGEM)<distGeo(m,ORIGEM)?c:m;});
+    } else {
+      var ult=grupos[grupos.length-1];
+      var cx=ult.reduce(function(s,c){return s+c.lat;},0)/ult.length;
+      var cy=ult.reduce(function(s,c){return s+c.lng;},0)/ult.length;
+      ancora=remaining.reduce(function(m,c){return distGeo(c,{lat:cx,lng:cy})<distGeo(m,{lat:cx,lng:cy})?c:m;});
+    }
+    var grupo=[ancora];
+    remaining.splice(remaining.indexOf(ancora),1);
+
+    // Adiciona 5 mais próximos do centroide
+    var alvo=Math.min(6,remaining.length+1);
+    while(grupo.length<alvo&&remaining.length){
+      var cx2=grupo.reduce(function(s,c){return s+c.lat;},0)/grupo.length;
+      var cy2=grupo.reduce(function(s,c){return s+c.lng;},0)/grupo.length;
+      var prox=remaining.reduce(function(m,c){return distGeo(c,{lat:cx2,lng:cy2})<distGeo(m,{lat:cx2,lng:cy2})?c:m;});
+      grupo.push(prox);
+      remaining.splice(remaining.indexOf(prox),1);
+    }
+    grupos.push(grupo);
+  }
+  return grupos;
+}
+
+function rRot(){
+  if(!rotGrupos)rotGrupos=gerarGrupos();
+  var grupos=rotGrupos;
+  var dias=['Seg','Ter','Qua','Qui','Sex'];
+  var totalSem=Math.ceil(grupos.length/5);
+
+  // Renderiza botoes de semana
+  var semEl=document.getElementById('rot-semanas');
+  semEl.innerHTML='';
+  for(var s=0;s<totalSem;s++){
+    (function(si){
+      var btn=document.createElement('button');
+      btn.textContent='Semana '+(si+1);
+      btn.className='mchip'+(si===rotSemAtual?' on':'');
+      btn.addEventListener('click',function(){rotSemAtual=si;rotDiaAtual=0;rRot();});
+      semEl.appendChild(btn);
+    })(s);
+  }
+
+  // Grupos da semana atual
+  var inicio=rotSemAtual*5;
+  var gruposSem=grupos.slice(inicio,inicio+5);
+
+  // Botoes de dia
+  var diaEl=document.getElementById('rot-dias');
+  diaEl.innerHTML='';
+  gruposSem.forEach(function(g,di){
+    var btn=document.createElement('button');
+    btn.textContent=dias[di]+' ('+g.length+')';
+    btn.className='mchip'+(di===rotDiaAtual?' on':'');
+    btn.addEventListener('click',function(){rotDiaAtual=di;rRotDia(gruposSem);});
+    diaEl.appendChild(btn);
+  });
+
+  rRotDia(gruposSem);
+}
+
+function rRotDia(gruposSem){
+  var dias=['Segunda','Terça','Quarta','Quinta','Sexta'];
+  var grupo=gruposSem[rotDiaAtual];
+  if(!grupo)return;
+
+  // Info
+  document.getElementById('rot-info').innerHTML=
+    '<div style="font-size:13px;font-weight:600;color:var(--dk)">'+dias[rotDiaAtual]+
+    ' — '+grupo.length+' visitas</div>'+
+    '<div style="font-size:11px;color:#999">Partindo de Itaquera</div>';
+
+  // Mapa Leaflet
+  var mapEl=document.getElementById('rot-map');
+  if(rotMap){rotMap.remove();rotMap=null;}
+  rotMap=L.map(mapEl,{zoomControl:true,scrollWheelZoom:false});
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    attribution:'&copy; OpenStreetMap',maxZoom:18
+  }).addTo(rotMap);
+
+  // Marcador de origem
+  var origemIcon=L.divIcon({className:'',html:'<div style="background:var(--dk);color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3)">&#127968;</div>',iconSize:[28,28],iconAnchor:[14,14]});
+  L.marker([-23.5342,-46.4530],{icon:origemIcon}).addTo(rotMap).bindPopup('Ponto de Partida — Itaquera');
+
+  var bounds=[[-23.5342,-46.4530]];
+  var cores=['#e63946','#2a9d8f','#e9c46a','#264653','#f4a261','#8338ec','#06d6a0'];
+
+  // Marcadores dos clientes
+  grupo.forEach(function(c,i){
+    var cor=cores[i%cores.length];
+    var icon=L.divIcon({className:'',html:'<div style="background:'+cor+';color:#fff;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3)">'+(i+1)+'</div>',iconSize:[26,26],iconAnchor:[13,13]});
+    L.marker([c.lat,c.lng],{icon:icon}).addTo(rotMap).bindPopup('<b>'+(i+1)+'. '+c.nome+'</b><br>'+c.end);
+    bounds.push([c.lat,c.lng]);
+  });
+
+  // Linha de rota aproximada (origem → clientes em ordem)
+  var pts=[[-23.5342,-46.4530]].concat(grupo.map(function(c){return[c.lat,c.lng];}));
+  L.polyline(pts,{color:'#e85d04',weight:2,opacity:0.6,dashArray:'5,5'}).addTo(rotMap);
+
+  rotMap.fitBounds(bounds,{padding:[20,20]});
+
+  // Lista de clientes
+  var listaEl=document.getElementById('rot-lista');
+  listaEl.innerHTML=grupo.map(function(c,i){
+    var idx=clientes.indexOf(c);
+    var mapsUrl='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(c.end+', Sao Paulo, Brasil');
+    return '<div class="rc" style="display:grid;grid-template-columns:28px 1fr auto;gap:8px;align-items:center;padding:10px 14px;border-bottom:1px solid #f0ebe0">'+
+      '<div style="background:'+cores[i%cores.length]+';color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">'+(i+1)+'</div>'+
+      '<div onclick="aFicha('+idx+')" style="cursor:pointer"><div style="font-size:13px;font-weight:500">'+c.nome+'</div><div style="font-size:11px;color:#999;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+c.end+'</div></div>'+
+      '<a href="'+mapsUrl+'" target="_blank" style="font-size:18px;text-decoration:none">&#128205;</a>'+
+      '</div>';
+  }).join('');
+
+  // Link de rota completa Google Maps
+  var ORIGEM_ENC='Rua+Dona+Maria+de+Camardo,90,Itaquera,Sao+Paulo';
+  var waypoints=grupo.map(function(c){return encodeURIComponent(c.end+', Sao Paulo, Brasil');}).join('/');
+  document.getElementById('rot-gmaps').href='https://www.google.com/maps/dir/'+ORIGEM_ENC+'/'+waypoints;
+}
+
 init();
 </script>
 </body>
