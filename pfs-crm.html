@@ -372,8 +372,8 @@ select.fi{appearance:none}
   <div class="fhdrb"><div class="fat-t">Roteiro</div><div class="fat-s">Planejamento semanal de visitas</div></div>
   <!-- Seletor de semana -->
   <div style="display:flex;gap:8px;padding:10px 14px 0;overflow-x:auto;scrollbar-width:none" id="rot-semanas"></div>
-  <!-- Seletor de dia -->
-  <div style="display:flex;gap:6px;padding:8px 14px 6px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid #e0dbd0" id="rot-dias"></div>
+  <!-- Seletor de dia — mais visível -->
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:8px 14px;border-bottom:1px solid #e0dbd0" id="rot-dias"></div>
   <!-- Info do dia -->
   <div id="rot-info" style="padding:10px 14px 6px"></div>
   <!-- Mapa -->
@@ -381,12 +381,8 @@ select.fi{appearance:none}
   <!-- Lista de clientes do dia -->
   <div id="rot-lista"></div>
   <!-- Link rota Google Maps -->
-  <div style="padding:6px 14px 6px">
-    <a id="rot-gmaps" href="#" target="_blank" style="display:block;background:var(--dk);color:#fff;text-align:center;padding:10px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none">&#128205; Abrir Rota no Google Maps</a>
-  </div>
-  <!-- Acesso ao Importar -->
   <div style="padding:6px 14px 20px">
-    <button onclick="go('imp')" style="width:100%;background:#f0ebe0;border:1px solid #e0dbd0;border-radius:8px;padding:10px;font-size:12px;color:#666;cursor:pointer;font-family:inherit">&#9729; Acessar Importacao de Pedidos</button>
+    <a id="rot-gmaps" href="#" target="_blank" style="display:block;background:var(--dk);color:#fff;text-align:center;padding:10px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none">&#128205; Abrir Rota no Google Maps</a>
   </div>
 </div>
 
@@ -1912,9 +1908,17 @@ function rRot(){
   diaEl.innerHTML='';
   gruposSem.forEach(function(g,di){
     var btn=document.createElement('button');
-    btn.textContent=dias[di]+' ('+g.length+')';
-    btn.className='mchip'+(di===rotDiaAtual?' on':'');
-    btn.addEventListener('click',function(){rotDiaAtual=di;rRotDia(gruposSem);});
+    btn.textContent=dias[di];
+    btn.style.cssText='border:none;border-radius:8px;padding:8px 4px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;'+(di===rotDiaAtual?'background:var(--dk);color:#fff':'background:#f0ebe0;color:#555');
+    btn.addEventListener('click',function(){
+      rotDiaAtual=di;
+      // Atualiza visual dos botoes
+      diaEl.querySelectorAll('button').forEach(function(b,bi){
+        b.style.background=bi===di?'var(--dk)':'#f0ebe0';
+        b.style.color=bi===di?'#fff':'#555';
+      });
+      rRotDia(gruposSem);
+    });
     diaEl.appendChild(btn);
   });
 
@@ -1966,9 +1970,17 @@ function rRotDia(gruposSem){
   listaEl.innerHTML=grupo.map(function(c,i){
     var idx=clientes.indexOf(c);
     var mapsUrl='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(c.end+', Sao Paulo, Brasil');
+    var st=statusReal(c);
+    var stCor=st==='Ativo'?'var(--gr)':st==='Prospect'?'var(--am)':'var(--rd)';
     return '<div class="rc" style="display:grid;grid-template-columns:28px 1fr auto;gap:8px;align-items:center;padding:10px 14px;border-bottom:1px solid #f0ebe0">'+
       '<div style="background:'+cores[i%cores.length]+';color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">'+(i+1)+'</div>'+
-      '<div onclick="aFicha('+idx+')" style="cursor:pointer"><div style="font-size:13px;font-weight:500">'+c.nome+'</div><div style="font-size:11px;color:#999;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+c.end+'</div></div>'+
+      '<div onclick="aFicha('+idx+')" style="cursor:pointer">'+
+        '<div style="display:flex;align-items:center;gap:6px">'+
+          '<span style="font-size:13px;font-weight:500">'+c.nome+'</span>'+
+          '<span style="font-size:9px;font-weight:700;color:'+stCor+'">'+st.toUpperCase()+'</span>'+
+        '</div>'+
+        '<div style="font-size:11px;color:#999;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+c.end+'</div>'+
+      '</div>'+
       '<a href="'+mapsUrl+'" target="_blank" style="font-size:18px;text-decoration:none">&#128205;</a>'+
       '</div>';
   }).join('');
