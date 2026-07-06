@@ -719,7 +719,9 @@ var P=[
   {cod:'PA0024',l:'Allcanis',e:'dog',n:'Allcanis Adulto',s:'Frango, Carne e Arroz',kg:25,u:'kg',f:1,pu:161.25,puImp:177.75,pdv:244.88,marg:37.8},
   {cod:'PA0022',l:'Allcanis',e:'dog',n:'Allcanis Adulto',s:'Frango, Carne e Arroz',kg:15.0,u:'kg',f:1,pu:100.8,puImp:111.1149,pdv:153.9,marg:38.5},
   {cod:'PA0020',l:'Allcanis',e:'dog',n:'Allcanis Adulto',s:'2,5kg',kg:3,u:'kg',f:8,pu:32.4,puImp:38.4,pdv:53.88,marg:40.3},
+  {cod:'PA0026',l:'Allcanis',e:'dog',n:'Allcanis Adulto',s:'2,5kg',kg:3,u:'kg',f:8,pu:32.4,puImp:38.4,pdv:53.88,marg:40.3},
   {cod:'PA0001',l:'Allcanis',e:'dog',n:'Allcanis Filhote',s:'Frango, Carne e Arroz',kg:3,u:'kg',f:8,pu:35.28,puImp:41.83,pdv:68.28,marg:63.2},
+  {cod:'PA0005',l:'Allcanis',e:'dog',n:'Allcanis Filhote',s:'Frango, Carne e Arroz',kg:3,u:'kg',f:8,pu:35.28,puImp:41.83,pdv:68.28,marg:63.2},
   {cod:'PA0042',l:'Allcanis',e:'dog',n:'Allcanis Adulto RP Mini Bits',s:'2,5kg',kg:3,u:'kg',f:8,pu:32.88,puImp:38.95,pdv:54.96,marg:41.1},
   {cod:'PA0048',l:'Allcanis',e:'dog',n:'Allcanis Adulto RP Mini Bits',s:'2,5kg',kg:3,u:'kg',f:8,pu:32.88,puImp:38.95,pdv:54.96,marg:41.1},
   {cod:'PA0046',l:'Allcanis',e:'dog',n:'Allcanis Adulto RP Mini Bits',s:'2,5kg',kg:25,u:'kg',f:1,pu:274.0,puImp:324.6,pdv:458.0,marg:41.1},
@@ -1245,14 +1247,58 @@ function aFat(){
   var c=clientes[cidx];
   var el=document.getElementById('ffatc');
   var faturados=(c.visitas||[]).filter(function(v){return v.historico;});
-  if(!faturados.length){el.innerHTML='<div class="nv">Nenhum faturamento importado ainda</div>';}
+  var mediaHTML=mediaClienteHTML(c);
+  if(!faturados.length){el.innerHTML=mediaHTML+'<div class="nv">Nenhum faturamento importado ainda</div>';}
   else{
-    el.innerHTML=[].concat(faturados).reverse().map(function(v){
+    el.innerHTML=mediaHTML+[].concat(faturados).reverse().map(function(v){
       var oi=c.visitas.indexOf(v);
       return visitaCardHTML(c,v,oi);
     }).join('');
   }
   oM('m-fat');
+}
+function mediaClienteHTML(c){
+  var dados={};
+  var mesesAno={2025:{},2026:{}};
+  (c.visitas||[]).forEach(function(v){
+    if(!v.pedido||!v.produtos||!v.produtos.length)return;
+    var ano=v.data.slice(0,4);
+    if(ano!=='2025'&&ano!=='2026')return;
+    mesesAno[ano][v.data.slice(0,7)]=true;
+    v.produtos.forEach(function(p){
+      var pr=P.find(function(x){return x.cod===p.cod;});
+      var linha=pr?linhaPFS(pr):'SEM DETALHE DE PRODUTO';
+      if(!dados[linha])dados[linha]={2025:0,2026:0};
+      dados[linha][ano]+=(p.preco||0);
+    });
+  });
+  var nA=Object.keys(mesesAno[2025]).length||1,nB=Object.keys(mesesAno[2026]).length||1;
+  var linhas=ORDEM_LINHAS_PFS.filter(function(l){return dados[l]&&(dados[l][2025]||dados[l][2026]);});
+  if(!linhas.length)return '';
+  var total25=0,total26=0;
+  linhas.forEach(function(l){total25+=dados[l][2025];total26+=dados[l][2026];});
+  function linha(nome,v25,v26,destacar){
+    var m25=v25/nA,m26=v26/nB;
+    var pct=null;
+    if(m25>0)pct=Math.round((m26-m25)/m25*100);
+    else if(m26>0)pct=100;
+    var pctTxt=pct===null?'—':(pct>0?'+':'')+pct+'%';
+    var pctCor=pct===null?'#bbb':(pct<0?'#c0392b':(pct>0?'#2E7D52':'#888'));
+    return '<div style="display:grid;grid-template-columns:1fr 56px 56px 44px;gap:4px;padding:6px 0;border-bottom:1px solid '+(destacar?'transparent':'#f0ebe0')+';align-items:center'+(destacar?';background:var(--dk);color:#fff;margin:0 -14px;padding-left:14px;padding-right:14px;font-weight:700':'')+'">'
+      +'<span style="font-size:11px;'+(destacar?'':'font-weight:600')+'">'+nome+'</span>'
+      +'<span style="font-size:11px;text-align:right">'+fmtRC(m25)+'</span>'
+      +'<span style="font-size:11px;text-align:right">'+fmtRC(m26)+'</span>'
+      +'<span style="font-size:11px;text-align:right;font-weight:700;color:'+(destacar?'#fff':pctCor)+'">'+pctTxt+'</span>'
+      +'</div>';
+  }
+  return '<div style="margin-bottom:14px">'
+    +'<div style="font-size:11px;font-weight:700;color:#999;text-transform:uppercase;margin-bottom:2px">Media mensal por linha — 2025 x 2026</div>'
+    +'<div style="font-size:9px;color:#bbb;margin-bottom:6px">2025: '+nA+' '+(nA===1?'mes':'meses')+' com dado &bull; 2026: '+nB+' '+(nB===1?'mes':'meses')+' com dado</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 56px 56px 44px;gap:4px;font-size:9px;color:#999;font-weight:700;padding-bottom:4px;border-bottom:1px solid #ddd">'
+    +'<span>LINHA</span><span style="text-align:right">2025</span><span style="text-align:right">2026</span><span style="text-align:right">%</span></div>'
+    +linha('TOTAL',total25,total26,true)
+    +linhas.map(function(l){return linha(l,dados[l][2025],dados[l][2026],false);}).join('')
+    +'</div>';
 }
 function visitaCardHTML(c,v,oi){
     // Build pedido summary
