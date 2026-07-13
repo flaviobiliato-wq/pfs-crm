@@ -1264,7 +1264,7 @@ function mediaClienteHTML(c){
   var dados={};
   var mesesAno={2025:{},2026:{}};
   (c.visitas||[]).forEach(function(v){
-    if(!v.pedido||!v.produtos||!v.produtos.length)return;
+    if(!v.pedido||!v.produtos||!v.produtos.length||!v.historico)return;
     var ano=v.data.slice(0,4);
     if(ano!=='2025'&&ano!=='2026')return;
     mesesAno[ano][v.data.slice(0,7)]=true;
@@ -2122,7 +2122,7 @@ function rRelatorio(tipo){
 
       clientes.forEach(function(c,idx){
         (c.visitas||[]).forEach(function(v){
-          if(!v.pedido||!v.produtos||!v.produtos.length)return;
+          if(!v.pedido||!v.produtos||!v.produtos.length||!v.historico)return;
           var mes=v.data.slice(0,7),emA=setA[mes],emB=setB[mes];
           if(!emA&&!emB)return;
           v.produtos.forEach(function(p){
@@ -2250,7 +2250,7 @@ function rRelatorio(tipo){
         linhasComValor.map(function(l){return linhaRow(l,dados[l],false);}).join('')+
         outrasLinhas.map(function(l){return linhaRow(l,dados[l],false);}).join('')+
         '</tbody></table></div>'+
-        '<div style="font-size:9px;color:#bbb;margin-top:10px">DN = quantidade de clientes distintos que compraram naquela linha no periodo. Linhas agrupadas por inferencia (RM/RP) a partir do catalogo — revisar se algo estiver categorizado errado.</div>'+
+        '<div style="font-size:9px;color:#bbb;margin-top:10px">DN = quantidade de clientes distintos que compraram naquela linha no periodo. Categorizacao por codigo de produto (SKU) fixo no catalogo.</div>'+
         '</div>';
     }
   }
