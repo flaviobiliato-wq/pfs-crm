@@ -1224,7 +1224,8 @@ function tgL(el){if(typeof el==='string'){el=document.getElementById(el);}if(el)
 function aFicha(idx){
   cidx=idx;var c=clientes[idx];
   document.getElementById('fnm').textContent=c.nome;
-  document.getElementById('ftp').textContent=(c.tipo||'')+(c.end?' / '+c.end:'');
+  var mapsUrl = c.end ? ('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(c.end)) : ((c.lat&&c.lng) ? ('https://www.google.com/maps/search/?api=1&query='+c.lat+','+c.lng) : '');
+  document.getElementById('ftp').innerHTML=(c.tipo||'')+(c.end?' / '+c.end:'')+(mapsUrl?' <a href="'+mapsUrl+'" target="_blank" style="color:var(--dk);font-weight:700;text-decoration:none;white-space:nowrap">&#128205; Ver no mapa</a>':'');
   document.getElementById('fbg').innerHTML='<div class="fbdg">'+statusReal(c)+'</div>'+(c.proxVisita?'<div class="fbdg">Prox: '+fmtD(c.proxVisita)+'</div>':'')+(c.pedidos?'<div class="fbdg">'+c.pedidos+' pedido'+(c.pedidos!==1?'s':'')+'</div>':'');
   document.getElementById('finfo').innerHTML='<div class="ir"><span class="il">Responsavel</span><span class="iv">'+(c.resp||'--')+'</span></div><div class="ir"><span class="il">Prox. visita</span><span class="iv">'+fmtD(c.proxVisita)+'</span></div>'+(c.obs?'<div class="ir"><span class="il">Obs.</span><span class="iv">'+c.obs+'</span></div>':'');
   rMix(c);rVis(c);hist.push('cli');go('fic');
@@ -1298,7 +1299,7 @@ function mediaClienteHTML(c){
     +'<div style="font-size:11px;font-weight:700;color:#999;text-transform:uppercase;margin-bottom:2px">Media mensal por linha — 2025 x 2026</div>'
     +'<div style="font-size:9px;color:#bbb;margin-bottom:6px">2025: '+nA+' '+(nA===1?'mes':'meses')+' com dado &bull; 2026: '+nB+' '+(nB===1?'mes':'meses')+' com dado</div>'
     +'<div style="display:grid;grid-template-columns:1fr 56px 56px 44px;gap:4px;font-size:9px;color:#999;font-weight:700;padding-bottom:4px;border-bottom:1px solid #ddd">'
-    +'<span>LINHA</span><span style="text-align:right">2025</span><span style="text-align:right">2026</span><span style="text-align:right">%</span></div>'
+    +'<span>LINHA</span><span style="text-align:right">Média 25 (R$)</span><span style="text-align:right">Média 26 (R$)</span><span style="text-align:right">%</span></div>'
     +linha('TOTAL',total25,total26,true)
     +linhas.map(function(l){return linha(l,dados[l][2025],dados[l][2026],false);}).join('')
     +'</div>';
@@ -2239,8 +2240,8 @@ function rRelatorio(tipo){
         '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-family:inherit">'+
         '<thead><tr style="border-bottom:2px solid #e0dbd0">'+
         '<th style="padding:6px;font-size:10px;color:#999;text-align:left">LINHA</th>'+
-        '<th style="padding:6px;font-size:10px;color:#999;text-align:right">Média '+mediasPeriodoLabel(mediasDeAno,mediasDeSub,mediasTab)+'</th>'+
-        '<th style="padding:6px;font-size:10px;color:#999;text-align:right">Média '+mediasPeriodoLabel(mediasVsAno,mediasVsSub,mediasTab)+'</th>'+
+        '<th style="padding:6px;font-size:10px;color:#999;text-align:right">Média (R$)<br>'+mediasPeriodoLabel(mediasDeAno,mediasDeSub,mediasTab)+'</th>'+
+        '<th style="padding:6px;font-size:10px;color:#999;text-align:right">Média (R$)<br>'+mediasPeriodoLabel(mediasVsAno,mediasVsSub,mediasTab)+'</th>'+
         '<th style="padding:6px;font-size:10px;color:#999;text-align:center">%</th>'+
         '<th style="padding:6px;font-size:10px;color:#999;text-align:right">DN '+mediasDeAno+'</th>'+
         '<th style="padding:6px;font-size:10px;color:#999;text-align:right">DN '+mediasVsAno+'</th>'+
