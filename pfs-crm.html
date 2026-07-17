@@ -438,6 +438,7 @@ select.fi{appearance:none}
     <button class="abtn" onclick="eCli()">&#9998; Editar</button>
     <button class="abtn" onclick="aFat()">&#128179; Faturados</button>
   </div>
+  <div style="padding:0 14px 10px"><div id="fvisitado" onclick="tgVisitado()" style="cursor:pointer"></div></div>
   <div class="fsec"><div class="fst">Informacoes</div><div id="finfo"></div></div>
   <div class="fsec"><div class="fst">Mix ideal <a onclick="aMix()">Editar</a></div><div id="fmix"></div></div>
   <div class="fsec" style="border-bottom:none"><div class="fst">Historico de visitas</div><div id="fvis"></div></div>
@@ -877,6 +878,7 @@ function go(s,push){
     rSub();
   }
   if(s==='rot'){rotGrupos=null;rotSemAtual=-1;rotDiaAtual=0;document.getElementById('rot-resumo-btn')&&document.getElementById('rot-resumo-btn').remove();rRot();}
+  if(s==='cli'){rCli();}
   if(s==='rel'){relResetIcones();}
   if(s==='menu'){
     var a=clientes.filter(function(c){return statusReal(c)==='Ativo';}).length;
@@ -1063,7 +1065,8 @@ function rCli(){
     var i=clientes.indexOf(c);var sv=svCor(c);var dl=dLbl(c);
     var stReal=statusReal(c);
     var bc=stReal==='Ativo'?'ba':stReal==='Prospect'?'bp':'bi';
-    return'<div class="cc" onclick="aFicha('+i+')"><div class="sb '+sv+'"></div><div class="cb"><div class="ct"><div class="cn">'+c.nome+'</div><div class="cbg '+bc+'">'+stReal+'</div></div>'+(c.razaoSocial&&c.razaoSocial.toLowerCase()!==c.nome.toLowerCase()?'<div class="crs" style="font-size:10px;color:#999;margin-top:-2px">'+c.razaoSocial+'</div>':'')+'<div class="ctp">'+(c.end||'Endereco nao informado')+(c.resp?' / '+c.resp:'')+'</div><div class="cbt"><div class="cla">'+(!c.visitas||!c.visitas.length?'Sem visitas':'Ultima: '+fmtD(c.visitas[c.visitas.length-1].data))+'</div><div class="cdy '+dl.c+'">'+dl.t+'</div></div></div></div>';
+    var atendido=c.visitadoMes===mesAtualStr();
+    return'<div class="cc" onclick="aFicha('+i+')"'+(atendido?' style="background:#eaf5ee;border:1px solid #8fc9a8"':'')+'><div class="sb '+(atendido?'v':sv)+'"></div><div class="cb"><div class="ct"><div class="cn">'+c.nome+(atendido?' <span style="font-size:9px;background:#2E7D52;color:#fff;padding:2px 6px;border-radius:8px;font-weight:700;vertical-align:middle">&#10003; ATENDIDO</span>':'')+'</div><div class="cbg '+bc+'">'+stReal+'</div></div>'+(c.razaoSocial&&c.razaoSocial.toLowerCase()!==c.nome.toLowerCase()?'<div class="crs" style="font-size:10px;color:#999;margin-top:-2px">'+c.razaoSocial+'</div>':'')+'<div class="ctp">'+(c.end||'Endereco nao informado')+(c.resp?' / '+c.resp:'')+'</div><div class="cbt"><div class="cla">'+(!c.visitas||!c.visitas.length?'Sem visitas':'Ultima: '+fmtD(c.visitas[c.visitas.length-1].data))+'</div><div class="cdy '+dl.c+'">'+dl.t+'</div></div></div></div>';
   }).join('');
 }
 function setF(el){document.querySelectorAll('.fc').forEach(function(e){e.classList.remove('on');});el.classList.add('on');filtro=el.dataset.f;rCli();}
@@ -1228,7 +1231,28 @@ function aFicha(idx){
   document.getElementById('ftp').innerHTML=(c.tipo||'')+(c.end?' / '+c.end:'')+(mapsUrl?' <a href="'+mapsUrl+'" target="_blank" style="color:var(--dk);font-weight:700;text-decoration:none;white-space:nowrap">&#128205; Ver no mapa</a>':'');
   document.getElementById('fbg').innerHTML='<div class="fbdg">'+statusReal(c)+'</div>'+(c.proxVisita?'<div class="fbdg">Prox: '+fmtD(c.proxVisita)+'</div>':'')+(c.pedidos?'<div class="fbdg">'+c.pedidos+' pedido'+(c.pedidos!==1?'s':'')+'</div>':'');
   document.getElementById('finfo').innerHTML='<div class="ir"><span class="il">Responsavel</span><span class="iv">'+(c.resp||'--')+'</span></div><div class="ir"><span class="il">Prox. visita</span><span class="iv">'+fmtD(c.proxVisita)+'</span></div>'+(c.obs?'<div class="ir"><span class="il">Obs.</span><span class="iv">'+c.obs+'</span></div>':'');
-  rMix(c);rVis(c);hist.push('cli');go('fic');
+  rMix(c);rVis(c);rVisitado(c);hist.push('cli');go('fic');
+}
+
+function mesAtualStr(){
+  var d=new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+}
+function rVisitado(c){
+  var el=document.getElementById('fvisitado');
+  var atendido=c.visitadoMes===mesAtualStr();
+  if(atendido){
+    el.innerHTML='<div style="background:#eaf5ee;border:1px solid #b8ddc5;border-radius:8px;padding:10px;text-align:center;font-size:12px;font-weight:700;color:#245c3d">&#10003; Cliente atendido este mes</div>';
+  }else{
+    el.innerHTML='<div style="background:#f5f0e6;border:1px dashed #d8cdb0;border-radius:8px;padding:10px;text-align:center;font-size:12px;font-weight:600;color:#8a7a4a">Marcar como atendido este mes</div>';
+  }
+}
+function tgVisitado(){
+  var c=clientes[cidx];
+  var mesAtual=mesAtualStr();
+  c.visitadoMes = (c.visitadoMes===mesAtual) ? null : mesAtual;
+  dbSave();
+  rVisitado(c);
 }
 
 function rMix(c){
