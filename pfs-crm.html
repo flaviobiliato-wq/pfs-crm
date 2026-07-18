@@ -396,22 +396,14 @@ select.fi{appearance:none}
 <div class="scr" id="s-imp">
   <div style="background:var(--dk);color:#fff;padding:14px 16px;flex-shrink:0">
     <div style="font-size:17px;font-weight:600;margin-bottom:2px">&#9729; Importar dados</div>
-    <div style="font-size:11px;opacity:.7">Pedidos e clientes via upload</div>
+    <div style="font-size:11px;opacity:.7">Clientes via planilha</div>
   </div>
   <div style="flex:1;overflow-y:auto;padding-bottom:20px">
 
     <div class="ic">
-      <div class="ich"><div class="ichi">&#128194;</div><div><div class="ict">Importar pedidos</div><div class="ics">Foto ou PDF do pedido</div></div></div>
+      <div class="ich"><div class="ichi">&#128194;</div><div><div class="ict">Registrar pedidos</div><div class="ics">Lancamento manual</div></div></div>
       <div class="icb">
-        <div class="iin">Envie a foto (print) ou o PDF do pedido. A IA le e extrai todos os dados automaticamente.</div>
-        <label for="fped" class="ua" style="display:block;cursor:pointer">
-          <div style="font-size:28px;margin-bottom:6px;color:#999">&#128444;</div>
-          <p style="font-size:12px;color:#666">Toque para selecionar</p>
-          <span style="font-size:10px;color:#999">.jpg, .png ou .pdf</span>
-        </label>
-        <input type="file" id="fped" accept=".jpg,.jpeg,.png,.pdf,image/*,application/pdf" style="display:none" onchange="lrPedido(event)">
-        <div class="ist" id="dst"></div>
-        <div id="dpv"></div>
+        <div class="iin">Abra o cliente na aba <strong>Clientes</strong> e toque em <strong>Nova visita</strong> para lancar o pedido.</div>
       </div>
     </div>
 
@@ -515,13 +507,6 @@ select.fi{appearance:none}
     <div class="fg"><label class="fl">Valor total (R$)</label><input type="number" class="fi" id="v-vl" placeholder="0.00" step="0.01"></div>
   </div>
   <div class="fac"><button class="bcl" onclick="fM('m-vis')">Cancelar</button><button class="bsv" onclick="savVis()">Salvar visita</button></div>
-</div></div>
-
-<div class="mbg" id="m-ped"><div class="mo">
-  <div class="mhnd"></div>
-  <div class="mhd"><h3>Confirmar pedido importado</h3><button class="mcl" onclick="fM('m-ped')">&#215;</button></div>
-  <div id="mpedc"></div>
-  <div class="fac"><button class="bcl" onclick="fM('m-ped')">Cancelar</button><button class="bsv" onclick="confPed()">Confirmar</button></div>
 </div></div>
 
 <div class="mbg" id="m-delvis"><div class="mo" style="padding-bottom:20px">
@@ -771,7 +756,7 @@ P.forEach(function(p){if(!_ls[p.l]){_ls[p.l]=true;LINHAS.push(p.l);}});
 LINHAS.sort();
 var ICO={'ProHealth Caes Racas Pequenas':'&#127942;','ProHealth Caes Racas Medias e Grandes':'&#127942;','ProHealth Gatos':'&#127942;','Qualiday ProLife Racas Pequenas':'&#11088;','Qualiday ProLife Racas Medias e Grandes':'&#11088;','Qualiday Sabores':'&#11088;','Qualiday Umido Caes':'&#128167;','Qualiday Umido Gatos':'&#128167;','Allcanis':'&#128062;','Allcats':'&#128008;','Qualiday Cat':'&#128008;','Special Croc':'&#128014;','PetCare Solution':'&#128138;','Zooe Churitos':'&#129361;'};
 
-var clientes=[],cidx=null,fatMes=null,fatMeta={},mixTmp=[],editId=null,pedOn=false,filtro='todos',hist=[],pedTmp=null;
+var clientes=[],cidx=null,fatMes=null,fatMeta={},mixTmp=[],editId=null,pedOn=false,filtro='todos',hist=[];
 var mediasTab='mes',mediasDeAno=null,mediasDeSub=null,mediasVsAno=null,mediasVsSub=null,mediasExpand={};
 
 // ── INIT ─────────────────────────────────────────────────────
@@ -1757,60 +1742,6 @@ function rFat(){
 function sMes(m){fatMes=m;rFat();}
 function savMeta(){var v=parseFloat(document.getElementById('minp').value||0);fatMeta[fatMes]=v;savM2();rFat();toast('Meta salva!');}
 
-function lrPedido(e){
-  var file=e.target.files[0];if(!file)return;
-  var st=document.getElementById('dst');var pv=document.getElementById('dpv');
-  st.className='ist ld';st.textContent='Lendo '+file.name+' com IA...';pv.innerHTML='';
-  var reader=new FileReader();
-  reader.onload=function(ev){
-    var bytes=new Uint8Array(ev.target.result);
-    var b64=btoa(bytes.reduce(function(s,b){return s+String.fromCharCode(b);},''));
-    var mediaType=file.type||(file.name.toLowerCase().endsWith('.pdf')?'application/pdf':'image/jpeg');
-    var blockType=mediaType==='application/pdf'?'document':'image';
-    fetch('/api/anthropic',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-5',max_tokens:2000,messages:[{role:'user',content:[{type:blockType,source:{type:'base64',media_type:mediaType,data:b64}},{type:'text',text:'Leia esta imagem ou PDF de um pedido. Extraia os dados do pedido, incluindo o codigo do produto (formato PAxxxx) quando aparecer. Retorne SOMENTE objeto JSON sem markdown: {"numeroPedido":"","cliente":"","codigoCliente":"","data":"DD/MM/AAAA","condPag":"","produtos":[{"codigo":"","nome":"","peso":"","quantidade":0,"precoUnit":0}],"valorTotal":0,"observacoes":""}'}]}]})})
-    .then(function(r){return r.json();})
-    .then(function(d){
-      var txt=(d.content||[]).filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('');
-      var ped={};try{var m=txt.match(/\{[\s\S]*\}/);if(m)ped=JSON.parse(m[0]);}catch(ex){}
-      if(!ped.numeroPedido&&!ped.cliente){st.className='ist er';st.textContent='Nao foi possivel extrair os dados.';return;}
-      var dup=clientes.some(function(c){return c.visitas&&c.visitas.some(function(v){return v.numPedido&&v.numPedido===ped.numeroPedido;});});
-      if(dup){st.className='ist er';st.textContent='Pedido '+ped.numeroPedido+' ja cadastrado!';return;}
-      pedTmp=Object.assign({},ped,{fnm:file.name});
-      var cm=null;
-    if(ped.codigoCliente){var codLimpo=(''+ped.codigoCliente).replace(/\D/g,'');cm=clientes.find(function(c){return c.id.replace('pfs_','').indexOf(codLimpo)>=0;});}
-    if(!cm)cm=clientes.find(function(c){return c.nome.toLowerCase().indexOf((ped.cliente||'').toLowerCase().split(' ')[0])>=0;})||clientes[0];
-    pedTmp.cidxSel=clientes.indexOf(cm);
-    var opts=clientes.map(function(c,i){return'<option value="'+i+'"'+(i===pedTmp.cidxSel?' selected':'')+'>'+c.nome+'</option>';}).join('');
-    var prods=ped.produtos&&ped.produtos.length?ped.produtos.map(function(p){return'<div class="prow"><span class="pl">'+p.nome+'</span><span class="pv">x'+p.quantidade+'</span></div>';}).join(''):'Nenhum produto extraido';
-    var pedBox=document.createElement('div');
-    pedBox.innerHTML='<div class="fg"><label class="fl">Cliente *</label><select class="fi" id="imp-cli">'+opts+'</select></div>'
-      +'<div class="fg"><div class="pbox">'
-      +'<div class="prow"><span class="pl">N. Pedido</span><span class="pv">'+(ped.numeroPedido||'--')+'</span></div>'
-      +'<div class="prow"><span class="pl">Data</span><span class="pv">'+(ped.data||'--')+'</span></div>'
-      +'<div class="prow"><span class="pl">Pagamento</span><span class="pv">'+(ped.condPag||'--')+'</span></div>'
-      +'<div class="prow"><span class="pl">Total</span><span class="pv">'+(ped.valorTotal?fmtR(ped.valorTotal):'--')+'</span></div>'
-      +'</div></div>'
-      +'<div class="fg"><label class="fl">Produtos</label><div class="pbox">'+prods+'</div></div>';
-    document.getElementById('mpedc').innerHTML='';
-    document.getElementById('mpedc').appendChild(pedBox);
-    st.className='ist ok';st.textContent='Dados extraidos. Confirme abaixo.';oM('m-ped');
-    }).catch(function(ex){st.className='ist er';st.textContent='Erro ao processar.';});
-  };
-  reader.readAsArrayBuffer(file);
-}
-
-function confPed(){
-  if(!pedTmp)return;
-  var si=parseInt(document.getElementById('imp-cli').value);
-  if(isNaN(si)||si<0){alert('Selecione o cliente.');return;}
-  var c=clientes[si];if(!c.visitas)c.visitas=[];
-  var hoje=new Date().toISOString().split('T')[0];
-  var prods=(pedTmp.produtos||[]).map(function(p){var match=P.find(function(x){return x.cod===p.codigo||x.n.toLowerCase().indexOf((p.nome||'').toLowerCase().split(' ')[0])>=0;});return{cod:match?match.cod:'',qtd:p.quantidade||0,preco:p.precoUnit||0};}).filter(function(p){return p.qtd>0;});
-  c.visitas.push({data:hoje,pedido:true,numPedido:pedTmp.numeroPedido||'',condPag:pedTmp.condPag||'',produtos:prods,valorTotal:pedTmp.valorTotal||0,estoque:[],obs:'Importado de arquivo ('+pedTmp.fnm+')'});
-  c.pedidos=(c.pedidos||0)+1;c.status='Ativo';
-  arquivarVisitasAntigas(c);
-  sav(c).then(function(){fM('m-ped');rDash();rCli();rFat();toast('Pedido salvo para '+c.nome+'!');pedTmp=null;document.getElementById('dst').className='ist ok';document.getElementById('dst').textContent='Importado com sucesso!';document.getElementById('fped').value='';});
-}
 
 function lrPlanilha(e){
   var file=e.target.files[0];if(!file)return;
