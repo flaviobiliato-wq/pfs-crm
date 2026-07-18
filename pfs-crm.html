@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <title>PFS CRM</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -410,7 +411,7 @@ select.fi{appearance:none}
     <div class="ic">
       <div class="ich"><div class="ichi">&#128202;</div><div><div class="ict">Importar clientes</div><div class="ics">Via planilha Excel ou CSV</div></div></div>
       <div class="icb">
-        <div class="iin">Faca upload da planilha da area. A IA cadastra os clientes automaticamente.</div>
+        <div class="iin">Faca upload da planilha da area. Os clientes sao lidos e cadastrados automaticamente (colunas: nome, responsavel, telefone, tipo, endereco, status, observacoes).</div>
         <label for="fup" class="ua" style="display:block;cursor:pointer">
           <div style="font-size:28px;margin-bottom:6px;color:#999">&#128203;</div>
           <p style="font-size:12px;color:#666">Toque para selecionar</p>
@@ -1743,52 +1744,70 @@ function sMes(m){fatMes=m;rFat();}
 function savMeta(){var v=parseFloat(document.getElementById('minp').value||0);fatMeta[fatMes]=v;savM2();rFat();toast('Meta salva!');}
 
 
+function nrmCab(s){
+  s=String(s||'').toLowerCase();
+  var acc='áàâãäéèêëíìîïóòôõöúùûüçñ';
+  var sem='aaaaaeeeeiiiiooooouuuucn';
+  var out='';
+  for(var i=0;i<s.length;i++){var idx=acc.indexOf(s[i]);out+=idx>=0?sem[idx]:s[i];}
+  return out.replace(/[^a-z]/g,'');
+}
+function mapLinhaCliente(row){
+  var norm={};
+  Object.keys(row).forEach(function(k){norm[nrmCab(k)]=String(row[k]==null?'':row[k]).trim();});
+  function pick(){for(var i=0;i<arguments.length;i++){if(norm[arguments[i]])return norm[arguments[i]];}return'';}
+  return{
+    nome:pick('nome','cliente','loja','nomefantasia','razaosocial','estabelecimento'),
+    responsavel:pick('responsavel','contato','comprador'),
+    telefone:pick('telefone','tel','celular','whatsapp','fone','contatotelefone'),
+    tipo:pick('tipo','categoria','segmento')||'Outro',
+    endereco:pick('endereco','end','rua','logradouro','enderecocompleto'),
+    status:pick('status')||'Ativo',
+    observacoes:pick('observacoes','obs','observacao')
+  };
+}
 function lrPlanilha(e){
   var file=e.target.files[0];if(!file)return;
   var st=document.getElementById('pst');var pv=document.getElementById('ppv');
   st.className='ist ld';st.textContent='Lendo '+file.name+'...';pv.innerHTML='';
   var reader=new FileReader();
   reader.onload=function(ev){
-    var bytes=new Uint8Array(ev.target.result);
-    var b64=btoa(bytes.reduce(function(s,b){return s+String.fromCharCode(b);},''));
-    fetch('/api/anthropic',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-5',max_tokens:4000,messages:[{role:'user',content:[{type:'document',source:{type:'base64',media_type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',data:b64}},{type:'text',text:'Extraia todos os clientes desta planilha. Retorne SOMENTE array JSON sem markdown: [{"nome":"","responsavel":"","telefone":"","tipo":"","endereco":"","status":"Ativo","observacoes":""}]. Tipo: Pet Shop, Agropecuaria, Supermercado, Veterinaria, Distribuidora, Outro.'}]}]})})
-    .then(function(r){return r.json();})
-    .then(function(d){
-      var txt=d.content.filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('');
-      var lista=[];try{var m=txt.match(/\[[\s\S]*\]/);if(m)lista=JSON.parse(m[0]);}catch(ex){}
-      if(!lista.length){st.className='ist er';st.textContent='Nao foi possivel extrair clientes.';return;}
+    try{
+      var data=new Uint8Array(ev.target.result);
+      var wb=XLSX.read(data,{type:'array'});
+      var sheet=wb.Sheets[wb.SheetNames[0]];
+      var rows=XLSX.utils.sheet_to_json(sheet,{defval:''});
+      var lista=rows.map(mapLinhaCliente).filter(function(c){return c.nome;});
+      if(!lista.length){st.className='ist er';st.textContent='Nao foi possivel identificar clientes na planilha.';return;}
       var novos=lista.filter(function(c){return !clientes.some(function(ex){return ex.nome.toLowerCase().trim()===c.nome.toLowerCase().trim();});});
       st.className='ist ok';st.textContent=lista.length+' clientes / '+novos.length+' novos';
-      if(novos.length){
-        var todos=lista; // usa a lista completa para upsert
-        var box=document.createElement('div');
-        var pb=document.createElement('div');pb.className='pbox';
-        var novosNames=novos.map(function(c){return c.nome;});
-        lista.slice(0,8).forEach(function(c){
-          var isNovo=novosNames.indexOf(c.nome)>=0;
-          var r=document.createElement('div');r.className='prow';
-          r.innerHTML='<span class="pl">'+c.nome+'</span><span class="pv" style="color:'+(isNovo?'var(--gr)':'var(--am)')+'">'+(isNovo?'NOVO':'ATUALIZAR')+'</span>';
-          pb.appendChild(r);
-        });
-        if(lista.length>8){var more=document.createElement('div');more.style.cssText='font-size:10px;color:#999;padding-top:4px';more.textContent='+'+(lista.length-8)+' mais...';pb.appendChild(more);}
-        box.appendChild(pb);
-        var info=document.createElement('div');info.style.cssText='font-size:11px;color:#666;padding:6px 0 2px';
-        info.textContent=novos.length+' novos + '+(lista.length-novos.length)+' ja existentes';
-        box.appendChild(info);
-        var btns=document.createElement('div');btns.className='cbts';
-        var bcl=document.createElement('button');bcl.className='cbcl';bcl.textContent='Cancelar';bcl.onclick=function(){pv.innerHTML='';};
-        var bok=document.createElement('button');bok.className='cbok';bok.textContent='Adicionar '+novos.length+' novos';bok.onclick=function(){impCli(novos,'novo');};
-        btns.appendChild(bcl);btns.appendChild(bok);
-        if(lista.length-novos.length>0){
-          var bup=document.createElement('button');bup.className='cbok';bup.style.cssText='background:var(--am);margin-top:6px;width:100%';
-          bup.textContent='Atualizar todos ('+lista.length+')';bup.onclick=function(){impCli(lista,'atualizar');};
-          box.appendChild(btns);box.appendChild(bup);
-        } else {
-          box.appendChild(btns);
-        }
-        pv.innerHTML='';pv.appendChild(box);
+      var box=document.createElement('div');
+      var pb=document.createElement('div');pb.className='pbox';
+      var novosNames=novos.map(function(c){return c.nome;});
+      lista.slice(0,8).forEach(function(c){
+        var isNovo=novosNames.indexOf(c.nome)>=0;
+        var r=document.createElement('div');r.className='prow';
+        r.innerHTML='<span class="pl">'+c.nome+'</span><span class="pv" style="color:'+(isNovo?'var(--gr)':'var(--am)')+'">'+(isNovo?'NOVO':'ATUALIZAR')+'</span>';
+        pb.appendChild(r);
+      });
+      if(lista.length>8){var more=document.createElement('div');more.style.cssText='font-size:10px;color:#999;padding-top:4px';more.textContent='+'+(lista.length-8)+' mais...';pb.appendChild(more);}
+      box.appendChild(pb);
+      var info=document.createElement('div');info.style.cssText='font-size:11px;color:#666;padding:6px 0 2px';
+      info.textContent=novos.length+' novos + '+(lista.length-novos.length)+' ja existentes';
+      box.appendChild(info);
+      var btns=document.createElement('div');btns.className='cbts';
+      var bcl=document.createElement('button');bcl.className='cbcl';bcl.textContent='Cancelar';bcl.onclick=function(){pv.innerHTML='';};
+      var bok=document.createElement('button');bok.className='cbok';bok.textContent='Adicionar '+novos.length+' novos';bok.onclick=function(){impCli(novos,'novo');};
+      btns.appendChild(bcl);btns.appendChild(bok);
+      if(lista.length-novos.length>0){
+        var bup=document.createElement('button');bup.className='cbok';bup.style.cssText='background:var(--am);margin-top:6px;width:100%';
+        bup.textContent='Atualizar todos ('+lista.length+')';bup.onclick=function(){impCli(lista,'atualizar');};
+        box.appendChild(btns);box.appendChild(bup);
+      } else {
+        box.appendChild(btns);
       }
-    }).catch(function(){st.className='ist er';st.textContent='Erro ao processar.';});
+      pv.innerHTML='';pv.appendChild(box);
+    }catch(ex){st.className='ist er';st.textContent='Erro ao ler a planilha.';}
   };
   reader.readAsArrayBuffer(file);
 }
