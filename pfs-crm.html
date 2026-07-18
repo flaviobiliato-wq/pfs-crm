@@ -396,17 +396,21 @@ select.fi{appearance:none}
 <div class="scr" id="s-imp">
   <div style="background:var(--dk);color:#fff;padding:14px 16px;flex-shrink:0">
     <div style="font-size:17px;font-weight:600;margin-bottom:2px">&#9729; Importar dados</div>
-    <div style="font-size:11px;opacity:.7">Pedidos via Drive e clientes via planilha</div>
+    <div style="font-size:11px;opacity:.7">Pedidos e clientes via upload</div>
   </div>
   <div style="flex:1;overflow-y:auto;padding-bottom:20px">
 
     <div class="ic">
-      <div class="ich"><div class="ichi">&#128194;</div><div><div class="ict">Importar pedidos</div><div class="ics">Prints da pasta Pedidos PFS no Drive</div></div></div>
+      <div class="ich"><div class="ichi">&#128194;</div><div><div class="ict">Importar pedidos</div><div class="ics">Foto ou PDF do pedido</div></div></div>
       <div class="icb">
-        <div class="iin">Salve prints na pasta <strong>Pedidos PFS</strong> do Drive. A IA le e extrai todos os dados do pedido automaticamente.</div>
-        <button class="ibtn" id="bdrive" onclick="bDrive()">&#128260; Verificar novos pedidos</button>
+        <div class="iin">Envie a foto (print) ou o PDF do pedido. A IA le e extrai todos os dados automaticamente.</div>
+        <label for="fped" class="ua" style="display:block;cursor:pointer">
+          <div style="font-size:28px;margin-bottom:6px;color:#999">&#128444;</div>
+          <p style="font-size:12px;color:#666">Toque para selecionar</p>
+          <span style="font-size:10px;color:#999">.jpg, .png ou .pdf</span>
+        </label>
+        <input type="file" id="fped" accept=".jpg,.jpeg,.png,.pdf,image/*,application/pdf" style="display:none" onchange="lrPedido(event)">
         <div class="ist" id="dst"></div>
-        <div id="dfl"></div>
         <div id="dpv"></div>
       </div>
     </div>
@@ -766,7 +770,6 @@ var LINHAS=[]; var _ls={};
 P.forEach(function(p){if(!_ls[p.l]){_ls[p.l]=true;LINHAS.push(p.l);}});
 LINHAS.sort();
 var ICO={'ProHealth Caes Racas Pequenas':'&#127942;','ProHealth Caes Racas Medias e Grandes':'&#127942;','ProHealth Gatos':'&#127942;','Qualiday ProLife Racas Pequenas':'&#11088;','Qualiday ProLife Racas Medias e Grandes':'&#11088;','Qualiday Sabores':'&#11088;','Qualiday Umido Caes':'&#128167;','Qualiday Umido Gatos':'&#128167;','Allcanis':'&#128062;','Allcats':'&#128008;','Qualiday Cat':'&#128008;','Special Croc':'&#128014;','PetCare Solution':'&#128138;','Zooe Churitos':'&#129361;'};
-var FOLDER_ID='1pe0ScWu5n0-17x3RA41dqmAytHOsyaWz';
 
 var clientes=[],cidx=null,fatMes=null,fatMeta={},mixTmp=[],editId=null,pedOn=false,filtro='todos',hist=[],pedTmp=null;
 var mediasTab='mes',mediasDeAno=null,mediasDeSub=null,mediasVsAno=null,mediasVsSub=null,mediasExpand={};
@@ -1754,33 +1757,26 @@ function rFat(){
 function sMes(m){fatMes=m;rFat();}
 function savMeta(){var v=parseFloat(document.getElementById('minp').value||0);fatMeta[fatMes]=v;savM2();rFat();toast('Meta salva!');}
 
-function bDrive(){
-  var btn=document.getElementById('bdrive');var st=document.getElementById('dst');var fl=document.getElementById('dfl');
-  btn.disabled=true;st.className='ist ld';st.textContent='Verificando pasta Pedidos PFS...';fl.innerHTML='';
-  fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-5',max_tokens:1000,mcp_servers:[{type:'url',url:'https://drivemcp.googleapis.com/mcp/v1',name:'gdrive'}],messages:[{role:'user',content:'Liste arquivos de imagem PNG JPG JPEG e tambem arquivos PDF na pasta Google Drive ID '+FOLDER_ID+'. Retorne SOMENTE array JSON sem markdown: [{"id":"file_id","name":"filename","createdTime":"ISO"}]. Se nao houver, retorne [].'}]})})
-  .then(function(r){return r.json();})
-  .then(function(d){
-    var txt=d.content.filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('');
-    var arqs=[];try{var m=txt.match(/\[[\s\S]*\]/);if(m)arqs=JSON.parse(m[0]);}catch(ex){}
-    if(!arqs.length){st.className='ist ok';st.textContent='Nenhum print novo. Tudo em dia!';}
-    else{st.className='ist ok';st.textContent=arqs.length+' arquivo'+(arqs.length!==1?'s':'')+' encontrado'+(arqs.length!==1?'s':'');fl.innerHTML='<div class="flist">'+arqs.map(function(f){return'<div class="fitem" onclick="procDrive(\''+f.id+'\',\''+f.name+'\')"><span>&#128444;</span><div class="fnm2">'+f.name+'</div><span>&#8250;</span></div>';}).join('')+'</div>';}
-    btn.disabled=false;
-  }).catch(function(ex){st.className='ist er';st.textContent='Erro ao acessar o Drive.';btn.disabled=false;});
-}
-
-function procDrive(fid,fnm){
+function lrPedido(e){
+  var file=e.target.files[0];if(!file)return;
   var st=document.getElementById('dst');var pv=document.getElementById('dpv');
-  st.className='ist ld';st.textContent='Lendo '+fnm+' com IA...';pv.innerHTML='';
-  fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-5',max_tokens:2000,mcp_servers:[{type:'url',url:'https://drivemcp.googleapis.com/mcp/v1',name:'gdrive'}],messages:[{role:'user',content:'Leia o arquivo (imagem ou PDF) do Google Drive ID '+fid+'. Extraia os dados do pedido, incluindo o codigo do produto (formato PAxxxx) quando aparecer. Retorne SOMENTE objeto JSON sem markdown: {"numeroPedido":"","cliente":"","codigoCliente":"","data":"DD/MM/AAAA","condPag":"","produtos":[{"codigo":"","nome":"","peso":"","quantidade":0,"precoUnit":0}],"valorTotal":0,"observacoes":""}'}]})})
-  .then(function(r){return r.json();})
-  .then(function(d){
-    var txt=d.content.filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('');
-    var ped={};try{var m=txt.match(/\{[\s\S]*\}/);if(m)ped=JSON.parse(m[0]);}catch(ex){}
-    if(!ped.numeroPedido&&!ped.cliente){st.className='ist er';st.textContent='Nao foi possivel extrair os dados.';return;}
-    var dup=clientes.some(function(c){return c.visitas&&c.visitas.some(function(v){return v.numPedido&&v.numPedido===ped.numeroPedido;});});
-    if(dup){st.className='ist er';st.textContent='Pedido '+ped.numeroPedido+' ja cadastrado!';return;}
-    pedTmp=Object.assign({},ped,{fid:fid,fnm:fnm});
-    var cm=null;
+  st.className='ist ld';st.textContent='Lendo '+file.name+' com IA...';pv.innerHTML='';
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    var bytes=new Uint8Array(ev.target.result);
+    var b64=btoa(bytes.reduce(function(s,b){return s+String.fromCharCode(b);},''));
+    var mediaType=file.type||(file.name.toLowerCase().endsWith('.pdf')?'application/pdf':'image/jpeg');
+    var blockType=mediaType==='application/pdf'?'document':'image';
+    fetch('/api/anthropic',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-5',max_tokens:2000,messages:[{role:'user',content:[{type:blockType,source:{type:'base64',media_type:mediaType,data:b64}},{type:'text',text:'Leia esta imagem ou PDF de um pedido. Extraia os dados do pedido, incluindo o codigo do produto (formato PAxxxx) quando aparecer. Retorne SOMENTE objeto JSON sem markdown: {"numeroPedido":"","cliente":"","codigoCliente":"","data":"DD/MM/AAAA","condPag":"","produtos":[{"codigo":"","nome":"","peso":"","quantidade":0,"precoUnit":0}],"valorTotal":0,"observacoes":""}'}]}]})})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var txt=(d.content||[]).filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('');
+      var ped={};try{var m=txt.match(/\{[\s\S]*\}/);if(m)ped=JSON.parse(m[0]);}catch(ex){}
+      if(!ped.numeroPedido&&!ped.cliente){st.className='ist er';st.textContent='Nao foi possivel extrair os dados.';return;}
+      var dup=clientes.some(function(c){return c.visitas&&c.visitas.some(function(v){return v.numPedido&&v.numPedido===ped.numeroPedido;});});
+      if(dup){st.className='ist er';st.textContent='Pedido '+ped.numeroPedido+' ja cadastrado!';return;}
+      pedTmp=Object.assign({},ped,{fnm:file.name});
+      var cm=null;
     if(ped.codigoCliente){var codLimpo=(''+ped.codigoCliente).replace(/\D/g,'');cm=clientes.find(function(c){return c.id.replace('pfs_','').indexOf(codLimpo)>=0;});}
     if(!cm)cm=clientes.find(function(c){return c.nome.toLowerCase().indexOf((ped.cliente||'').toLowerCase().split(' ')[0])>=0;})||clientes[0];
     pedTmp.cidxSel=clientes.indexOf(cm);
@@ -1798,7 +1794,9 @@ function procDrive(fid,fnm){
     document.getElementById('mpedc').innerHTML='';
     document.getElementById('mpedc').appendChild(pedBox);
     st.className='ist ok';st.textContent='Dados extraidos. Confirme abaixo.';oM('m-ped');
-  }).catch(function(ex){st.className='ist er';st.textContent='Erro ao processar.';});
+    }).catch(function(ex){st.className='ist er';st.textContent='Erro ao processar.';});
+  };
+  reader.readAsArrayBuffer(file);
 }
 
 function confPed(){
@@ -1808,10 +1806,10 @@ function confPed(){
   var c=clientes[si];if(!c.visitas)c.visitas=[];
   var hoje=new Date().toISOString().split('T')[0];
   var prods=(pedTmp.produtos||[]).map(function(p){var match=P.find(function(x){return x.cod===p.codigo||x.n.toLowerCase().indexOf((p.nome||'').toLowerCase().split(' ')[0])>=0;});return{cod:match?match.cod:'',qtd:p.quantidade||0,preco:p.precoUnit||0};}).filter(function(p){return p.qtd>0;});
-  c.visitas.push({data:hoje,pedido:true,numPedido:pedTmp.numeroPedido||'',condPag:pedTmp.condPag||'',produtos:prods,valorTotal:pedTmp.valorTotal||0,estoque:[],obs:'Importado via Drive ('+pedTmp.fnm+')'});
+  c.visitas.push({data:hoje,pedido:true,numPedido:pedTmp.numeroPedido||'',condPag:pedTmp.condPag||'',produtos:prods,valorTotal:pedTmp.valorTotal||0,estoque:[],obs:'Importado de arquivo ('+pedTmp.fnm+')'});
   c.pedidos=(c.pedidos||0)+1;c.status='Ativo';
   arquivarVisitasAntigas(c);
-  sav(c).then(function(){fM('m-ped');rDash();rCli();rFat();toast('Pedido salvo para '+c.nome+'!');pedTmp=null;document.getElementById('dst').className='ist ok';document.getElementById('dst').textContent='Importado com sucesso!';document.getElementById('dfl').innerHTML='';});
+  sav(c).then(function(){fM('m-ped');rDash();rCli();rFat();toast('Pedido salvo para '+c.nome+'!');pedTmp=null;document.getElementById('dst').className='ist ok';document.getElementById('dst').textContent='Importado com sucesso!';document.getElementById('fped').value='';});
 }
 
 function lrPlanilha(e){
@@ -1822,7 +1820,7 @@ function lrPlanilha(e){
   reader.onload=function(ev){
     var bytes=new Uint8Array(ev.target.result);
     var b64=btoa(bytes.reduce(function(s,b){return s+String.fromCharCode(b);},''));
-    fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-5',max_tokens:4000,messages:[{role:'user',content:[{type:'document',source:{type:'base64',media_type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',data:b64}},{type:'text',text:'Extraia todos os clientes desta planilha. Retorne SOMENTE array JSON sem markdown: [{"nome":"","responsavel":"","telefone":"","tipo":"","endereco":"","status":"Ativo","observacoes":""}]. Tipo: Pet Shop, Agropecuaria, Supermercado, Veterinaria, Distribuidora, Outro.'}]}]})})
+    fetch('/api/anthropic',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-5',max_tokens:4000,messages:[{role:'user',content:[{type:'document',source:{type:'base64',media_type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',data:b64}},{type:'text',text:'Extraia todos os clientes desta planilha. Retorne SOMENTE array JSON sem markdown: [{"nome":"","responsavel":"","telefone":"","tipo":"","endereco":"","status":"Ativo","observacoes":""}]. Tipo: Pet Shop, Agropecuaria, Supermercado, Veterinaria, Distribuidora, Outro.'}]}]})})
     .then(function(r){return r.json();})
     .then(function(d){
       var txt=d.content.filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('');
