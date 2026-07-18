@@ -379,7 +379,10 @@ select.fi{appearance:none}
     <div id="rot-geo-status" style="display:none;font-size:11px;color:var(--am);padding:6px 0;text-align:center"></div>
   </div>
   <!-- Seletor de semana -->
-  <div style="display:flex;gap:8px;padding:10px 14px 0;overflow-x:auto;scrollbar-width:none" id="rot-semanas"></div>
+  <div class="st" style="padding-top:12px" id="rot-semanas-lbl">Semana do mês</div>
+  <div style="margin:0 14px 4px;background:#fff;border:1px solid #e0dbd0;border-radius:10px;padding:8px">
+    <div style="display:flex;gap:8px;overflow-x:auto;scrollbar-width:none" id="rot-semanas"></div>
+  </div>
   <!-- Seletor de dia — mais visível -->
   <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:8px 14px;border-bottom:1px solid #e0dbd0" id="rot-dias"></div>
   <!-- Info do dia -->
@@ -2371,17 +2374,31 @@ function rRot(){
   var totalSem=Math.ceil(grupos.length/5);
   var nmMes=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
+  var lbl=document.getElementById('rot-semanas-lbl');
+  var semEl=document.getElementById('rot-semanas');
+
+  if(totalSem===0){
+    lbl.textContent='Semana do mês';
+    semEl.innerHTML='<div style="font-size:12px;color:#999;padding:4px 0">Nenhum cliente com endereço geocodificado ainda. Toque em "Melhorar precisão das rotas" acima.</div>';
+    document.getElementById('rot-dias').innerHTML='';
+    document.getElementById('rot-info').innerHTML='';
+    document.getElementById('rot-lista').innerHTML='';
+    return;
+  }
+
   // Rotação automática: define semana atual pelo calendário
   if(rotSemAtual===-1){rotSemAtual=semanaDoMes()%totalSem;}
 
+  lbl.textContent='Semana do mês ('+(rotSemAtual+1)+' de '+totalSem+')';
+
   // Renderiza botoes de semana
-  var semEl=document.getElementById('rot-semanas');
   semEl.innerHTML='';
   for(var s=0;s<totalSem;s++){
     (function(si){
       var btn=document.createElement('button');
       btn.textContent='Semana '+(si+1)+(si===semanaDoMes()%totalSem?' ★':'');
       btn.className='mchip'+(si===rotSemAtual?' on':'');
+      btn.style.cssText='font-size:13px;font-weight:600;padding:9px 16px;';
       btn.addEventListener('click',function(){rotSemAtual=si;rotDiaAtual=0;rRot();});
       semEl.appendChild(btn);
     })(s);
