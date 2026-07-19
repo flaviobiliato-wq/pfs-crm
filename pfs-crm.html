@@ -797,7 +797,7 @@ function init() {
           var daBase=(encontrado.visitas||[]).slice();
           var chavesBase={};
           daBase.forEach(function(v){chavesBase[v.data+'|'+(v.numPedido||'')]=true;});
-          var salvasSemDuplicar=cs.visitas.filter(function(v){return !chavesBase[v.data+'|'+(v.numPedido||'')];});
+          var salvasSemDuplicar=cs.visitas.filter(function(v){return !chavesBase[v.data+'|'+(v.numPedido||'')]&&v.numPedido!=='77000101';});
           encontrado.visitas=daBase.concat(salvasSemDuplicar).sort(function(a,b){return a.data.localeCompare(b.data);});
         }
         if(cs.historicoFat && cs.historicoFat.length){
