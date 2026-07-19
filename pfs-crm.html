@@ -831,6 +831,7 @@ function savM2() {
 }
 
 // ── HELPERS ──────────────────────────────────────────────────
+function codCliente(c){if(c&&c.id&&c.id.indexOf('pfs_')===0){var cod=c.id.slice(4);if(/^\d+$/.test(cod))return cod;}return'';}
 function fmtD(d){if(!d)return'--';var p=d.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
 function fmtR(v){return'R$ '+Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
 function fmtRC(v){return Number(v||0).toLocaleString('pt-BR',{maximumFractionDigits:0});}
@@ -1059,7 +1060,8 @@ function rCli(){
     var stReal=statusReal(c);
     var bc=stReal==='Ativo'?'ba':stReal==='Prospect'?'bp':'bi';
     var atendido=c.visitadoMes===mesAtualStr();
-    return'<div class="cc" onclick="aFicha('+i+')"'+(atendido?' style="background:#eaf5ee;border:1px solid #8fc9a8"':'')+'><div class="sb '+(atendido?'v':sv)+'"></div><div class="cb"><div class="ct"><div class="cn">'+c.nome+(atendido?' <span style="font-size:9px;background:#2E7D52;color:#fff;padding:2px 6px;border-radius:8px;font-weight:700;vertical-align:middle">&#10003; ATENDIDO</span>':'')+'</div><div class="cbg '+bc+'">'+stReal+'</div></div>'+(c.razaoSocial&&c.razaoSocial.toLowerCase()!==c.nome.toLowerCase()?'<div class="crs" style="font-size:10px;color:#999;margin-top:-2px">'+c.razaoSocial+'</div>':'')+'<div class="ctp">'+(c.end||'Endereco nao informado')+(c.resp?' / '+c.resp:'')+'</div><div class="cbt"><div class="cla">'+(!c.visitas||!c.visitas.length?'Sem visitas':'Ultima: '+fmtD(c.visitas[c.visitas.length-1].data))+'</div><div class="cdy '+dl.c+'">'+dl.t+'</div></div></div></div>';
+    var cod=codCliente(c);
+    return'<div class="cc" onclick="aFicha('+i+')"'+(atendido?' style="background:#eaf5ee;border:1px solid #8fc9a8"':'')+'><div class="sb '+(atendido?'v':sv)+'"></div><div class="cb"><div class="ct"><div class="cn">'+(cod?'<span class="tcod" style="margin-right:5px">'+cod+'</span>':'')+c.nome+(atendido?' <span style="font-size:9px;background:#2E7D52;color:#fff;padding:2px 6px;border-radius:8px;font-weight:700;vertical-align:middle">&#10003; ATENDIDO</span>':'')+'</div><div class="cbg '+bc+'">'+stReal+'</div></div>'+(c.razaoSocial&&c.razaoSocial.toLowerCase()!==c.nome.toLowerCase()?'<div class="crs" style="font-size:10px;color:#999;margin-top:-2px">'+c.razaoSocial+'</div>':'')+'<div class="ctp">'+(c.end||'Endereco nao informado')+(c.resp?' / '+c.resp:'')+'</div><div class="cbt"><div class="cla">'+(!c.visitas||!c.visitas.length?'Sem visitas':'Ultima: '+fmtD(c.visitas[c.visitas.length-1].data))+'</div><div class="cdy '+dl.c+'">'+dl.t+'</div></div></div></div>';
   }).join('');
 }
 function setF(el){document.querySelectorAll('.fc').forEach(function(e){e.classList.remove('on');});el.classList.add('on');filtro=el.dataset.f;rCli();}
@@ -1219,7 +1221,8 @@ function tgL(el){if(typeof el==='string'){el=document.getElementById(el);}if(el)
 
 function aFicha(idx){
   cidx=idx;var c=clientes[idx];
-  document.getElementById('fnm').textContent=c.nome;
+  var codF=codCliente(c);
+  document.getElementById('fnm').innerHTML=(codF?'<span class="tcod" style="margin-right:5px">'+codF+'</span>':'')+c.nome;
   var mapsUrl = c.end ? ('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(c.end)) : ((c.lat&&c.lng) ? ('https://www.google.com/maps/search/?api=1&query='+c.lat+','+c.lng) : '');
   document.getElementById('ftp').innerHTML=(c.tipo||'')+(c.end?' / '+c.end:'')+(mapsUrl?' <a href="'+mapsUrl+'" target="_blank" style="color:var(--dk);font-weight:700;text-decoration:none;white-space:nowrap">&#128205; Ver no mapa</a>':'');
   document.getElementById('fbg').innerHTML='<div class="fbdg">'+statusReal(c)+'</div>'+(c.proxVisita?'<div class="fbdg">Prox: '+fmtD(c.proxVisita)+'</div>':'')+(c.pedidos?'<div class="fbdg">'+c.pedidos+' pedido'+(c.pedidos!==1?'s':'')+'</div>':'');
