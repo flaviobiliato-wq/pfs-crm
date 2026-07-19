@@ -263,13 +263,16 @@ select.fi{appearance:none}
 
 <div class="scr" id="s-fat">
   <div class="fhdrb"><div class="fat-t">Faturamento</div><div class="fat-s">Acompanhamento mensal</div></div>
-  <div class="msel" id="msel"></div>
+  <div style="display:flex;gap:8px;padding:10px 14px 6px">
+    <select class="fi" id="mselAno" style="flex:1"></select>
+    <select class="fi" id="mselMes" style="flex:2"></select>
+  </div>
   <div class="fatm">
     <div class="fatmet g"><div class="fatv" id="fv">R$0</div><div class="fatl">Faturado no mes</div></div>
     <div class="fatmet b"><div class="fatv" id="fkg">0 kg</div><div class="fatl">Volume em kg</div></div>
   </div>
   <div class="mw">
-    <div class="mrow"><input type="number" class="minp" id="minp" placeholder="Meta do mes (R$)" step="100"><button class="mbtn" onclick="savMeta()">Salvar</button></div>
+    <div class="mrow"><input type="number" class="minp" id="minp" placeholder="Meta do mes (kg)" step="50"><button class="mbtn" onclick="savMeta()">Salvar</button></div>
     <div id="mprog" style="display:none"><div style="display:flex;justify-content:space-between;font-size:11px;color:#666;margin-bottom:4px"><span>Progresso</span><span id="mpct">0%</span></div><div class="mbar"><div class="mfill" id="mfill" style="width:0%"></div></div><div class="mtxt" id="mtxt"></div></div>
   </div>
   <div class="st">Ranking de clientes</div>
@@ -774,6 +777,10 @@ function statusReal(c){
   return temPedido?'Ativo':'Inativo';
 }
 function init() {
+  // Carrega meta salva do localStorage (precisa vir antes do dbSave() abaixo, senao ele grava um objeto vazio por cima)
+  var m = null;
+  try { m = JSON.parse(localStorage.getItem('pfs_meta') || 'null'); } catch(e){}
+  if(m) fatMeta = m;
   // Carrega dados salvos do localStorage
   var salvo = null;
   try { salvo = JSON.parse(localStorage.getItem('pfs_clientes') || 'null'); } catch(e){}
@@ -813,9 +820,6 @@ function init() {
   // Garante que nenhum cliente fique com mais de 10 visitas detalhadas (arquiva excedentes)
   clientes.forEach(function(c){arquivarVisitasAntigas(c);});
   dbSave();
-  var m = null;
-  try { m = JSON.parse(localStorage.getItem('pfs_meta') || 'null'); } catch(e){}
-  if(m) fatMeta = m;
   document.getElementById('hdrt').textContent='Controle de Vendas/Estoque';
   rDash(); rCli(); rProd(); rFat(); rSub();
   carregarCoordsReais();
@@ -1715,21 +1719,23 @@ function savCli(){
 function rFat(){
   var meses=[];var ms={};
   clientes.forEach(function(c){pedidosDoCliente(c).forEach(function(v){var p=v.data.split('-');var k=p[0]+'-'+p[1];if(!ms[k]){ms[k]=true;meses.push(k);}});});
-  var am=new Date().getFullYear()+'-'+String(new Date().getMonth()+1).padStart(2,'0');
-  if(!ms[am])meses.push(am);meses.sort();meses=meses.slice(-12);
-  if(!fatMes||meses.indexOf(fatMes)<0)fatMes=meses[0];
-  var nm=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-  var mselEl=document.getElementById('msel');
-  mselEl.innerHTML='';
-  meses.forEach(function(m){
-    var p=m.split('-');
-    var n=nm[parseInt(p[1])-1]+'/'+p[0].slice(2);
-    var btn=document.createElement('button');
-    btn.className='mchip'+(m===fatMes?' on':'');
-    btn.textContent=n;
-    btn.addEventListener('click',function(){sMes(m);});
-    mselEl.appendChild(btn);
-  });
+  var anoAtual=new Date().getFullYear();
+  var am=anoAtual+'-'+String(new Date().getMonth()+1).padStart(2,'0');
+  if(!ms[am])meses.push(am);
+  meses.sort();
+  if(!fatMes)fatMes=meses[meses.length-1];
+  var nm=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  var fp=fatMes.split('-');
+  var anos=[];meses.forEach(function(k){var a=k.split('-')[0];if(anos.indexOf(a)<0)anos.push(a);});
+  if(anos.indexOf(''+anoAtual)<0)anos.push(''+anoAtual);
+  if(anos.indexOf(fp[0])<0)anos.push(fp[0]);
+  anos.sort();
+  var anoSel=document.getElementById('mselAno');
+  var mesSel=document.getElementById('mselMes');
+  anoSel.innerHTML=anos.map(function(a){return'<option value="'+a+'"'+(a===fp[0]?' selected':'')+'>'+a+'</option>';}).join('');
+  mesSel.innerHTML=nm.map(function(n,i){var mm=String(i+1).padStart(2,'0');return'<option value="'+mm+'"'+(mm===fp[1]?' selected':'')+'>'+n+'</option>';}).join('');
+  anoSel.onchange=function(){sMes(anoSel.value+'-'+mesSel.value);};
+  mesSel.onchange=function(){sMes(anoSel.value+'-'+mesSel.value);};
   var pM=[];clientes.forEach(function(c){pedidosDoCliente(c).forEach(function(v){if(v.data.indexOf(fatMes)===0)pM.push({c:c,v:v});});});
   var tR=pM.reduce(function(s,x){return s+(x.v.valorTotal||0);},0);
   var tKg=pM.reduce(function(s,x){
@@ -1740,7 +1746,7 @@ function rFat(){
   document.getElementById('fkg').textContent=tKg>0?tKg.toFixed(1)+' kg':'0 kg';
   var meta=fatMeta[fatMes];var mi=document.getElementById('minp');if(mi)mi.value=meta||'';
   var mp=document.getElementById('mprog');
-  if(meta&&meta>0){mp.style.display='block';var pct=Math.min(100,Math.round((tR/meta)*100));document.getElementById('mpct').textContent=pct+'%';document.getElementById('mfill').style.width=pct+'%';document.getElementById('mtxt').textContent=pct>=100?'Meta atingida!':'Faltam '+fmtR(meta-tR);}else{mp.style.display='none';}
+  if(meta&&meta>0){mp.style.display='block';var pct=Math.min(100,Math.round((tKg/meta)*100));document.getElementById('mpct').textContent=pct+'%';document.getElementById('mfill').style.width=pct+'%';document.getElementById('mtxt').textContent=pct>=100?'Meta atingida!':'Faltam '+(meta-tKg).toFixed(1)+' kg';}else{mp.style.display='none';}
   var pC={};clientes.forEach(function(c){var ps=pedidosDoCliente(c).filter(function(v){return v.data.indexOf(fatMes)===0;});if(!ps.length)return;pC[c.id]={nome:c.nome,valor:ps.reduce(function(s,v){return s+(v.valorTotal||0);},0),idx:clientes.indexOf(c)};});
   var rank=Object.values(pC).sort(function(a,b){return b.valor-a.valor;});var mxV=rank.length?rank[0].valor:1;
   var rl=document.getElementById('rklist');
